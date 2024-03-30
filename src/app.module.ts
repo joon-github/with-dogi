@@ -17,7 +17,7 @@ import { VerifyTokenMiddleware } from './middleware/verifyToken.middleware';
   ],
   controllers: [AppController],
 })
-export class AppModule implements NestModule{
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(VerifyTokenMiddleware).forRoutes('*');
   }
