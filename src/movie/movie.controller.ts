@@ -3,7 +3,7 @@ import { MovieService } from './movie.service';
 import { CreateMovieDto } from './dto/movie.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-
+import { ApiOperation } from '@nestjs/swagger';
 @ApiTags('movie')
 @Controller('movie')
 export class MovieController {
@@ -24,6 +24,7 @@ export class MovieController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create a new movie' })
   create(@Body() movieData: CreateMovieDto) {
     return this.moviesService.create(movieData);
   }
