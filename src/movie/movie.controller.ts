@@ -18,9 +18,6 @@ export class MovieController {
   @Get()
   getAll() {
     return this.moviesService.getAll();
-    // res
-    //   .status(200)
-    //   .send({ data: data, message: '성공적으로 영화 데이터를 받아왔습니다.' });
   }
 
   @Get(':id')
