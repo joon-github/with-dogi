@@ -10,24 +10,30 @@ import {
 import { ProductService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('products')
+@ApiTags('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
-
-  @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
-  }
-
   @Get()
+  @ApiOperation({ summary: '상품 전체 조회' })
   findAll() {
     return this.productService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+  @ApiOperation({ summary: '상품 단일 조회' })
+  async findOne(@Param('id') id: string) {
+    return await this.productService.findOne(+id);
+  }
+
+  @Post()
+  @ApiOperation({ summary: '상품 등록' })
+  create(@Body() createProductDto: CreateProductDto) {
+    console.log(createProductDto);
+    return true;
+    return this.productService.create(createProductDto);
   }
 
   @Patch(':id')

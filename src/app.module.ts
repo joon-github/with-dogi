@@ -10,6 +10,7 @@ import { MovieModule } from './movie/movie.module';
 import { ProductModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
 import { BrandModule } from './brand/brand.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { BrandModule } from './brand/brand.module';
     ProductModule,
     AuthModule,
     BrandModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
 })

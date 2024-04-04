@@ -1,5 +1,12 @@
 import { Brand } from 'src/brand/entities/brand.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { CategoriesDetail } from 'src/categories/detail/entities/CategoriesDetail.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 
 @Entity('Products')
 export class Products {
@@ -9,14 +16,16 @@ export class Products {
   @Column({ unique: true })
   product_code: number;
 
-  @ManyToOne(() => Brand, (brand) => brand.products)
-  brand: Brand; // 이 필드를 위한 별도의 엔티티 정의가 필요할 수 있습니다.
+  @ManyToOne(() => Brand, (brand) => brand)
+  @JoinColumn({ name: 'brand_id' })
+  brand: Brand;
 
   @Column({ length: 100 })
   product_name: string;
 
-  @Column()
-  category_detail_id: number; // 이 필드를 위한 별도의 엔티티 정의가 필요할 수 있습니다.
+  @ManyToOne(() => CategoriesDetail, (category) => category)
+  @JoinColumn({ name: 'category_detail_id' })
+  category_detail: CategoriesDetail;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
