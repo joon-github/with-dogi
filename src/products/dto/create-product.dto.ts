@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 export class CreateProductDto {
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
@@ -32,13 +32,4 @@ export class CreateProductDto {
   @ApiProperty({ example: 20, description: '기본값' })
   @IsNumber()
   readonly stock: number;
-
-  @IsBoolean()
-  readonly is_deleted: boolean;
-
-  @IsNumber()
-  readonly sales_count: number;
-
-  @IsDate()
-  readonly updated_at: Date;
 }

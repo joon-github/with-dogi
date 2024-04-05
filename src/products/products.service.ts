@@ -30,7 +30,12 @@ export class ProductService {
   }
 
   async create(createProductDto: CreateProductDto) {
-    console.log(createProductDto);
+    try {
+      return this.productRepository.save(createProductDto);
+    } catch (e) {
+      console.log(e);
+      throw e;
+    }
   }
 
   async findAll() {

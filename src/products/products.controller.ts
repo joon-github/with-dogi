@@ -30,10 +30,8 @@ export class ProductController {
 
   @Post()
   @ApiOperation({ summary: '상품 등록' })
-  create(@Body() createProductDto: CreateProductDto) {
-    console.log(createProductDto);
-    return true;
-    return this.productService.create(createProductDto);
+  async create(@Body() createProductDto: CreateProductDto) {
+    return await this.productService.create(createProductDto);
   }
 
   @Patch(':id')
