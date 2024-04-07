@@ -16,12 +16,18 @@ export class Products {
   @Column({ unique: true })
   product_code: number;
 
+  @Column()
+  brand_id: number;
+
   @ManyToOne(() => Brand, (brand) => brand)
   @JoinColumn({ name: 'brand_id' })
   brand: Brand;
 
   @Column({ length: 100 })
   product_name: string;
+
+  @Column()
+  category_detail_id: number;
 
   @ManyToOne(() => CategoriesDetail, (category) => category)
   @JoinColumn({ name: 'category_detail_id' })
