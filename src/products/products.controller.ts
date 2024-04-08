@@ -41,6 +41,7 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: '상품 삭제' })
   remove(@Param('id') id: string) {
     return this.productService.remove(+id);
   }

@@ -64,6 +64,8 @@ export class ProductService {
 
   update(id: number, updateProductDto: UpdateProductDto) {
     try {
+      // updated_at 현 시간으로 업데이트
+      updateProductDto.updated_at = new Date();
       return this.productRepository.update(id, updateProductDto);
     } catch (e) {
       throw e;
@@ -71,6 +73,10 @@ export class ProductService {
   }
 
   remove(id: number) {
-    return `This action removes a #${id} product`;
+    try {
+      return this.productRepository.delete(id);
+    } catch (e) {
+      throw e;
+    }
   }
 }

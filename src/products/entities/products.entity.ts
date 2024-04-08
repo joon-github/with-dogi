@@ -42,9 +42,6 @@ export class Products {
   @Column()
   stock: number;
 
-  @Column({ default: false })
-  is_deleted: boolean;
-
   @Column({ type: 'datetime' })
   created_at: Date;
 
