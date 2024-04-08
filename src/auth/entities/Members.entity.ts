@@ -27,7 +27,7 @@ export class Members {
     enum: UserRole,
     default: UserRole.User,
   })
-  role: UserRole;
+  role: string;
 
   @Column({ length: 100, nullable: true })
   profile_photo: string;

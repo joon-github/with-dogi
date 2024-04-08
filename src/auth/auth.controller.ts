@@ -8,16 +8,20 @@ import {
   Delete,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
+
 import { UpdateAuthDto } from './dto/update-auth.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CreateMemberDto } from './dto/create-auth.dto';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+  @Post('/signup')
+  @ApiOperation({ summary: '회원가입' })
+  create(@Body() createMemberDto: CreateMemberDto) {
+    return this.authService.signUp(createMemberDto);
   }
 
   @Get()
