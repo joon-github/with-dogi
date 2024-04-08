@@ -2,12 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { setupSwagger } from './swagger';
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
   setupSwagger(app);
-
+  app.use(cookieParser());
   // pnpm install class-validator class-transformer
   app.useGlobalPipes(
     new ValidationPipe({

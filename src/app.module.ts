@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 
 import { ConfigModule } from '@nestjs/config';
@@ -27,6 +32,11 @@ import { CategoriesModule } from './categories/categories.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(VerifyTokenMiddleware).forRoutes('*');
+    consumer
+      .apply(VerifyTokenMiddleware)
+      .exclude(
+        { path: 'auth/login', method: RequestMethod.POST }, // 로그인 경로 제외
+      )
+      .forRoutes('*');
   }
 }
