@@ -1,10 +1,10 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { CreateMemberDto } from './dto/create-auth.dto';
+import { CreateMemberDto } from './dto/create-Member.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Members } from './entities/Members.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { LoginDto } from './dto/login-auth.dto';
+import { LoginDto } from './dto/login.dto';
 import { JwtTokenService } from './jwt.service';
 import { Response } from 'express';
 
@@ -71,5 +71,10 @@ export class AuthService {
       sameSite: 'strict',
       path: '/auth/refresh',
     });
+  }
+
+  async logout(response: Response): Promise<void> {
+    response.clearCookie('accessToken');
+    response.clearCookie('refreshToken');
   }
 }

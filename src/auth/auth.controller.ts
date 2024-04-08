@@ -3,8 +3,8 @@ import { Controller, Post, Body, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateMemberDto } from './dto/create-auth.dto';
-import { LoginDto } from './dto/login-auth.dto';
+import { CreateMemberDto } from './dto/create-Member.dto';
+import { LoginDto } from './dto/login.dto';
 import { Response } from 'express';
 
 @Controller('auth')
@@ -25,5 +25,11 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     return this.authService.login(loginDto, response);
+  }
+
+  @Post('/logout')
+  @ApiOperation({ summary: '로그아웃' })
+  logout(@Res({ passthrough: true }) response: Response) {
+    return this.authService.logout(response);
   }
 }
