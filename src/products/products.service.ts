@@ -63,8 +63,11 @@ export class ProductService {
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
-    console.log(updateProductDto);
-    return `This action updates a #${id} product`;
+    try {
+      return this.productRepository.update(id, updateProductDto);
+    } catch (e) {
+      throw e;
+    }
   }
 
   remove(id: number) {

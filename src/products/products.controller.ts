@@ -35,6 +35,7 @@ export class ProductController {
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: '상품 수정' })
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(+id, updateProductDto);
   }

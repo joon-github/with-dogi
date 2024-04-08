@@ -45,9 +45,6 @@ export class Products {
   @Column({ default: false })
   is_deleted: boolean;
 
-  @Column({ default: 0 })
-  sales_count: number;
-
   @Column({ type: 'datetime' })
   created_at: Date;
 
