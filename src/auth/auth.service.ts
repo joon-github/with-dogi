@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Members } from './entities/Members.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { LoginDto } from './dto/login-auth.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -14,12 +15,12 @@ export class AuthService {
 
   async signUp(createMemberDto: CreateMemberDto) {
     const existingUser = await this.memberRepository.findOne({
-      where: { email: createMemberDto.email }, // Fix: Provide a value for the 'email' property
+      where: { email: createMemberDto.email },
     });
     if (existingUser) {
-      throw new HttpException('User with this email already exists', 400);
+      throw new HttpException('이미 등록된 이메일 입니다.', 400);
     }
-    const saltOrRounds = 8;
+    const saltOrRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS);
     const hashedPassword = await bcrypt.hash(
       createMemberDto.password,
       saltOrRounds,
@@ -31,6 +32,17 @@ export class AuthService {
     });
 
     await this.memberRepository.save(user);
+  }
+
+  async login(loginDto: LoginDto) {
+    console.log(loginDto);
+    const user = await this.memberRepository.findOne({
+      where: { email: loginDto.email },
+    });
+    if (!user) {
+      throw new HttpException('로그인 정보가 정확하지 않습니다.', 404);
+    }
+    console.log(user);
   }
 
   findAll() {

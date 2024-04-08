@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateMemberDto } from './dto/create-auth.dto';
+import { LoginDto } from './dto/login-auth.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -22,6 +23,12 @@ export class AuthController {
   @ApiOperation({ summary: '회원가입' })
   create(@Body() createMemberDto: CreateMemberDto) {
     return this.authService.signUp(createMemberDto);
+  }
+
+  @Post('/login')
+  @ApiOperation({ summary: '로그인' })
+  login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
   }
 
   @Get()
