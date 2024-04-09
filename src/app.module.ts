@@ -15,7 +15,6 @@ import { ProductModule } from './products/products.module';
 import { AuthModule } from './auth/auth.module';
 import { BrandModule } from './brand/brand.module';
 import { CategoriesModule } from './categories/categories.module';
-
 @Module({
   imports: [
     AuthModule,
@@ -36,6 +35,8 @@ export class AppModule implements NestModule {
       .apply(VerifyTokenMiddleware)
       .exclude(
         { path: 'auth/login', method: RequestMethod.POST }, // 로그인 경로 제외
+        { path: 'auth/signup', method: RequestMethod.POST }, // 회원가입 경로 제외
+        { path: 'auth/accessToken', method: RequestMethod.POST }, // 회원가입 경로 제외
       )
       .forRoutes('*');
   }

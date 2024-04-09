@@ -7,6 +7,7 @@ export class JwtTokenService {
   constructor(private jwtService: JwtService) {}
 
   public generateAccessToken = (payload: TokenPayload) => {
+    console.log(process.env.ACCESS_TOKEN_SECRET);
     const access_token = this.jwtService.sign(payload, {
       secret: process.env.ACCESS_TOKEN_SECRET,
       expiresIn: '15m', // 액세스 토큰 유효 시간

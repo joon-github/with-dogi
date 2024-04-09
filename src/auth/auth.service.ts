@@ -31,7 +31,6 @@ export class AuthService {
       createMemberDto.password,
       saltOrRounds,
     );
-
     const user = this.memberRepository.create({
       ...createMemberDto,
       password: hashedPassword,
@@ -44,7 +43,6 @@ export class AuthService {
     const findUser = await this.memberRepository.findOne({
       where: { email: loginDto.email },
     });
-
     if (!findUser) {
       throw new HttpException('로그인 정보가 정확하지 않습니다.', 400);
     }
@@ -89,24 +87,31 @@ export class AuthService {
     request: Request,
     response: Response,
   ): Promise<void> {
-    const decoded = this.jwtService.verifyToken(
-      request,
-      'refreshToken',
-      process.env.REFRESH_TOKEN_SECRET,
-    );
-
-    const accessToken = this.jwtService.generateAccessToken(decoded.email);
-
-    response.cookie('accessToken', accessToken, {
-      maxAge: 1000 * 60 * 15,
-      sameSite: 'strict',
-      httpOnly: true,
-    });
+    try {
+      const decoded: TokenPayload = this.jwtService.verifyToken(
+        request,
+        'refreshToken',
+        process.env.REFRESH_TOKEN_SECRET,
+      );
+      const payload: TokenPayload = {
+        user_id: decoded.user_id,
+        email: decoded.email,
+      };
+      const accessToken = this.jwtService.generateAccessToken(payload);
+      response.cookie('accessToken', accessToken, {
+        maxAge: 1000 * 60 * 15,
+        sameSite: 'strict',
+        httpOnly: true,
+      });
+    } catch (e) {
+      throw e;
+    }
   }
 
   async updateMember(updateMemberDto: UpdateMemberDto, request: Request) {
     const payload = request['user'] as TokenPayload;
-    if (updateMemberDto.checkPassword !== null) {
+    console.log(updateMemberDto.checkPassword, updateMemberDto.password);
+    if (updateMemberDto.checkPassword !== undefined) {
       const findUser = await this.memberRepository.findOne({
         where: { email: payload.email },
       });
@@ -121,7 +126,7 @@ export class AuthService {
       }
     }
 
-    if (updateMemberDto.password !== null) {
+    if (updateMemberDto.password !== undefined) {
       const saltOrRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS);
       const hashedPassword = await bcrypt.hash(
         updateMemberDto.password,
