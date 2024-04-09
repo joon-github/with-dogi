@@ -1,12 +1,12 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { TokenPayload } from './interface/token-payload.interface';
 @Injectable()
 export class JwtTokenService {
   constructor(private jwtService: JwtService) {}
 
-  public generateAccessToken = (email: string) => {
-    const payload = { email: email };
+  public generateAccessToken = (payload: TokenPayload) => {
     const access_token = this.jwtService.sign(payload, {
       secret: process.env.ACCESS_TOKEN_SECRET,
       expiresIn: '15m', // 액세스 토큰 유효 시간
@@ -14,8 +14,7 @@ export class JwtTokenService {
     return access_token;
   };
 
-  public generateRefreshToken = (email: string) => {
-    const payload = { email: email };
+  public generateRefreshToken = (payload: TokenPayload) => {
     const refresh_token = this.jwtService.sign(payload, {
       secret: process.env.REFRESH_TOKEN_SECRET,
       expiresIn: '60m', // 액세스 토큰 유효 시간

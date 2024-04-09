@@ -7,6 +7,9 @@ import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { JwtTokenService } from './jwt.service';
 import { Request, Response } from 'express';
+import { UpdateMemberDto } from './dto/update-Memeber.dto';
+import { TokenPayload } from './interface/token-payload.interface';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -43,7 +46,7 @@ export class AuthService {
     });
 
     if (!findUser) {
-      throw new HttpException('로그인 정보가 정확하지 않습니다.', 401);
+      throw new HttpException('로그인 정보가 정확하지 않습니다.', 400);
     }
 
     const isPasswordMatching = await bcrypt.compare(
@@ -52,11 +55,16 @@ export class AuthService {
     );
 
     if (!isPasswordMatching) {
-      throw new HttpException('로그인 정보가 정확하지 않습니다.', 401);
+      throw new HttpException('로그인 정보가 정확하지 않습니다.', 400);
     }
 
-    const accessToken = this.jwtService.generateAccessToken(loginDto.email);
-    const refreshToken = this.jwtService.generateRefreshToken(loginDto.email);
+    const payload: TokenPayload = {
+      user_id: findUser.user_id,
+      email: findUser.email,
+    };
+
+    const accessToken = this.jwtService.generateAccessToken(payload);
+    const refreshToken = this.jwtService.generateRefreshToken(payload);
 
     response.cookie('accessToken', accessToken, {
       maxAge: 1000 * 60 * 15,
@@ -94,5 +102,33 @@ export class AuthService {
       sameSite: 'strict',
       httpOnly: true,
     });
+  }
+
+  async updateMember(updateMemberDto: UpdateMemberDto, request: Request) {
+    const payload = request['user'] as TokenPayload;
+    if (updateMemberDto.checkPassword !== null) {
+      const findUser = await this.memberRepository.findOne({
+        where: { email: payload.email },
+      });
+
+      const isPasswordMatching = await bcrypt.compare(
+        updateMemberDto.checkPassword,
+        findUser.password,
+      );
+
+      if (!isPasswordMatching) {
+        throw new HttpException('비밀번호가 일치하지 않습니다.', 400);
+      }
+    }
+
+    if (updateMemberDto.password !== null) {
+      const saltOrRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS);
+      const hashedPassword = await bcrypt.hash(
+        updateMemberDto.password,
+        saltOrRounds,
+      );
+      updateMemberDto.password = hashedPassword;
+    }
+    await this.memberRepository.update(payload.user_id, updateMemberDto);
   }
 }

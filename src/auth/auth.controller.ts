@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, Req } from '@nestjs/common';
+import { Controller, Post, Body, Res, Req, Patch } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 
@@ -6,6 +6,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateMemberDto } from './dto/create-Member.dto';
 import { LoginDto } from './dto/login.dto';
 import { Request, Response } from 'express';
+import { UpdateMemberDto } from './dto/update-Memeber.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -34,11 +35,20 @@ export class AuthController {
   }
 
   @Post('/accessToken')
-  @ApiOperation({ summary: '엑세스토큰 재발급' })
+  @ApiOperation({ summary: '엑세스 토큰 재발급' })
   generateAccessToken(
     @Res({ passthrough: true }) response: Response,
     @Req() request: Request,
   ) {
     return this.authService.generateAccessToken(request, response);
+  }
+
+  @Patch('/member')
+  @ApiOperation({ summary: '회원 정보 수정' })
+  updateMember(
+    @Body() updateProfileDto: UpdateMemberDto,
+    @Req() request: Request,
+  ) {
+    return this.authService.updateMember(updateProfileDto, request);
   }
 }
