@@ -6,8 +6,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { LoginDto } from './dto/login.dto';
 import { JwtTokenService } from './jwt.service';
-import { Response } from 'express';
-
+import { Request, Response } from 'express';
 @Injectable()
 export class AuthService {
   constructor(
@@ -57,7 +56,7 @@ export class AuthService {
     }
 
     const accessToken = this.jwtService.generateAccessToken(loginDto.email);
-    const refreshToken = this.jwtService.generateRefreshToken();
+    const refreshToken = this.jwtService.generateRefreshToken(loginDto.email);
 
     response.cookie('accessToken', accessToken, {
       maxAge: 1000 * 60 * 15,
@@ -69,12 +68,31 @@ export class AuthService {
       maxAge: 1000 * 60 * 60,
       httpOnly: true,
       sameSite: 'strict',
-      path: '/auth/refresh',
+      path: '/auth/accessToken',
     });
   }
 
   async logout(response: Response): Promise<void> {
     response.clearCookie('accessToken');
     response.clearCookie('refreshToken');
+  }
+
+  async generateAccessToken(
+    request: Request,
+    response: Response,
+  ): Promise<void> {
+    const decoded = this.jwtService.verifyToken(
+      request,
+      'refreshToken',
+      process.env.REFRESH_TOKEN_SECRET,
+    );
+
+    const accessToken = this.jwtService.generateAccessToken(decoded.email);
+
+    response.cookie('accessToken', accessToken, {
+      maxAge: 1000 * 60 * 15,
+      sameSite: 'strict',
+      httpOnly: true,
+    });
   }
 }

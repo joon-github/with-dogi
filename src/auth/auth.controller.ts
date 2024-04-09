@@ -1,11 +1,11 @@
-import { Controller, Post, Body, Res } from '@nestjs/common';
+import { Controller, Post, Body, Res, Req } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateMemberDto } from './dto/create-Member.dto';
 import { LoginDto } from './dto/login.dto';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -31,5 +31,14 @@ export class AuthController {
   @ApiOperation({ summary: '로그아웃' })
   logout(@Res({ passthrough: true }) response: Response) {
     return this.authService.logout(response);
+  }
+
+  @Post('/accessToken')
+  @ApiOperation({ summary: '엑세스토큰 재발급' })
+  generateAccessToken(
+    @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
+  ) {
+    return this.authService.generateAccessToken(request, response);
   }
 }
