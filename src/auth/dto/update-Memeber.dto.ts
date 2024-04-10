@@ -1,8 +1,12 @@
-import { PartialType } from '@nestjs/swagger';
+import { PartialType, OmitType } from '@nestjs/swagger';
 import { CreateMemberDto } from './create-Member.dto';
 import { IsString } from 'class-validator';
 
-export class UpdateMemberDto extends PartialType(CreateMemberDto) {
+class UpdateMemberBaseDto extends OmitType(CreateMemberDto, [
+  'email',
+] as const) {}
+
+export class UpdateMemberDto extends PartialType(UpdateMemberBaseDto) {
   @IsString()
   checkPassword: string;
 }

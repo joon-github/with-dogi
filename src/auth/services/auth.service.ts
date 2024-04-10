@@ -1,14 +1,15 @@
-import { HttpException, Injectable } from '@nestjs/common';
-import { CreateMemberDto } from './dto/create-Member.dto';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { CreateMemberDto } from '../dto/create-Member.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Members } from './entities/Members.entity';
+import { Members } from '../entities/Members.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { LoginDto } from './dto/login.dto';
+import { LoginDto } from '../dto/login.dto';
 import { JwtTokenService } from './jwt.service';
 import { Request, Response } from 'express';
-import { UpdateMemberDto } from './dto/update-Memeber.dto';
-import { TokenPayload } from './interface/token-payload.interface';
+import { UpdateMemberDto } from '../dto/update-Memeber.dto';
+import { TokenPayload } from '../interface/token-payload.interface';
+import { AuthException } from '../exceptions/auth-exceptions';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +25,10 @@ export class AuthService {
       where: { email: createMemberDto.email },
     });
     if (findUser) {
-      throw new HttpException('이미 등록된 이메일 입니다.', 400);
+      throw new AuthException(
+        AuthException.ALREADY_REGISTERED_USER,
+        HttpStatus.BAD_REQUEST,
+      );
     }
     const saltOrRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS);
     const hashedPassword = await bcrypt.hash(
@@ -44,16 +48,15 @@ export class AuthService {
       where: { email: loginDto.email },
     });
     if (!findUser) {
-      throw new HttpException('로그인 정보가 정확하지 않습니다.', 400);
+      throw new AuthException(AuthException.LOGIN_FAIL, HttpStatus.BAD_REQUEST);
     }
-
     const isPasswordMatching = await bcrypt.compare(
       loginDto.password,
       findUser.password,
     );
 
     if (!isPasswordMatching) {
-      throw new HttpException('로그인 정보가 정확하지 않습니다.', 400);
+      throw new HttpException(AuthException.LOGIN_FAIL, HttpStatus.BAD_REQUEST);
     }
 
     const payload: TokenPayload = {
@@ -61,56 +64,28 @@ export class AuthService {
       email: findUser.email,
     };
 
-    const accessToken = this.jwtService.generateAccessToken(payload);
-    const refreshToken = this.jwtService.generateRefreshToken(payload);
-
-    response.cookie('accessToken', accessToken, {
-      maxAge: 1000 * 60 * 15,
-      sameSite: 'strict',
-      httpOnly: true,
-    });
-
-    response.cookie('refreshToken', refreshToken, {
-      maxAge: 1000 * 60 * 60,
-      httpOnly: true,
-      sameSite: 'strict',
-      path: '/auth/accessToken',
-    });
-  }
-
-  async logout(response: Response): Promise<void> {
-    response.clearCookie('accessToken');
-    response.clearCookie('refreshToken');
+    this.jwtService.generateAccessToken(response, payload);
+    this.jwtService.generateRefreshToken(response, payload);
   }
 
   async generateAccessToken(
     request: Request,
     response: Response,
   ): Promise<void> {
-    try {
-      const decoded: TokenPayload = this.jwtService.verifyToken(
-        request,
-        'refreshToken',
-        process.env.REFRESH_TOKEN_SECRET,
-      );
-      const payload: TokenPayload = {
-        user_id: decoded.user_id,
-        email: decoded.email,
-      };
-      const accessToken = this.jwtService.generateAccessToken(payload);
-      response.cookie('accessToken', accessToken, {
-        maxAge: 1000 * 60 * 15,
-        sameSite: 'strict',
-        httpOnly: true,
-      });
-    } catch (e) {
-      throw e;
-    }
+    const decoded: TokenPayload = this.jwtService.verifyToken(
+      request,
+      'refreshToken',
+      process.env.REFRESH_TOKEN_SECRET,
+    );
+    const payload: TokenPayload = {
+      user_id: decoded.user_id,
+      email: decoded.email,
+    };
+    this.jwtService.generateAccessToken(response, payload);
   }
 
   async updateMember(updateMemberDto: UpdateMemberDto, request: Request) {
     const payload = request['user'] as TokenPayload;
-    console.log(updateMemberDto.checkPassword, updateMemberDto.password);
     if (updateMemberDto.checkPassword !== undefined) {
       const findUser = await this.memberRepository.findOne({
         where: { email: payload.email },
@@ -122,7 +97,10 @@ export class AuthService {
       );
 
       if (!isPasswordMatching) {
-        throw new HttpException('비밀번호가 일치하지 않습니다.', 400);
+        throw new AuthException(
+          AuthException.LOGIN_FAIL,
+          HttpStatus.BAD_REQUEST,
+        );
       }
     }
 

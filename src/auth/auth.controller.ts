@@ -1,12 +1,13 @@
 import { Controller, Post, Body, Res, Req, Patch } from '@nestjs/common';
 
-import { AuthService } from './auth.service';
+import { AuthService } from './services/auth.service';
 
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateMemberDto } from './dto/create-Member.dto';
 import { LoginDto } from './dto/login.dto';
 import { Request, Response } from 'express';
 import { UpdateMemberDto } from './dto/update-Memeber.dto';
+import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -15,23 +16,29 @@ export class AuthController {
 
   @Post('/signup')
   @ApiOperation({ summary: '회원가입' })
-  create(@Body() createMemberDto: CreateMemberDto) {
-    return this.authService.signUp(createMemberDto);
+  async create(
+    @Body() createMemberDto: CreateMemberDto,
+  ): Promise<ResponesContainerDto<null>> {
+    await this.authService.signUp(createMemberDto);
+    return {
+      statusCode: 201,
+      message: '회원가입 성공',
+      data: null,
+    };
   }
 
   @Post('/login')
   @ApiOperation({ summary: '로그인' })
-  login(
+  async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
-  ) {
-    return this.authService.login(loginDto, response);
-  }
-
-  @Post('/logout')
-  @ApiOperation({ summary: '로그아웃' })
-  logout(@Res({ passthrough: true }) response: Response) {
-    return this.authService.logout(response);
+  ): Promise<ResponesContainerDto<null>> {
+    await this.authService.login(loginDto, response);
+    return {
+      statusCode: 200,
+      message: '로그인 성공',
+      data: null,
+    };
   }
 
   @Post('/accessToken')
@@ -45,7 +52,7 @@ export class AuthController {
 
   @Patch('/member')
   @ApiOperation({ summary: '회원 정보 수정' })
-  updateMember(
+  async updateMember(
     @Body() updateProfileDto: UpdateMemberDto,
     @Req() request: Request,
   ) {

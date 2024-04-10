@@ -1,7 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
-  IsIn,
   IsOptional,
   IsString,
   Matches,
@@ -37,10 +36,10 @@ export class CreateMemberDto {
   @IsString()
   address: string;
 
-  @ApiProperty({ example: 'admin', description: '기본값' })
-  @IsString()
-  @IsIn(['user', 'seller', 'admin'])
-  role: string;
+  // @ApiProperty({ example: 'admin', description: '기본값' })
+  // @IsString()
+  // @IsIn(['user', 'seller', 'admin'])
+  // role: string;
 
   @IsString()
   @IsOptional()

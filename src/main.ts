@@ -3,11 +3,13 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { setupSwagger } from './swagger';
 import * as cookieParser from 'cookie-parser';
+import { AuthExceptionFilter } from './auth/filters/auth-exceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
   setupSwagger(app);
+  app.useGlobalFilters(new AuthExceptionFilter());
   app.use(cookieParser());
   // pnpm install class-validator class-transformer
   app.useGlobalPipes(
