@@ -8,6 +8,7 @@ import { LoginDto } from './dto/login.dto';
 import { Request, Response } from 'express';
 import { UpdateMemberDto } from './dto/update-Memeber.dto';
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
+import { UpdatePasswordrDto } from './dto/update-Password.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -57,5 +58,14 @@ export class AuthController {
     @Req() request: Request,
   ) {
     return this.authService.updateMember(updateProfileDto, request);
+  }
+
+  @Patch('/password')
+  @ApiOperation({ summary: '비밀번호 수정' })
+  async updatePassword(
+    @Body() updatePasswordrDto: UpdatePasswordrDto,
+    @Req() request: Request,
+  ) {
+    return this.authService.updatePassword(updatePasswordrDto, request);
   }
 }

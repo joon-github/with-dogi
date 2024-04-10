@@ -10,6 +10,7 @@ import { Request, Response } from 'express';
 import { UpdateMemberDto } from '../dto/update-Memeber.dto';
 import { TokenPayload } from '../interface/token-payload.interface';
 import { AuthException } from '../exceptions/auth-exceptions';
+import { UpdatePasswordrDto } from '../dto/update-Password.dto';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +20,27 @@ export class AuthService {
 
     private jwtService: JwtTokenService,
   ) {}
+
+  private async checkUserInfo<T extends { email: string; password: string }>(
+    info: T,
+  ) {
+    const findUser = await this.memberRepository.findOne({
+      where: { email: info.email },
+    });
+    if (!findUser) {
+      throw new AuthException(AuthException.LOGIN_FAIL, HttpStatus.BAD_REQUEST);
+    }
+    const isPasswordMatching = await bcrypt.compare(
+      info.password,
+      findUser.password,
+    );
+
+    if (!isPasswordMatching) {
+      throw new HttpException(AuthException.LOGIN_FAIL, HttpStatus.BAD_REQUEST);
+    }
+
+    return findUser;
+  }
 
   async signUp(createMemberDto: CreateMemberDto): Promise<void> {
     const findUser = await this.memberRepository.findOne({
@@ -44,20 +66,7 @@ export class AuthService {
   }
 
   async login(loginDto: LoginDto, response: Response): Promise<void> {
-    const findUser = await this.memberRepository.findOne({
-      where: { email: loginDto.email },
-    });
-    if (!findUser) {
-      throw new AuthException(AuthException.LOGIN_FAIL, HttpStatus.BAD_REQUEST);
-    }
-    const isPasswordMatching = await bcrypt.compare(
-      loginDto.password,
-      findUser.password,
-    );
-
-    if (!isPasswordMatching) {
-      throw new HttpException(AuthException.LOGIN_FAIL, HttpStatus.BAD_REQUEST);
-    }
+    const findUser = await this.checkUserInfo(loginDto);
 
     const payload: TokenPayload = {
       user_id: findUser.user_id,
@@ -86,32 +95,45 @@ export class AuthService {
 
   async updateMember(updateMemberDto: UpdateMemberDto, request: Request) {
     const payload = request['user'] as TokenPayload;
-    if (updateMemberDto.checkPassword !== undefined) {
-      const findUser = await this.memberRepository.findOne({
-        where: { email: payload.email },
-      });
 
-      const isPasswordMatching = await bcrypt.compare(
-        updateMemberDto.checkPassword,
-        findUser.password,
-      );
-
-      if (!isPasswordMatching) {
-        throw new AuthException(
-          AuthException.LOGIN_FAIL,
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-    }
-
-    if (updateMemberDto.password !== undefined) {
-      const saltOrRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS);
-      const hashedPassword = await bcrypt.hash(
-        updateMemberDto.password,
-        saltOrRounds,
-      );
-      updateMemberDto.password = hashedPassword;
-    }
     await this.memberRepository.update(payload.user_id, updateMemberDto);
+  }
+
+  async updatePassword(
+    updatePasswordrDto: UpdatePasswordrDto,
+    request: Request,
+  ) {
+    const payload = request['user'] as TokenPayload;
+    const info = {
+      email: payload.email,
+      password: updatePasswordrDto.beforPassword,
+    };
+    const findUser = await this.checkUserInfo(info);
+    // const findUser = await this.memberRepository.findOne({
+    //   where: { email: payload.email },
+    // });
+    //   if (updatePasswordrDto.checkPassword !== undefined) {
+    //     const findUser = await this.memberRepository.findOne({
+    //       where: { email: payload.email },
+    //     });
+    //     const isPasswordMatching = await bcrypt.compare(
+    //       updatePasswordrDto.checkPassword,
+    //       findUser.password,
+    //     );
+    //     if (!isPasswordMatching) {
+    //       throw new AuthException(
+    //         AuthException.LOGIN_FAIL,
+    //         HttpStatus.BAD_REQUEST,
+    //       );
+    //     }
+    //   }
+    //   if (updatePasswordrDto.password !== undefined) {
+    //     const saltOrRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS);
+    //     const hashedPassword = await bcrypt.hash(
+    //       updatePasswordrDto.password,
+    //       saltOrRounds,
+    //     );
+    //     updatePasswordrDto.password = hashedPassword;
+    //   }
   }
 }

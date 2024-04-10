@@ -10,10 +10,10 @@ export class JwtTokenService {
   public generateAccessToken = (response: Response, payload: TokenPayload) => {
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.ACCESS_TOKEN_SECRET,
-      expiresIn: '15s', // 액세스 토큰 유효 시간
+      expiresIn: '15m', // 액세스 토큰 유효 시간
     });
     response.cookie('accessToken', accessToken, {
-      maxAge: 1000 * 60 * 15,
+      maxAge: 1000 * 60 * 30,
       sameSite: 'strict',
       httpOnly: true,
     });
