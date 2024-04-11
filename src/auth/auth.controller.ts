@@ -48,8 +48,13 @@ export class AuthController {
   generateAccessToken(
     @Res({ passthrough: true }) response: Response,
     @Req() request: Request,
-  ) {
-    return this.authService.generateAccessToken(request, response);
+  ): ResponesContainerDto<null> {
+    this.authService.generateAccessToken(request, response);
+    return {
+      statusCode: 200,
+      message: '엑세스 토큰 재발급 성공',
+      data: null,
+    };
   }
 
   @Patch('/member')
@@ -57,8 +62,13 @@ export class AuthController {
   async updateMember(
     @Body() updateProfileDto: UpdateMemberDto,
     @Req() request: Request,
-  ) {
-    return this.authService.updateMember(updateProfileDto, request);
+  ): Promise<ResponesContainerDto<null>> {
+    this.authService.updateMember(updateProfileDto, request);
+    return {
+      statusCode: 200,
+      message: '회원 정보 수정 성공',
+      data: null,
+    };
   }
 
   @Patch('/password')
@@ -66,8 +76,13 @@ export class AuthController {
   async updatePassword(
     @Body() updatePasswordrDto: UpdatePasswordrDto,
     @Req() request: Request,
-  ) {
-    return this.authService.updatePassword(updatePasswordrDto, request);
+  ): Promise<ResponesContainerDto<null>> {
+    this.authService.updatePassword(updatePasswordrDto, request);
+    return {
+      statusCode: 200,
+      message: '비밀번호 수정 성공',
+      data: null,
+    };
   }
 
   @Patch('/role')
@@ -75,7 +90,12 @@ export class AuthController {
   async updateRole(
     @Body() updateRoleDto: UpdateRoleDto,
     @Req() request: Request,
-  ) {
-    return this.authService.updateRole(updateRoleDto, request);
+  ): Promise<ResponesContainerDto<null>> {
+    this.authService.updateRole(updateRoleDto, request);
+    return {
+      statusCode: 200,
+      message: '권한 수정 성공',
+      data: null,
+    };
   }
 }
