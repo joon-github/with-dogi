@@ -11,12 +11,3 @@ export class UpdatePasswordrDto {
   })
   afterPassword: string;
 }
-
-// const isPasswordMatching = await bcrypt.compare(
-//   loginDto.password,
-//   findUser.password,
-// );
-
-// if (!isPasswordMatching) {
-//   throw new HttpException(AuthException.LOGIN_FAIL, HttpStatus.BAD_REQUEST);
-// }

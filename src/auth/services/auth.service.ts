@@ -108,32 +108,15 @@ export class AuthService {
       email: payload.email,
       password: updatePasswordrDto.beforPassword,
     };
-    const findUser = await this.checkUserInfo(info);
-    // const findUser = await this.memberRepository.findOne({
-    //   where: { email: payload.email },
-    // });
-    //   if (updatePasswordrDto.checkPassword !== undefined) {
-    //     const findUser = await this.memberRepository.findOne({
-    //       where: { email: payload.email },
-    //     });
-    //     const isPasswordMatching = await bcrypt.compare(
-    //       updatePasswordrDto.checkPassword,
-    //       findUser.password,
-    //     );
-    //     if (!isPasswordMatching) {
-    //       throw new AuthException(
-    //         AuthException.LOGIN_FAIL,
-    //         HttpStatus.BAD_REQUEST,
-    //       );
-    //     }
-    //   }
-    //   if (updatePasswordrDto.password !== undefined) {
-    //     const saltOrRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS);
-    //     const hashedPassword = await bcrypt.hash(
-    //       updatePasswordrDto.password,
-    //       saltOrRounds,
-    //     );
-    //     updatePasswordrDto.password = hashedPassword;
-    //   }
+    await this.checkUserInfo(info);
+    const saltOrRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(
+      updatePasswordrDto.afterPassword,
+      saltOrRounds,
+    );
+
+    await this.memberRepository.update(payload.user_id, {
+      password: hashedPassword,
+    });
   }
 }
