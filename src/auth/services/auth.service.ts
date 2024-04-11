@@ -8,7 +8,7 @@ import { LoginDto } from '../dto/login.dto';
 import { JwtTokenService } from './jwt.service';
 import { Request, Response } from 'express';
 import { UpdateMemberDto } from '../dto/update-Memeber.dto';
-import { TokenPayload } from '../interface/token-payload.interface';
+import { TokenPayload } from '../interfaces/token-payload.interface';
 import { AuthException } from '../exceptions/auth-exceptions';
 import { UpdatePasswordrDto } from '../dto/update-Password.dto';
 

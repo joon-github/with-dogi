@@ -1,7 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
-import { TokenPayload } from '../interface/token-payload.interface';
+import { TokenPayload } from '../interfaces/token-payload.interface';
 import { AuthException } from '../exceptions/auth-exceptions';
 @Injectable()
 export class JwtTokenService {
