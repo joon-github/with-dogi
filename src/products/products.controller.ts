@@ -61,7 +61,7 @@ export class ProductController {
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
   ): Promise<ResponesContainerDto<null>> {
-    this.productService.update(+id, updateProductDto);
+    await this.productService.update(+id, updateProductDto);
     return {
       statusCode: 200,
       message: `${id}번 상품 수정 성공`,
@@ -72,7 +72,7 @@ export class ProductController {
   @Delete(':id')
   @ApiOperation({ summary: '상품 삭제' })
   async remove(@Param('id') id: string): Promise<ResponesContainerDto<null>> {
-    this.productService.remove(+id);
+    await this.productService.remove(+id);
     return {
       statusCode: 200,
       message: `${id}번 상품 삭제 성공`,
