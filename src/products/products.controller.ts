@@ -66,7 +66,11 @@ export class ProductController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.productService.create(createProductDto, user.email);
+    await this.productService.create(
+      createProductDto,
+      user.email,
+      user.user_id,
+    );
     return {
       statusCode: 201,
       message: '상품 등록 성공',

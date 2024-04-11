@@ -3,10 +3,6 @@ import { IsNumber, IsString } from 'class-validator';
 export class CreateProductDto {
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
-  readonly user_id: number;
-
-  @ApiProperty({ example: 1, description: '기본값' })
-  @IsNumber()
   readonly brand_id: number;
 
   @ApiProperty({ example: '테스트 상품', description: '기본값' })

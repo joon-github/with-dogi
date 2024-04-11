@@ -31,6 +31,16 @@ export class AuthService {
     return findUser;
   }
 
+  public async findUserById(user_id: number): Promise<Members> {
+    const findUser = await this.memberRepository.findOne({
+      where: { user_id },
+    });
+    if (!findUser) {
+      throw new AuthException(AuthException.LOGIN_FAIL);
+    }
+    return findUser;
+  }
+
   private async checkUserInfo<T extends { email: string; password: string }>(
     info: T,
   ) {

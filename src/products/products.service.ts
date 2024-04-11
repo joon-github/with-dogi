@@ -54,22 +54,22 @@ export class ProductService {
     }
   }
 
-  async create(createProductDto: CreateProductDto, email: string) {
-    try {
-      const findUser = await this.authService.findUserByEmail(email);
-      if (findUser.role === 'user') {
-        throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
-      }
-      const productCode = uuidv4();
-      const product = {
-        ...createProductDto,
-        product_code: productCode,
-      };
-      console.log(product);
-      return this.productRepository.save(product);
-    } catch (e) {
-      console.log('e,', e);
+  async create(
+    createProductDto: CreateProductDto,
+    email: string,
+    userId: number,
+  ) {
+    const findUser = await this.authService.findUserByEmail(email);
+    if (findUser.role === 'user') {
+      throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
     }
+    const productCode = uuidv4();
+    const product = {
+      ...createProductDto,
+      product_code: productCode,
+      user_id: userId,
+    };
+    return await this.productRepository.save(product);
   }
 
   async findAll(

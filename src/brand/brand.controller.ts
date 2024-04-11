@@ -6,18 +6,26 @@ import {
   Patch,
   Param,
   Delete,
+  Req,
 } from '@nestjs/common';
 import { BrandService } from './brand.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
+import { TokenPayload } from 'src/auth/interfaces/token-payload.interface';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('brand')
+@ApiTags('brand')
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}
 
   @Post()
-  create(@Body() createBrandDto: CreateBrandDto) {
-    return this.brandService.create(createBrandDto);
+  async create(
+    @Body() createBrandDto: CreateBrandDto,
+    @Req() request: Request,
+  ) {
+    const user = request['user'] as TokenPayload;
+    return this.brandService.create(createBrandDto, user.user_id);
   }
 
   @Get()
