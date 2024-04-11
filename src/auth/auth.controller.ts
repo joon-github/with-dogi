@@ -9,6 +9,7 @@ import { Request, Response } from 'express';
 import { UpdateMemberDto } from './dto/update-Memeber.dto';
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { UpdatePasswordrDto } from './dto/update-Password.dto';
+import { UpdateRoleDto } from './dto/update-Role.dto';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -67,5 +68,14 @@ export class AuthController {
     @Req() request: Request,
   ) {
     return this.authService.updatePassword(updatePasswordrDto, request);
+  }
+
+  @Patch('/role')
+  @ApiOperation({ summary: '권한 수정' })
+  async updateRole(
+    @Body() updateRoleDto: UpdateRoleDto,
+    @Req() request: Request,
+  ) {
+    return this.authService.updateRole(updateRoleDto, request);
   }
 }

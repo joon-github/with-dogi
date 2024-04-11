@@ -128,4 +128,18 @@ export class AuthService {
       password: newPassword,
     });
   }
+
+  async updateRole(updateRoleDto: { role: string }, request: Request) {
+    const payload = request['user'] as TokenPayload;
+    const findUser = await this.memberRepository.findOne({
+      where: { user_id: payload.user_id },
+    });
+    if (findUser.role !== 'admin') {
+      throw new AuthException(
+        AuthException.IS_NOT_AUTHORIZED,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    await this.memberRepository.update(payload.user_id, updateRoleDto);
+  }
 }

@@ -38,7 +38,7 @@ export class JwtTokenService {
   public verifyToken = (req: Request, tokenName: string, secret: string) => {
     const token = req.cookies[tokenName];
     if (!token) {
-      throw new AuthException('로그인이 필요합니다.', 403);
+      throw new AuthException(AuthException.LOGIN_REQUIRED, 403);
     }
     try {
       const decoded = this.jwtService.verify(token, {
@@ -46,7 +46,7 @@ export class JwtTokenService {
       });
       return decoded;
     } catch (e) {
-      throw new AuthException('인증실패!', 401);
+      throw new AuthException(AuthException.TOKEN_EXPIRED, 401);
     }
   };
 }

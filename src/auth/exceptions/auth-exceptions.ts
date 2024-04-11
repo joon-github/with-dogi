@@ -13,6 +13,18 @@ export class AuthException extends HttpException {
     return '기존 비밀번호와 새 비밀번호가 동일합니다.';
   }
 
+  public static get IS_NOT_AUTHORIZED(): string {
+    return '권한이 없습니다.';
+  }
+
+  public static get LOGIN_REQUIRED(): string {
+    return '로그인이 필요합니다.';
+  }
+
+  public static get TOKEN_EXPIRED(): string {
+    return '토큰이 만료되었습니다.';
+  }
+
   constructor(message: string, status: HttpStatus) {
     super(message, status);
   }
