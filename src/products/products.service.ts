@@ -62,7 +62,15 @@ export class ProductService {
     }
   }
 
-  async create(createProductDto: CreateProductDto) {
+  async create(createProductDto: CreateProductDto, request: Request) {
+    const payload = request['user'] as TokenPayload;
+    const findUser = await this.authService.findUserByEmail(payload.email);
+    if (findUser.role === 'user') {
+      throw new AuthException(
+        AuthException.IS_NOT_AUTHORIZED,
+        HttpStatus.FORBIDDEN,
+      );
+    }
     return this.productRepository.save(createProductDto);
   }
 

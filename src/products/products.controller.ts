@@ -47,8 +47,9 @@ export class ProductController {
   @ApiOperation({ summary: '상품 등록' })
   async create(
     @Body() createProductDto: CreateProductDto,
+    request: Request,
   ): Promise<ResponesContainerDto<null>> {
-    await this.productService.create(createProductDto);
+    await this.productService.create(createProductDto, request);
     return {
       statusCode: 201,
       message: '상품 등록 성공',
