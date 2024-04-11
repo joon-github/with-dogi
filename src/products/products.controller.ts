@@ -13,6 +13,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { Products } from './entities/products.entity';
+import { Request } from 'express';
 
 @Controller('products')
 @ApiTags('products')
@@ -60,8 +61,9 @@ export class ProductController {
   async update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
+    request: Request,
   ): Promise<ResponesContainerDto<null>> {
-    await this.productService.update(+id, updateProductDto);
+    await this.productService.update(+id, updateProductDto, request);
     return {
       statusCode: 200,
       message: `${id}번 상품 수정 성공`,
@@ -71,8 +73,11 @@ export class ProductController {
 
   @Delete(':id')
   @ApiOperation({ summary: '상품 삭제' })
-  async remove(@Param('id') id: string): Promise<ResponesContainerDto<null>> {
-    await this.productService.remove(+id);
+  async remove(
+    @Param('id') id: string,
+    request: Request,
+  ): Promise<ResponesContainerDto<null>> {
+    await this.productService.remove(+id, request);
     return {
       statusCode: 200,
       message: `${id}번 상품 삭제 성공`,

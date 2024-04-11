@@ -21,15 +21,20 @@ export class AuthService {
     private jwtService: JwtTokenService,
   ) {}
 
-  private async checkUserInfo<T extends { email: string; password: string }>(
-    info: T,
-  ) {
+  public async findUserByEmail(email: string): Promise<Members> {
     const findUser = await this.memberRepository.findOne({
-      where: { email: info.email },
+      where: { email },
     });
     if (!findUser) {
       throw new AuthException(AuthException.LOGIN_FAIL, HttpStatus.BAD_REQUEST);
     }
+    return findUser;
+  }
+
+  private async checkUserInfo<T extends { email: string; password: string }>(
+    info: T,
+  ) {
+    const findUser = await this.findUserByEmail(info.email);
     const isPasswordMatching = await bcrypt.compare(
       info.password,
       findUser.password,
