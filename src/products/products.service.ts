@@ -19,8 +19,8 @@ export class ProductService {
     private readonly authService: AuthService,
   ) {}
 
-  private getProducts() {
-    return this.productRepository
+  private getProducts<T>(where: T) {
+    const queryBuilder = this.productRepository
       .createQueryBuilder('Products')
       .leftJoinAndSelect('Products.brand', 'Brand')
       .leftJoinAndSelect('Brand.user', 'Members')
@@ -34,10 +34,18 @@ export class ProductService {
         'CategoriesDetail',
         'Categories',
       ]);
+
+    if (where) {
+      Object.entries(where).forEach(([key, value]) => {
+        queryBuilder.andWhere(`${key} = :value`, { value });
+      });
+    }
+
+    return queryBuilder;
   }
 
   private async findProduct(id: number) {
-    const product = await this.getProducts()
+    const product = await this.getProducts(null)
       .where('Products.product_id = :id', { id }) // :id는 매개변수로 전달받은 상품 ID
       .getOne(); // 단일 결과 반환
 
@@ -65,8 +73,22 @@ export class ProductService {
     return this.productRepository.save(createProductDto);
   }
 
-  async findAll() {
-    const products = await this.getProducts().getMany();
+  async findAll(
+    user_id: number,
+    category_detail_id: number,
+    category_id: number,
+  ) {
+    const where = {};
+    if (user_id) {
+      where['Members.user_id'] = user_id;
+    }
+    if (category_detail_id) {
+      where['CategoriesDetail.category_detail_id'] = category_detail_id;
+    }
+    if (category_id) {
+      where['Categories.category_id'] = category_id;
+    }
+    const products = await this.getProducts(where).getMany();
     return products;
   }
 

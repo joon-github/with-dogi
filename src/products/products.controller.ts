@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -21,8 +22,16 @@ export class ProductController {
   constructor(private readonly productService: ProductService) {}
   @Get()
   @ApiOperation({ summary: '상품 전체 조회' })
-  async findAll(): Promise<ResponesContainerDto<Products[]>> {
-    const data = await this.productService.findAll();
+  async findAll(
+    @Query('user_id') user_id?: number,
+    @Query('category_detail_id') category_detail_id?: number,
+    @Query('category_id') category_id?: number,
+  ): Promise<ResponesContainerDto<Products[]>> {
+    const data = await this.productService.findAll(
+      user_id,
+      category_detail_id,
+      category_id,
+    );
     return {
       statusCode: 200,
       message: '상품 전체 조회 성공',
