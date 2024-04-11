@@ -110,13 +110,22 @@ export class AuthService {
     };
     await this.checkUserInfo(info);
     const saltOrRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS);
-    const hashedPassword = await bcrypt.hash(
+    const newPassword = await bcrypt.hash(
       updatePasswordrDto.afterPassword,
       saltOrRounds,
     );
 
+    const isPasswordMatching = await bcrypt.compare(info.password, newPassword);
+
+    if (isPasswordMatching) {
+      throw new AuthException(
+        AuthException.SAME_PASSWORD,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     await this.memberRepository.update(payload.user_id, {
-      password: hashedPassword,
+      password: newPassword,
     });
   }
 }
