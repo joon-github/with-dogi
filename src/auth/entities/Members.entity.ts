@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { UserRole } from './user_role.enum';
+import { UserRole } from '../enums/user_role.enum';
 import { Brand } from 'src/brand/entities/brand.entity';
 
 @Entity('Members')

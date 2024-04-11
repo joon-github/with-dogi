@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { setupSwagger } from './swagger';
 import * as cookieParser from 'cookie-parser';
-import { CustomExceptionFilter } from './common/filters/customExceptions.filter';
+import { CustomExceptionFilter } from './global/filters/customExceptions.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
