@@ -93,7 +93,7 @@ export class AuthService {
     request: Request,
     response: Response,
   ): Promise<void> {
-    const decoded: TokenPayload = this.jwtService.verifyToken(
+    const decoded: TokenPayload = await this.jwtService.verifyToken(
       request,
       'refreshToken',
       process.env.REFRESH_TOKEN_SECRET,

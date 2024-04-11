@@ -45,11 +45,11 @@ export class AuthController {
 
   @Post('/accessToken')
   @ApiOperation({ summary: '엑세스 토큰 재발급' })
-  generateAccessToken(
+  async generateAccessToken(
     @Res({ passthrough: true }) response: Response,
     @Req() request: Request,
-  ): ResponesContainerDto<null> {
-    this.authService.generateAccessToken(request, response);
+  ): Promise<ResponesContainerDto<null>> {
+    await this.authService.generateAccessToken(request, response);
     return {
       statusCode: 200,
       message: '엑세스 토큰 재발급 성공',

@@ -41,6 +41,7 @@ export class JwtTokenService {
       throw new AuthException(AuthException.LOGIN_REQUIRED);
     }
     try {
+      console.log(req.cookies);
       const decoded = this.jwtService.verify(token, {
         secret: secret,
       });

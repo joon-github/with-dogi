@@ -21,12 +21,27 @@ export class BrandService {
       ...createBrandDto,
       user: findUser,
     };
-    console.log(brand);
     return await this.brandRepository.save(brand);
   }
 
-  findAll() {
-    return this.brandRepository.find();
+  async findAll(brand_name: string, user_id: number) {
+    const queryBuilder = this.brandRepository.createQueryBuilder('Brand');
+    const where = {};
+    const like = {};
+    if (user_id) {
+      where['user_id'] = user_id;
+    }
+    if (brand_name) {
+      like['brand_name'] = brand_name;
+    }
+    Object.entries(where).forEach(([key, value]) => {
+      queryBuilder.andWhere(`${key} = :value`, { value });
+    });
+    Object.entries(like).forEach(([key, value]) => {
+      queryBuilder.andWhere(`${key} LIKE :value`, { value: `%${value}%` });
+    });
+    const brandList = await queryBuilder.getMany();
+    return brandList;
   }
 
   findOne(id: number) {
