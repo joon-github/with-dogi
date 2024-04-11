@@ -5,8 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Products } from './entities/products.entity';
 import { ProductsException } from './exceptions/products-exceptions';
-import { Request } from 'express';
-import { TokenPayload } from 'src/auth/interfaces/token-payload.interface';
 import { AuthService } from 'src/auth/services/auth.service';
 import { AuthException } from 'src/auth/exceptions/auth-exceptions';
 
@@ -54,22 +52,24 @@ export class ProductService {
     return product;
   }
 
-  private async checkProductOwner(id: number, request: Request): Promise<void> {
-    const payload = request['user'] as TokenPayload;
-    const findUser = await this.authService.findUserByEmail(payload.email);
+  private async checkProductOwner(id: number, email: string): Promise<void> {
+    const findUser = await this.authService.findUserByEmail(email);
     const findProduct = await this.findProduct(id);
     if (findUser.user_id !== findProduct.brand.user.user_id) {
       throw new AuthException(AuthException.LOGIN_FAIL);
     }
   }
 
-  async create(createProductDto: CreateProductDto, request: Request) {
-    const payload = request['user'] as TokenPayload;
-    const findUser = await this.authService.findUserByEmail(payload.email);
-    if (findUser.role === 'user') {
-      throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
+  async create(createProductDto: CreateProductDto, email: string) {
+    try {
+      const findUser = await this.authService.findUserByEmail(email);
+      if (findUser.role === 'user') {
+        throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
+      }
+      return this.productRepository.save(createProductDto);
+    } catch (e) {
+      console.log('e,', e);
     }
-    return this.productRepository.save(createProductDto);
   }
 
   async findAll(
@@ -96,18 +96,14 @@ export class ProductService {
     return product;
   }
 
-  async update(
-    id: number,
-    updateProductDto: UpdateProductDto,
-    request: Request,
-  ) {
-    await this.checkProductOwner(id, request);
+  async update(id: number, updateProductDto: UpdateProductDto, email: string) {
+    await this.checkProductOwner(id, email);
     updateProductDto.updated_at = new Date();
     return await this.productRepository.update(id, updateProductDto);
   }
 
-  async remove(id: number, request: Request) {
-    await this.checkProductOwner(id, request);
+  async remove(id: number, email: string) {
+    await this.checkProductOwner(id, email);
     return await this.productRepository.delete(id);
   }
 }

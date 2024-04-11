@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  Req,
 } from '@nestjs/common';
 import { ProductService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -16,6 +17,7 @@ import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { Products } from './entities/products.entity';
 import { Request } from 'express';
 import { FindAllProductsQueryDto } from './dto/find_all_product.dto';
+import { TokenPayload } from 'src/auth/interfaces/token-payload.interface';
 
 @Controller('products')
 @ApiTags('products')
@@ -59,9 +61,10 @@ export class ProductController {
   @ApiOperation({ summary: '상품 등록' })
   async create(
     @Body() createProductDto: CreateProductDto,
-    request: Request,
+    @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
-    await this.productService.create(createProductDto, request);
+    const user = request['user'] as TokenPayload;
+    await this.productService.create(createProductDto, user.email);
     return {
       statusCode: 201,
       message: '상품 등록 성공',
@@ -74,9 +77,10 @@ export class ProductController {
   async update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
-    request: Request,
+    @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
-    await this.productService.update(+id, updateProductDto, request);
+    const user = request['user'] as TokenPayload;
+    await this.productService.update(+id, updateProductDto, user.email);
     return {
       statusCode: 200,
       message: `${id}번 상품 수정 성공`,
@@ -88,9 +92,10 @@ export class ProductController {
   @ApiOperation({ summary: '상품 삭제' })
   async remove(
     @Param('id') id: string,
-    request: Request,
+    @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
-    await this.productService.remove(+id, request);
+    const user = request['user'] as TokenPayload;
+    await this.productService.remove(+id, user.email);
     return {
       statusCode: 200,
       message: `${id}번 상품 삭제 성공`,

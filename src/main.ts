@@ -4,12 +4,16 @@ import { ValidationPipe } from '@nestjs/common';
 import { setupSwagger } from './swagger';
 import * as cookieParser from 'cookie-parser';
 import { CustomExceptionFilter } from './global/filters/customExceptions.filter';
+import { QueryFailedExceptionFilter } from './global/filters/queryFailedException.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
 
   setupSwagger(app);
-  app.useGlobalFilters(new CustomExceptionFilter());
+  app.useGlobalFilters(
+    new CustomExceptionFilter(),
+    new QueryFailedExceptionFilter(),
+  );
   app.use(cookieParser());
   // pnpm install class-validator class-transformer
   app.useGlobalPipes(
