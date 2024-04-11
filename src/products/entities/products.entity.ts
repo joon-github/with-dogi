@@ -14,7 +14,7 @@ export class Products {
   product_id: number;
 
   @Column({ unique: true })
-  product_code: number;
+  product_code: string;
 
   @Column()
   brand_id: number;

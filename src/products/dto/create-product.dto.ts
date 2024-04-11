@@ -5,10 +5,6 @@ export class CreateProductDto {
   @IsNumber()
   readonly user_id: number;
 
-  @ApiProperty({ example: 123123, description: '기본값' })
-  @IsNumber()
-  readonly product_code: number;
-
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
   readonly brand_id: number;

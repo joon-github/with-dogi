@@ -29,6 +29,7 @@ export class ProductController {
   @ApiQuery({ name: 'user_id', required: false, type: Number })
   @ApiQuery({ name: 'category_detail_id', required: false, type: Number })
   @ApiQuery({ name: 'category_id', required: false, type: Number })
+  @ApiQuery({ name: 'product_code', required: false, type: String })
   async findAll(
     @Query() queryDto: FindAllProductsQueryDto,
   ): Promise<ResponesContainerDto<Products[]>> {
@@ -36,6 +37,7 @@ export class ProductController {
       queryDto.user_id,
       queryDto.category_detail_id,
       queryDto.category_id,
+      queryDto.product_code,
     );
     return {
       statusCode: 200,
