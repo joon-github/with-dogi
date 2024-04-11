@@ -47,10 +47,7 @@ export class ProductService {
     return product;
   }
 
-  private async verifyProductOwner(
-    id: number,
-    request: Request,
-  ): Promise<void> {
+  private async checkProductOwner(id: number, request: Request): Promise<void> {
     const payload = request['user'] as TokenPayload;
     const findUser = await this.authService.findUserByEmail(payload.email);
     const findProduct = await this.findProduct(id);
@@ -83,13 +80,13 @@ export class ProductService {
     updateProductDto: UpdateProductDto,
     request: Request,
   ) {
-    await this.verifyProductOwner(id, request);
+    await this.checkProductOwner(id, request);
     updateProductDto.updated_at = new Date();
     return await this.productRepository.update(id, updateProductDto);
   }
 
   async remove(id: number, request: Request) {
-    await this.verifyProductOwner(id, request);
+    await this.checkProductOwner(id, request);
     return await this.productRepository.delete(id);
   }
 }
