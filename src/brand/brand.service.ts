@@ -31,12 +31,13 @@ export class BrandService {
     return brand;
   }
 
-  private async checkBrandOwner(id: number, user_id: number): Promise<void> {
+  public async checkBrandOwner(id: number, user_id: number) {
     const findUser = await this.authService.findUserById(user_id);
     const findBrand = await this.findBrandById(id);
     if (findUser.user_id !== findBrand.user.user_id) {
       throw new AuthException(AuthException.LOGIN_FAIL);
     }
+    return findBrand;
   }
 
   async create(createBrandDto: CreateBrandDto, user_id: number) {

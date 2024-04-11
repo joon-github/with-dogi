@@ -16,9 +16,6 @@ export class Products {
   @Column({ unique: true })
   product_code: string;
 
-  @Column()
-  brand_id: number;
-
   @ManyToOne(() => Brand, (brand) => brand)
   @JoinColumn({ name: 'brand_id' })
   brand: Brand;

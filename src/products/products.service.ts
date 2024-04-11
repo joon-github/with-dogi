@@ -58,21 +58,23 @@ export class ProductService {
 
   async create(
     createProductDto: CreateProductDto,
-    email: string,
-    userId: number,
-  ) {
-    const findUser = await this.authService.findUserByEmail(email);
+    user_id: number,
+  ): Promise<void> {
+    const findUser = await this.authService.findUserById(user_id);
     if (findUser.role === 'user') {
       throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
     }
-    await this.brandService.findBrandById(createProductDto.brand_id);
+    const brand = await this.brandService.checkBrandOwner(
+      createProductDto.brand_id,
+      user_id,
+    );
     const productCode = uuidv4();
     const product = {
       ...createProductDto,
       product_code: productCode,
-      user_id: userId,
+      brand: brand,
     };
-    return await this.productRepository.save(product);
+    await this.productRepository.save(product);
   }
 
   async findAll(
