@@ -11,26 +11,29 @@ import {
 import { ProductService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { Products } from './entities/products.entity';
 import { Request } from 'express';
+import { FindAllProductsQueryDto } from './dto/find_all_product.dto';
 
 @Controller('products')
 @ApiTags('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
+
   @Get()
   @ApiOperation({ summary: '상품 전체 조회' })
+  @ApiQuery({ name: 'user_id', required: false, type: Number })
+  @ApiQuery({ name: 'category_detail_id', required: false, type: Number })
+  @ApiQuery({ name: 'category_id', required: false, type: Number })
   async findAll(
-    @Query('user_id') user_id?: number,
-    @Query('category_detail_id') category_detail_id?: number,
-    @Query('category_id') category_id?: number,
+    @Query() queryDto: FindAllProductsQueryDto,
   ): Promise<ResponesContainerDto<Products[]>> {
     const data = await this.productService.findAll(
-      user_id,
-      category_detail_id,
-      category_id,
+      queryDto.user_id,
+      queryDto.category_detail_id,
+      queryDto.category_id,
     );
     return {
       statusCode: 200,
