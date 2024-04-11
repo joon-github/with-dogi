@@ -39,7 +39,7 @@ export class AuthException extends HttpException {
 
   public static get ACCESS_TOKEN_EXPIRED(): EXCEPTION {
     return {
-      message: '로그인 세션이 만료되었습니다.',
+      message: '엑세스 토큰 기간이 만료되었습니다.',
       status: HttpStatus.UNAUTHORIZED,
     };
   }
