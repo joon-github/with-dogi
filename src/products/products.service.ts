@@ -8,6 +8,7 @@ import { ProductsException } from './exceptions/products-exceptions';
 import { AuthService } from 'src/auth/services/auth.service';
 import { AuthException } from 'src/auth/exceptions/auth-exceptions';
 import { v4 as uuidv4 } from 'uuid';
+import { BrandService } from 'src/brand/brand.service';
 
 @Injectable()
 export class ProductService {
@@ -16,6 +17,7 @@ export class ProductService {
     private productRepository: Repository<Products>,
 
     private readonly authService: AuthService,
+    private readonly brandService: BrandService,
   ) {}
 
   private getProducts(): SelectQueryBuilder<Products> {
@@ -63,6 +65,7 @@ export class ProductService {
     if (findUser.role === 'user') {
       throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
     }
+    await this.brandService.findBrandById(createProductDto.brand_id);
     const productCode = uuidv4();
     const product = {
       ...createProductDto,
