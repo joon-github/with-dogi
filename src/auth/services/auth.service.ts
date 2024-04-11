@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateMemberDto } from '../dto/create-Member.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Members } from '../entities/Members.entity';
@@ -26,7 +26,7 @@ export class AuthService {
       where: { email },
     });
     if (!findUser) {
-      throw new AuthException(AuthException.LOGIN_FAIL, HttpStatus.BAD_REQUEST);
+      throw new AuthException(AuthException.LOGIN_FAIL);
     }
     return findUser;
   }
@@ -41,7 +41,7 @@ export class AuthService {
     );
 
     if (!isPasswordMatching) {
-      throw new HttpException(AuthException.LOGIN_FAIL, HttpStatus.BAD_REQUEST);
+      throw new AuthException(AuthException.LOGIN_FAIL);
     }
 
     return findUser;
@@ -52,10 +52,7 @@ export class AuthService {
       where: { email: createMemberDto.email },
     });
     if (findUser) {
-      throw new AuthException(
-        AuthException.ALREADY_REGISTERED_USER,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new AuthException(AuthException.ALREADY_REGISTERED_USER);
     }
     const saltOrRounds = parseInt(process.env.PASSWORD_SALT_ROUNDS);
     const hashedPassword = await bcrypt.hash(
@@ -123,10 +120,7 @@ export class AuthService {
     const isPasswordMatching = await bcrypt.compare(info.password, newPassword);
 
     if (isPasswordMatching) {
-      throw new AuthException(
-        AuthException.SAME_PASSWORD,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new AuthException(AuthException.SAME_PASSWORD);
     }
 
     await this.memberRepository.update(payload.user_id, {
@@ -140,10 +134,7 @@ export class AuthService {
       where: { user_id: payload.user_id },
     });
     if (findUser.role !== 'admin') {
-      throw new AuthException(
-        AuthException.IS_NOT_AUTHORIZED,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
     }
     await this.memberRepository.update(payload.user_id, updateRoleDto);
   }

@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -42,10 +42,7 @@ export class ProductService {
       .getOne(); // 단일 결과 반환
 
     if (!product) {
-      throw new ProductsException(
-        ProductsException.PRODUCT_NOT_FOUND,
-        HttpStatus.NOT_FOUND,
-      );
+      throw new ProductsException(ProductsException.PRODUCT_NOT_FOUND);
     }
     return product;
   }
@@ -58,7 +55,7 @@ export class ProductService {
     const findUser = await this.authService.findUserByEmail(payload.email);
     const findProduct = await this.findProduct(id);
     if (findUser.user_id !== findProduct.brand.user.user_id) {
-      throw new AuthException(AuthException.LOGIN_FAIL, HttpStatus.NOT_FOUND);
+      throw new AuthException(AuthException.LOGIN_FAIL);
     }
   }
 
@@ -66,10 +63,7 @@ export class ProductService {
     const payload = request['user'] as TokenPayload;
     const findUser = await this.authService.findUserByEmail(payload.email);
     if (findUser.role === 'user') {
-      throw new AuthException(
-        AuthException.IS_NOT_AUTHORIZED,
-        HttpStatus.FORBIDDEN,
-      );
+      throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
     }
     return this.productRepository.save(createProductDto);
   }
