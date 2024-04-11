@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Products } from './entities/products.entity';
+import { ProductsException } from './exceptions/products-exceptions';
 
 @Injectable()
 export class ProductService {
@@ -29,13 +30,22 @@ export class ProductService {
       ]);
   }
 
-  async create(createProductDto: CreateProductDto) {
-    try {
-      return this.productRepository.save(createProductDto);
-    } catch (e) {
-      console.log(e);
-      throw e;
+  private async findProduct(id: number) {
+    const product = await this.getProducts()
+      .where('Products.product_id = :id', { id }) // :id는 매개변수로 전달받은 상품 ID
+      .getOne(); // 단일 결과 반환
+
+    if (!product) {
+      throw new ProductsException(
+        ProductsException.PRODUCT_NOT_FOUND,
+        HttpStatus.NOT_FOUND,
+      );
     }
+    return product;
+  }
+
+  async create(createProductDto: CreateProductDto) {
+    return this.productRepository.save(createProductDto);
   }
 
   async findAll() {
@@ -44,39 +54,17 @@ export class ProductService {
   }
 
   async findOne(id: number) {
-    try {
-      const product = await this.getProducts()
-        .where('Products.product_id = :id', { id }) // :id는 매개변수로 전달받은 상품 ID
-        .getOne(); // 단일 결과 반환
-
-      if (!product) {
-        throw new HttpException(
-          `Product with ID ${id} not found.`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
-      return product;
-    } catch (e) {
-      throw e;
-    }
+    const product = await this.findProduct(id);
+    return product;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    try {
-      // updated_at 현 시간으로 업데이트
-      updateProductDto.updated_at = new Date();
-      return this.productRepository.update(id, updateProductDto);
-    } catch (e) {
-      throw e;
-    }
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    updateProductDto.updated_at = new Date();
+    return await this.productRepository.update(id, updateProductDto);
   }
 
-  remove(id: number) {
-    try {
-      return this.productRepository.delete(id);
-    } catch (e) {
-      throw e;
-    }
+  async remove(id: number) {
+    await this.findProduct(id);
+    return await this.productRepository.delete(id);
   }
 }
