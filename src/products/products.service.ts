@@ -45,10 +45,9 @@ export class ProductService {
   }
 
   private async findProduct(id: number) {
-    const product = await this.getProducts(null)
-      .where('Products.product_id = :id', { id }) // :id는 매개변수로 전달받은 상품 ID
-      .getOne(); // 단일 결과 반환
-
+    const product = await this.getProducts({
+      'Products.product_id': id,
+    }).getOne(); // 단일 결과 반환
     if (!product) {
       throw new ProductsException(ProductsException.PRODUCT_NOT_FOUND);
     }
