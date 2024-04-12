@@ -1,11 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString, Length } from 'class-validator';
 export class CreateProductDto {
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
   readonly brand_id: number;
 
   @ApiProperty({ example: '테스트 상품', description: '기본값' })
+  @Length(1, 10, { message: '카테고리 이름은 50글자 미만으로 입력해주세요.' })
   @IsString()
   readonly product_name: string;
 
