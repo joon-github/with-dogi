@@ -4,8 +4,8 @@ import { UpdateBrandDto } from './dto/update-brand.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Brand } from './entities/brand.entity';
-import { AuthService } from 'src/routes/auth/services/auth.service';
-import { AuthException } from 'src/routes/auth/exceptions/auth-exceptions';
+import { AuthService } from 'src/routes/Common/auth/services/auth.service';
+import { AuthException } from 'src/routes/Common/auth/exceptions/auth-exceptions';
 import { BrandException } from './exceptions/brand-exceptions';
 
 @Injectable()

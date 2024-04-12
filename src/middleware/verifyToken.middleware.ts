@@ -1,6 +1,6 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
-import { JwtTokenService } from 'src/routes/auth/services/jwt.service';
+import { JwtTokenService } from 'src/routes/Common/auth/services/jwt.service';
 
 @Injectable()
 export class VerifyTokenMiddleware implements NestMiddleware {

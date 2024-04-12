@@ -11,10 +11,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from '../database.config';
 import { VerifyTokenMiddleware } from '../middleware/verifyToken.middleware';
 
-import { ProductModule } from './products/products.module';
-import { AuthModule } from './auth/auth.module';
-import { BrandModule } from './brand/brand.module';
-import { CategoriesModule } from './categories/categories.module';
+import { ProductModule } from './Product/products/products.module';
+import { AuthModule } from './Common/auth/auth.module';
+import { BrandModule } from './Product/brand/brand.module';
+import { CategoriesModule } from './Common/categories/categories.module';
 @Module({
   imports: [
     AuthModule,

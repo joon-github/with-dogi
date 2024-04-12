@@ -5,10 +5,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Products } from './entities/products.entity';
 import { ProductsException } from './exceptions/products-exceptions';
-import { AuthService } from 'src/routes/auth/services/auth.service';
-import { AuthException } from 'src/routes/auth/exceptions/auth-exceptions';
+import { AuthService } from 'src/routes/Common/auth/services/auth.service';
+import { AuthException } from 'src/routes/Common/auth/exceptions/auth-exceptions';
 import { v4 as uuidv4 } from 'uuid';
-import { BrandService } from 'src/routes/brand/brand.service';
+import { BrandService } from 'src/routes/Product/brand/brand.service';
 
 @Injectable()
 export class ProductService {

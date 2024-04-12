@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
-import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface';
+import { TokenPayload } from 'src/routes/Common/auth/interfaces/token-payload.interface';
 
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDetailDto } from './dto/create-detail.dto';
 import { UpdateDetailDto } from './dto/update-detail.dto';
-import { AuthService } from 'src/routes/auth/services/auth.service';
+import { AuthService } from 'src/routes/Common/auth/services/auth.service';
 import { CategoriesDetail } from './entities/CategoriesDetail.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';

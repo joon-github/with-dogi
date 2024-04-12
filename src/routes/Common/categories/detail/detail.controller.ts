@@ -12,7 +12,7 @@ import { DetailService } from './detail.service';
 import { CreateDetailDto } from './dto/create-detail.dto';
 import { UpdateDetailDto } from './dto/update-detail.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface';
+import { TokenPayload } from 'src/routes/Common/auth/interfaces/token-payload.interface';
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { CategoriesDetail } from './entities/CategoriesDetail.entity';
 
