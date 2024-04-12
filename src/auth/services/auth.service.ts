@@ -41,6 +41,14 @@ export class AuthService {
     return findUser;
   }
 
+  public async adminCheck(user_id: number): Promise<Members> {
+    const findUser = await this.findUserById(user_id);
+    if (findUser.role !== 'admin') {
+      throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
+    }
+    return findUser;
+  }
+
   private async checkUserInfo<T extends { email: string; password: string }>(
     info: T,
   ) {

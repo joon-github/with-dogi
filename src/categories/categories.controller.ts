@@ -49,21 +49,32 @@ export class CategoriesController {
     };
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(+id);
-  }
-
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
+    @Req() request: Request,
     @Body() updateCategoryDto: UpdateCategoryDto,
-  ) {
-    return this.categoriesService.update(+id, updateCategoryDto);
+  ): Promise<ResponesContainerDto<null>> {
+    const user = request['user'] as TokenPayload;
+    await this.categoriesService.update(+id, updateCategoryDto, user.user_id);
+    return {
+      statusCode: 200,
+      message: '카테고리 변경 성공',
+      data: null,
+    };
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriesService.remove(+id);
+  async remove(
+    @Param('id') id: string,
+    @Req() request: Request,
+  ): Promise<ResponesContainerDto<null>> {
+    const user = request['user'] as TokenPayload;
+    await this.categoriesService.remove(+id, user.user_id);
+    return {
+      statusCode: 200,
+      message: '카테고리 삭제 성공',
+      data: null,
+    };
   }
 }
