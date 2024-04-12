@@ -1,5 +1,5 @@
-import { Categories } from 'src/categories/entities/Categories.entity';
-import { Products } from 'src/products/entities/products.entity';
+import { Categories } from 'src/routes/categories/entities/Categories.entity';
+import { Products } from 'src/routes/products/entities/products.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

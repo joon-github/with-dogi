@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { UserRole } from '../enums/user_role.enum';
-import { Brand } from 'src/brand/entities/brand.entity';
+import { Brand } from 'src/routes/brand/entities/brand.entity';
 
 @Entity('Members')
 export class Members {

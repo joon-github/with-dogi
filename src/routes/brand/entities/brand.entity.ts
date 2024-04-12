@@ -1,5 +1,5 @@
-import { Members } from 'src/auth/entities/Members.entity';
-import { Products } from 'src/products/entities/products.entity';
+import { Members } from 'src/routes/auth/entities/Members.entity';
+import { Products } from 'src/routes/products/entities/products.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,

@@ -3,11 +3,11 @@ import { ProductService } from './products.service';
 import { ProductController } from './products.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Products } from './entities/products.entity';
-import { AuthService } from 'src/auth/services/auth.service';
-import { AuthModule } from 'src/auth/auth.module';
-import { Members } from 'src/auth/entities/Members.entity';
-import { Brand } from 'src/brand/entities/brand.entity';
-import { BrandService } from 'src/brand/brand.service';
+import { AuthService } from 'src/routes/auth/services/auth.service';
+import { AuthModule } from 'src/routes/auth/auth.module';
+import { Members } from 'src/routes/auth/entities/Members.entity';
+import { Brand } from 'src/routes/brand/entities/brand.entity';
+import { BrandService } from 'src/routes/brand/brand.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Products, Members, Brand]), AuthModule],

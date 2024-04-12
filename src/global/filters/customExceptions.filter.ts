@@ -1,6 +1,6 @@
 import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { Response } from 'express';
-import { AuthException } from '../../auth/exceptions/auth-exceptions';
+import { AuthException } from '../../routes/auth/exceptions/auth-exceptions';
 import { ErrorResponesDto } from 'src/global/dto/respones-container.dto';
 
 @Catch(AuthException)
