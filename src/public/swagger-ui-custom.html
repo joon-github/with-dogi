@@ -1,0 +1,13 @@
+<script>
+  window.onload = function () {
+    const navDiv = document.createElement('div');
+    navDiv.innerHTML = `
+      <ul>
+        <li><a href="/api-docs">Main API</a></li>
+        <li><a href="/api-docs/common">Common APIs</a></li>
+        <li><a href="/api-docs/shop">Shop APIs</a></li>
+      </ul>
+    `;
+    document.body.insertBefore(navDiv, document.body.firstChild);
+  };
+</script>

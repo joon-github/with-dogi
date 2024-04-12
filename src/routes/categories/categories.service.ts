@@ -4,7 +4,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Categories } from './entities/Categories.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AuthService } from 'src/routes/Common/auth/services/auth.service';
+import { AuthService } from 'src/routes/auth/services/auth.service';
 import { CategoriesException } from './exceptions/categories-exceptions';
 
 @Injectable()
