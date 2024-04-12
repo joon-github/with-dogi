@@ -3,7 +3,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Categories } from './entities/Categories.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { BrandService } from 'src/brand/brand.service';
 
 @Injectable()
@@ -14,6 +14,15 @@ export class CategoriesService {
 
     private readonly brandService: BrandService,
   ) {}
+
+  private getCategories(): SelectQueryBuilder<Categories> {
+    const queryBuilder = this.categoriesRepository
+      .createQueryBuilder('Categories')
+      .leftJoinAndSelect('Categories.brand', 'Brand')
+      .leftJoinAndSelect('Brand.user', 'Members')
+      .select(['Categories', 'Brand', 'Members.name', 'Members.user_id']);
+    return queryBuilder;
+  }
   async create(createCategoryDto: CreateCategoryDto, user_id: number) {
     const brand = await this.brandService.checkBrandOwner(
       createCategoryDto.brand_id,
@@ -26,8 +35,17 @@ export class CategoriesService {
     return this.categoriesRepository.save(category);
   }
 
-  findAll() {
-    return `This action returns all categories`;
+  findAll(category_name: string, user_id: number) {
+    const queryBuilder = this.getCategories();
+    if (category_name) {
+      queryBuilder.where(`Categories.category_name = :category_name`, {
+        category_name,
+      });
+    }
+    if (user_id) {
+      queryBuilder.where(`Brand.user_id = :user_id`, { user_id });
+    }
+    return queryBuilder.getMany();
   }
 
   findOne(id: number) {

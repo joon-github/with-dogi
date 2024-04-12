@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import {
   Controller,
   Get,
@@ -7,19 +8,25 @@ import {
   Param,
   Delete,
   Req,
+  Query,
 } from '@nestjs/common';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
+import { TokenPayload } from 'src/auth/interfaces/token-payload.interface';
+
+import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Request } from 'express';
-import { TokenPayload } from 'src/auth/interfaces/token-payload.interface';
-import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
+import { FindAllCategoriesQueryDto } from './dto/find_all_categories.dto';
+import { Categories } from './entities/Categories.entity';
 
 @Controller('categories')
+@ApiTags('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
+  @ApiOperation({ summary: '카테고리 등록' })
   async create(
     @Body() createCategoryDto: CreateCategoryDto,
     @Req() request: Request,
@@ -34,8 +41,21 @@ export class CategoriesController {
   }
 
   @Get()
-  findAll() {
-    return this.categoriesService.findAll();
+  @ApiOperation({ summary: '카테고리 조회' })
+  @ApiQuery({ name: 'category_name', required: false, type: String })
+  @ApiQuery({ name: 'user_id', required: false, type: Number })
+  async findAll(
+    @Query() queryDto: FindAllCategoriesQueryDto,
+  ): Promise<ResponesContainerDto<Categories[]>> {
+    const data = await this.categoriesService.findAll(
+      queryDto.category_name,
+      queryDto.user_id,
+    );
+    return {
+      statusCode: 200,
+      message: '상품 전체 조회 성공',
+      data: data,
+    };
   }
 
   @Get(':id')

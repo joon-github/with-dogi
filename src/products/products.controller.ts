@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import {
   Controller,
   Get,
@@ -10,14 +11,14 @@ import {
   Req,
 } from '@nestjs/common';
 import { ProductService } from './products.service';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Products } from './entities/products.entity';
+import { TokenPayload } from 'src/auth/interfaces/token-payload.interface';
+
+import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
+import { FindAllProductsQueryDto } from './dto/find_all_product.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
-import { Products } from './entities/products.entity';
-import { Request } from 'express';
-import { FindAllProductsQueryDto } from './dto/find_all_product.dto';
-import { TokenPayload } from 'src/auth/interfaces/token-payload.interface';
 
 @Controller('products')
 @ApiTags('products')
