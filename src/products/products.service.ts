@@ -82,8 +82,10 @@ export class ProductService {
     category_detail_id: number,
     category_id: number,
     product_code: string,
+    limit: number,
+    offset: number,
   ) {
-    const products = this.getProducts();
+    const queryBuilder = this.getProducts();
     const where = {};
     const like = {};
     if (user_id) {
@@ -100,13 +102,21 @@ export class ProductService {
       like['Products.product_code'] = product_code;
     }
     Object.entries(where).forEach(([key, value]) => {
-      products.andWhere(`${key} = :value`, { value });
+      queryBuilder.andWhere(`${key} = :value`, { value });
     });
     Object.entries(like).forEach(([key, value]) => {
-      products.andWhere(`${key} LIKE :value`, { value: `%${value}%` });
+      queryBuilder.andWhere(`${key} LIKE :value`, { value: `%${value}%` });
     });
-    const data = await products.getMany();
-    return data;
+
+    queryBuilder.skip(offset);
+    queryBuilder.take(limit);
+    const [products, total] = await queryBuilder.getManyAndCount();
+    // const data = await queryBuilder.getMany();
+
+    return {
+      total,
+      products,
+    };
   }
 
   async findOne(id: number) {

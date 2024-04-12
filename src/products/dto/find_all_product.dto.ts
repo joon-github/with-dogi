@@ -20,4 +20,10 @@ export class FindAllProductsQueryDto {
   @IsOptional()
   @IsString()
   product_code?: string;
+
+  @IsInt()
+  limit?: number; // 한 페이지의 최대 항목 수
+
+  @IsInt()
+  offset?: number;
 }

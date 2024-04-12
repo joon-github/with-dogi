@@ -30,6 +30,8 @@ export class ProductController {
   @ApiQuery({ name: 'category_detail_id', required: false, type: Number })
   @ApiQuery({ name: 'category_id', required: false, type: Number })
   @ApiQuery({ name: 'product_code', required: false, type: String })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
   async findAll(
     @Query() queryDto: FindAllProductsQueryDto,
   ): Promise<ResponesContainerDto<Products[]>> {
@@ -38,11 +40,16 @@ export class ProductController {
       queryDto.category_detail_id,
       queryDto.category_id,
       queryDto.product_code,
+      queryDto.limit,
+      queryDto.offset,
     );
     return {
       statusCode: 200,
       message: '상품 전체 조회 성공',
-      data: data,
+      data: data.products,
+      total: data.total,
+      limit: queryDto.limit,
+      offset: queryDto.offset,
     };
   }
 
