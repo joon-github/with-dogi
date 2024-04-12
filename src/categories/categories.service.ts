@@ -3,8 +3,9 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Categories } from './entities/Categories.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
-import { BrandService } from 'src/brand/brand.service';
+import { Repository } from 'typeorm';
+import { AuthService } from 'src/auth/services/auth.service';
+import { AuthException } from 'src/auth/exceptions/auth-exceptions';
 
 @Injectable()
 export class CategoriesService {
@@ -12,39 +13,20 @@ export class CategoriesService {
     @InjectRepository(Categories)
     private categoriesRepository: Repository<Categories>,
 
-    private readonly brandService: BrandService,
+    private authService: AuthService,
   ) {}
 
-  private getCategories(): SelectQueryBuilder<Categories> {
-    const queryBuilder = this.categoriesRepository
-      .createQueryBuilder('Categories')
-      .leftJoinAndSelect('Categories.brand', 'Brand')
-      .leftJoinAndSelect('Brand.user', 'Members')
-      .select(['Categories', 'Brand', 'Members.name', 'Members.user_id']);
-    return queryBuilder;
-  }
   async create(createCategoryDto: CreateCategoryDto, user_id: number) {
-    const brand = await this.brandService.checkBrandOwner(
-      createCategoryDto.brand_id,
-      user_id,
-    );
-    const category = {
-      ...createCategoryDto,
-      brand,
-    };
-    return this.categoriesRepository.save(category);
+    const user = await this.authService.findUserById(user_id);
+    if (user.role !== 'admin') {
+      throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
+    }
+    return this.categoriesRepository.save(createCategoryDto);
   }
 
-  findAll(category_name: string, user_id: number) {
-    const queryBuilder = this.getCategories();
-    if (category_name) {
-      queryBuilder.where(`Categories.category_name = :category_name`, {
-        category_name,
-      });
-    }
-    if (user_id) {
-      queryBuilder.where(`Brand.user_id = :user_id`, { user_id });
-    }
+  findAll() {
+    const queryBuilder =
+      this.categoriesRepository.createQueryBuilder('Categories');
     return queryBuilder.getMany();
   }
 

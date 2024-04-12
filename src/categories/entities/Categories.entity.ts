@@ -1,13 +1,5 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToMany,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { CategoriesDetail } from '../detail/entities/CategoriesDetail.entity';
-import { Brand } from 'src/brand/entities/brand.entity';
 import { CategoriesType } from '../enums/categories_type.enum';
 
 @Entity('Categories')
@@ -24,10 +16,6 @@ export class Categories {
     default: CategoriesType.Products,
   })
   type: string;
-
-  @ManyToOne(() => Brand, (brand) => brand)
-  @JoinColumn({ name: 'brand_id' })
-  Brand: Brand;
 
   @OneToMany(() => CategoriesDetail, (category) => category.category)
   categoriesDetail: CategoriesDetail[];

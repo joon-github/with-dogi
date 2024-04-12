@@ -1,11 +1,15 @@
 import { Module } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CategoriesController } from './categories.controller';
-import { DetailModule } from './detail/detail.module';
+import { AuthService } from 'src/auth/services/auth.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Categories } from './entities/Categories.entity';
+import { Members } from 'src/auth/entities/Members.entity';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Categories, Members]), AuthModule],
   controllers: [CategoriesController],
-  providers: [CategoriesService],
-  imports: [DetailModule],
+  providers: [CategoriesService, AuthService],
 })
 export class CategoriesModule {}
