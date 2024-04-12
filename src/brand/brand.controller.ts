@@ -33,7 +33,7 @@ export class BrandController {
     this.brandService.create(createBrandDto, user.user_id);
     return {
       statusCode: 201,
-      message: '상품 등록 성공',
+      message: '브랜드 등록 성공',
       data: null,
     };
   }
