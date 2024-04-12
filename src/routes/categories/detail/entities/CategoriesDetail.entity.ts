@@ -21,9 +21,6 @@ export class CategoriesDetail {
   @Column({ length: 50 })
   category_name: string;
 
-  @Column()
-  is_active: number;
-
   @OneToMany(() => Products, (products) => products.category_detail)
   products: Products[];
 }
