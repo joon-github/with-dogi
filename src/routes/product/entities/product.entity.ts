@@ -1,6 +1,6 @@
 import { IsOptional } from 'class-validator';
 import { Brand } from 'src/routes/brand/entities/brand.entity';
-import { Categories } from 'src/routes/categories/entities/Categories.entity';
+import { Category } from 'src/routes/category/entities/Category.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -24,9 +24,9 @@ export class Product {
   @Column({ length: 100 })
   productName: string;
 
-  @ManyToOne(() => Categories, (categories) => categories)
+  @ManyToOne(() => Category, (category) => category)
   @JoinColumn({ name: 'categoryId' })
-  category: Categories;
+  category: Category;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;

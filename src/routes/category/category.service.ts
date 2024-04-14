@@ -1,51 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Categories } from './entities/Categories.entity';
+import { Category } from './entities/Category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthService } from 'src/routes/auth/services/auth.service';
-import { CategoriesException } from './exceptions/categories-exceptions';
+import { CategoryException } from './exceptions/category-exceptions';
 
 @Injectable()
-export class CategoriesService {
+export class CategoryService {
   constructor(
-    @InjectRepository(Categories)
-    private categoriesRepository: Repository<Categories>,
+    @InjectRepository(Category)
+    private categoryRepository: Repository<Category>,
 
     private authService: AuthService,
   ) {}
 
-  public async findCategoriesByCategoriId(categori_id: number) {
-    const categories = await this.categoriesRepository
-      .createQueryBuilder('Categories')
-      .where('Categories.category_id = :categori_id', { categori_id })
+  public async findCategoryByCategoriId(categoriId: number) {
+    const category = await this.categoryRepository
+      .createQueryBuilder('Category')
+      .where('Category.categoriId = :categoriId', { categoriId })
       .getOne();
-    if (!categories) {
-      throw new CategoriesException(CategoriesException.Category_NOT_FOUND);
+    if (!category) {
+      throw new CategoryException(CategoryException.Category_NOT_FOUND);
     }
-    return categories;
+    return category;
   }
 
   async create(createCategoryDto: CreateCategoryDto, userId: number) {
     await this.authService.adminCheck(userId);
-    const category: Categories = {
+    const category: Category = {
       categoryName: createCategoryDto.categoryName,
       type: createCategoryDto.type,
     };
     if (createCategoryDto.parentsCategoryId) {
-      const findCategory = await this.findCategoriesByCategoriId(
+      const findCategory = await this.findCategoryByCategoriId(
         createCategoryDto.parentsCategoryId,
       );
       category.parent = findCategory;
     }
-    return this.categoriesRepository.save(category);
+    return this.categoryRepository.save(category);
   }
 
   async findByType(type: string) {
-    const queryBuilder = this.categoriesRepository
-      .createQueryBuilder('Categories')
-      .where('Categories.type = :type', { type });
+    const queryBuilder = this.categoryRepository
+      .createQueryBuilder('Category')
+      .where('Category.type = :type', { type });
     return queryBuilder.getMany();
   }
 
@@ -55,13 +55,13 @@ export class CategoriesService {
     userId: number,
   ) {
     await this.authService.adminCheck(userId);
-    await this.findCategoriesByCategoriId(id);
-    return this.categoriesRepository.update(id, updateCategoryDto);
+    await this.findCategoryByCategoriId(id);
+    return this.categoryRepository.update(id, updateCategoryDto);
   }
 
   async remove(id: number, userId: number) {
     await this.authService.adminCheck(userId);
-    await this.findCategoriesByCategoriId(id);
-    return this.categoriesRepository.delete(id);
+    await this.findCategoryByCategoriId(id);
+    return this.categoryRepository.delete(id);
   }
 }

@@ -11,19 +11,19 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { CategoriesService } from './categories.service';
+import { CategoryService } from './category.service';
 import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface';
 
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { Categories } from './entities/Categories.entity';
-import { FindCategoriesQueryDto } from './dto/find_all_categories.dto';
+import { Category } from './entities/Category.entity';
+import { FindCategoryQueryDto } from './dto/find_all_category.dto';
 
-@Controller('categories')
-@ApiTags('categories')
-export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) {}
+@Controller('category')
+@ApiTags('category')
+export class CategoryController {
+  constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
   @ApiOperation({ summary: '카테고리 등록' })
@@ -32,7 +32,7 @@ export class CategoriesController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.categoriesService.create(createCategoryDto, user.userId);
+    await this.categoryService.create(createCategoryDto, user.userId);
     return {
       statusCode: 201,
       message: '카테고리 등록 성공',
@@ -44,9 +44,9 @@ export class CategoriesController {
   @ApiOperation({ summary: '카테고리 조회' })
   @ApiQuery({ name: 'type', required: false, type: String })
   async findAll(
-    @Query() queryDto: FindCategoriesQueryDto,
-  ): Promise<ResponesContainerDto<Categories[]>> {
-    const data = await this.categoriesService.findByType(queryDto.type);
+    @Query() queryDto: FindCategoryQueryDto,
+  ): Promise<ResponesContainerDto<Category[]>> {
+    const data = await this.categoryService.findByType(queryDto.type);
     return {
       statusCode: 200,
       message: '카테고리 조회 성공',
@@ -62,7 +62,7 @@ export class CategoriesController {
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.categoriesService.update(+id, updateCategoryDto, user.userId);
+    await this.categoryService.update(+id, updateCategoryDto, user.userId);
     return {
       statusCode: 200,
       message: '카테고리 변경 성공',
@@ -77,7 +77,7 @@ export class CategoriesController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.categoriesService.remove(+id, user.userId);
+    await this.categoryService.remove(+id, user.userId);
     return {
       statusCode: 200,
       message: '카테고리 삭제 성공',

@@ -6,10 +6,10 @@ import {
   TreeParent,
   JoinColumn,
 } from 'typeorm';
-import { CategoriesType } from '../enums/categories_type.enum';
+import { CategoryType } from '../enums/category_type.enum';
 
-@Entity('Categories')
-export class Categories {
+@Entity('Category')
+export class Category {
   @PrimaryGeneratedColumn()
   categoryId?: number;
 
@@ -18,15 +18,15 @@ export class Categories {
 
   @Column({
     type: 'enum',
-    enum: CategoriesType,
-    default: CategoriesType.Product,
+    enum: CategoryType,
+    default: CategoryType.Product,
   })
   type: string;
 
   @TreeParent()
   @JoinColumn({ name: 'parentsCategoryId' })
-  parent?: Categories;
+  parent?: Category;
 
   @TreeChildren()
-  children?: Categories[];
+  children?: Category[];
 }

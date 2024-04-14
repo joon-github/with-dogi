@@ -8,8 +8,8 @@ import { AuthModule } from 'src/routes/auth/auth.module';
 import { Members } from 'src/routes/auth/entities/Members.entity';
 import { Brand } from 'src/routes/brand/entities/brand.entity';
 import { BrandService } from 'src/routes/brand/brand.service';
-import { CategoriesService } from '../categories/categories.service';
-import { Categories } from '../categories/entities/Categories.entity';
+import { CategoryService } from '../category/category.service';
+import { Category } from '../category/entities/Category.entity';
 import { OptionsModule } from './options/options.module';
 
 @Module({
@@ -18,12 +18,12 @@ import { OptionsModule } from './options/options.module';
       Product,
       Members,
       Brand,
-      Categories,
+      Category,
       OptionsModule,
     ]),
     AuthModule,
   ],
   controllers: [ProductController],
-  providers: [ProductService, AuthService, BrandService, CategoriesService],
+  providers: [ProductService, AuthService, BrandService, CategoryService],
 })
 export class ProductModule {}

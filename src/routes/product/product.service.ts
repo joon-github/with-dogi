@@ -9,7 +9,7 @@ import { AuthService } from 'src/routes/auth/services/auth.service';
 import { AuthException } from 'src/routes/auth/exceptions/auth-exceptions';
 import { v4 as uuidv4 } from 'uuid';
 import { BrandService } from 'src/routes/brand/brand.service';
-import { CategoriesService } from '../categories/categories.service';
+import { CategoryService } from '../category/category.service';
 
 @Injectable()
 export class ProductService {
@@ -19,7 +19,7 @@ export class ProductService {
 
     private readonly authService: AuthService,
     private readonly brandService: BrandService,
-    private readonly categoryService: CategoriesService,
+    private readonly categoryService: CategoryService,
   ) {}
 
   private getProduct(): SelectQueryBuilder<Product> {
@@ -27,13 +27,13 @@ export class ProductService {
       .createQueryBuilder('Product')
       .leftJoinAndSelect('Product.brand', 'Brand')
       .leftJoinAndSelect('Brand.user', 'Members')
-      .leftJoinAndSelect('CategoriesDetail.category', 'Categories')
+      .leftJoinAndSelect('CategoryDetail.category', 'Category')
       .select([
         'Product',
         'Brand',
         'Members.name',
         'Members.userId',
-        'Categories',
+        'Category',
       ]);
     return queryBuilder;
   }
@@ -68,7 +68,7 @@ export class ProductService {
       createProductDto.brandId,
       userId,
     );
-    const category = await this.categoryService.findCategoriesByCategoriId(
+    const category = await this.categoryService.findCategoryByCategoriId(
       createProductDto.categoryId,
     );
 
@@ -98,7 +98,7 @@ export class ProductService {
       where['Members.userId'] = userId;
     }
     if (categoryId) {
-      where['Categories.categoryId'] = categoryId;
+      where['Category.categoryId'] = categoryId;
     }
 
     if (productCode) {

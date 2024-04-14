@@ -14,7 +14,7 @@ import { VerifyTokenMiddleware } from '../middleware/verifyToken.middleware';
 import { ProductModule } from './product/product.module';
 import { AuthModule } from './auth/auth.module';
 import { BrandModule } from './brand/brand.module';
-import { CategoriesModule } from './categories/categories.module';
+import { CategoryModule } from './category/category.module';
 @Module({
   imports: [
     AuthModule,
@@ -25,7 +25,7 @@ import { CategoriesModule } from './categories/categories.module';
     }),
     ProductModule,
     BrandModule,
-    CategoriesModule,
+    CategoryModule,
   ],
   controllers: [AppController],
 })

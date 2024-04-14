@@ -3,7 +3,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ProductModule } from './routes/product/product.module';
 import { BrandModule } from './routes/brand/brand.module';
 import { AuthModule } from './routes/auth/auth.module';
-import { CategoriesModule } from './routes/categories/categories.module';
+import { CategoryModule } from './routes/category/category.module';
 
 export function setupSwagger(app: INestApplication): void {
   //현재 경로
@@ -19,7 +19,7 @@ export function setupSwagger(app: INestApplication): void {
     .build();
 
   const document = SwaggerModule.createDocument(app, options, {
-    include: [AuthModule, CategoriesModule],
+    include: [AuthModule, CategoryModule],
   });
 
   const productsOptions = new DocumentBuilder()
