@@ -12,13 +12,13 @@ import {
 @Entity('Brand')
 export class Brand {
   @PrimaryGeneratedColumn()
-  brand_id: number;
+  brandId: number;
 
   @Column({ length: 30, unique: true })
-  brand_name: string;
+  brandName: string;
 
   @ManyToOne(() => Members, (members) => members.brands)
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'userId' })
   user: Members;
 
   @OneToMany(() => Products, (products) => products.brand)

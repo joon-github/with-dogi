@@ -8,8 +8,9 @@ import {
   Param,
   Delete,
   Req,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service';
 import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface';
 
@@ -17,6 +18,7 @@ import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Categories } from './entities/Categories.entity';
+import { FindCategoriesQueryDto } from './dto/find_all_categories.dto';
 
 @Controller('categories')
 @ApiTags('categories')
@@ -30,7 +32,7 @@ export class CategoriesController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.categoriesService.create(createCategoryDto, user.user_id);
+    await this.categoriesService.create(createCategoryDto, user.userId);
     return {
       statusCode: 201,
       message: '카테고리 등록 성공',
@@ -40,23 +42,27 @@ export class CategoriesController {
 
   @Get()
   @ApiOperation({ summary: '카테고리 조회' })
-  async findAll(): Promise<ResponesContainerDto<Categories[]>> {
-    const data = await this.categoriesService.findAll();
+  @ApiQuery({ name: 'type', required: false, type: String })
+  async findAll(
+    @Query() queryDto: FindCategoriesQueryDto,
+  ): Promise<ResponesContainerDto<Categories[]>> {
+    const data = await this.categoriesService.findByType(queryDto.type);
     return {
       statusCode: 200,
-      message: '상품 전체 조회 성공',
+      message: '카테고리 조회 성공',
       data: data,
     };
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: '카테고리 수정' })
   async update(
     @Param('id') id: string,
     @Req() request: Request,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.categoriesService.update(+id, updateCategoryDto, user.user_id);
+    await this.categoriesService.update(+id, updateCategoryDto, user.userId);
     return {
       statusCode: 200,
       message: '카테고리 변경 성공',
@@ -65,12 +71,13 @@ export class CategoriesController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: '카테고리 삭제' })
   async remove(
     @Param('id') id: string,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.categoriesService.remove(+id, user.user_id);
+    await this.categoriesService.remove(+id, user.userId);
     return {
       statusCode: 200,
       message: '카테고리 삭제 성공',

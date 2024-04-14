@@ -17,7 +17,7 @@ export class CategoriesService {
   ) {}
 
   public async findCategoriesByCategoriId(categori_id: number) {
-    const categories = this.categoriesRepository
+    const categories = await this.categoriesRepository
       .createQueryBuilder('Categories')
       .where('Categories.category_id = :categori_id', { categori_id })
       .getOne();
@@ -27,29 +27,40 @@ export class CategoriesService {
     return categories;
   }
 
-  async create(createCategoryDto: CreateCategoryDto, user_id: number) {
-    await this.authService.adminCheck(user_id);
-    return this.categoriesRepository.save(createCategoryDto);
+  async create(createCategoryDto: CreateCategoryDto, userId: number) {
+    await this.authService.adminCheck(userId);
+    const category: Categories = {
+      categoryName: createCategoryDto.categoryName,
+      type: createCategoryDto.type,
+    };
+    if (createCategoryDto.parentsCategoryId) {
+      const findCategory = await this.findCategoriesByCategoriId(
+        createCategoryDto.parentsCategoryId,
+      );
+      category.parent = findCategory;
+    }
+    return this.categoriesRepository.save(category);
   }
 
-  findAll() {
-    const queryBuilder =
-      this.categoriesRepository.createQueryBuilder('Categories');
+  async findByType(type: string) {
+    const queryBuilder = this.categoriesRepository
+      .createQueryBuilder('Categories')
+      .where('Categories.type = :type', { type });
     return queryBuilder.getMany();
   }
 
   async update(
     id: number,
     updateCategoryDto: UpdateCategoryDto,
-    user_id: number,
+    userId: number,
   ) {
-    await this.authService.adminCheck(user_id);
+    await this.authService.adminCheck(userId);
     await this.findCategoriesByCategoriId(id);
     return this.categoriesRepository.update(id, updateCategoryDto);
   }
 
-  async remove(id: number, user_id: number) {
-    await this.authService.adminCheck(user_id);
+  async remove(id: number, userId: number) {
+    await this.authService.adminCheck(userId);
     await this.findCategoriesByCategoriId(id);
     return this.categoriesRepository.delete(id);
   }

@@ -30,7 +30,7 @@ export class BrandController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    this.brandService.create(createBrandDto, user.user_id);
+    this.brandService.create(createBrandDto, user.userId);
     return {
       statusCode: 201,
       message: '브랜드 등록 성공',
@@ -40,14 +40,14 @@ export class BrandController {
 
   @Get()
   @ApiOperation({ summary: '브랜드 조회' })
-  @ApiQuery({ name: 'user_id', required: false, type: Number })
-  @ApiQuery({ name: 'brand_name', required: false, type: String })
+  @ApiQuery({ name: 'userId', required: false, type: Number })
+  @ApiQuery({ name: 'brandName', required: false, type: String })
   async findAll(
     @Query() queryDto: FindAllBrandQueryDto,
   ): Promise<ResponesContainerDto<Brand[]>> {
     const brandList = await this.brandService.findAll(
-      queryDto.brand_name,
-      queryDto.user_id,
+      queryDto.brandName,
+      queryDto.userId,
     );
 
     return {
@@ -64,7 +64,7 @@ export class BrandController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.brandService.update(+id, updateBrandDto, user.user_id);
+    await this.brandService.update(+id, updateBrandDto, user.userId);
     return {
       statusCode: 200,
       message: `${id}번 상품 수정 성공`,
@@ -78,7 +78,7 @@ export class BrandController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.brandService.remove(+id, user.user_id);
+    await this.brandService.remove(+id, user.userId);
     return {
       statusCode: 200,
       message: `${id}번 브랜드 삭제 성공`,

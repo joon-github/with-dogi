@@ -1,14 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { CategoriesDetail } from '../detail/entities/CategoriesDetail.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  TreeChildren,
+  TreeParent,
+  JoinColumn,
+} from 'typeorm';
 import { CategoriesType } from '../enums/categories_type.enum';
 
 @Entity('Categories')
 export class Categories {
   @PrimaryGeneratedColumn()
-  category_id: number;
+  categoryId?: number;
 
   @Column({ length: 50 })
-  category_name: string;
+  categoryName: string;
 
   @Column({
     type: 'enum',
@@ -17,6 +23,10 @@ export class Categories {
   })
   type: string;
 
-  @OneToMany(() => CategoriesDetail, (category) => category.category)
-  categoriesDetail: CategoriesDetail[];
+  @TreeParent()
+  @JoinColumn({ name: 'parentsCategoryId' })
+  parent?: Categories;
+
+  @TreeChildren()
+  children?: Categories[];
 }

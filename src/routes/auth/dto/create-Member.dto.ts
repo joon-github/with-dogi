@@ -38,5 +38,5 @@ export class CreateMemberDto {
 
   @IsString()
   @IsOptional()
-  profile_photo: string;
+  profilePhoto: string;
 }

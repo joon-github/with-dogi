@@ -5,9 +5,9 @@ export class FindAllBrandQueryDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  user_id?: number;
+  userId?: number;
 
   @IsOptional()
   @IsString()
-  brand_name?: string;
+  brandName?: string;
 }

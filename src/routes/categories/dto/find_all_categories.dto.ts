@@ -1,13 +1,8 @@
-import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString } from 'class-validator';
+import { IsIn, IsString } from 'class-validator';
+import { CategoriesType } from '../enums/categories_type.enum';
 
-export class FindAllCategoriesQueryDto {
-  @IsOptional()
+export class FindCategoriesQueryDto {
   @IsString()
-  readonly category_name?: string;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  readonly user_id?: number;
+  @IsIn(['products', 'community'])
+  readonly type?: CategoriesType;
 }

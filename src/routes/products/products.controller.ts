@@ -27,20 +27,18 @@ export class ProductController {
 
   @Get()
   @ApiOperation({ summary: '상품 전체 조회' })
-  @ApiQuery({ name: 'user_id', required: false, type: Number })
-  @ApiQuery({ name: 'category_detail_id', required: false, type: Number })
-  @ApiQuery({ name: 'category_id', required: false, type: Number })
-  @ApiQuery({ name: 'product_code', required: false, type: String })
+  @ApiQuery({ name: 'userId', required: false, type: Number })
+  @ApiQuery({ name: 'categoryId', required: false, type: Number })
+  @ApiQuery({ name: 'productCode', required: false, type: String })
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'offset', required: false, type: Number })
   async findAll(
     @Query() queryDto: FindAllProductsQueryDto,
   ): Promise<ResponesContainerDto<Products[]>> {
     const data = await this.productService.findAll(
-      queryDto.user_id,
-      queryDto.category_detail_id,
-      queryDto.category_id,
-      queryDto.product_code,
+      queryDto.userId,
+      queryDto.categoryId,
+      queryDto.productCode,
       queryDto.limit,
       queryDto.offset,
     );
@@ -74,7 +72,7 @@ export class ProductController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.productService.create(createProductDto, user.user_id);
+    await this.productService.create(createProductDto, user.userId);
     return {
       statusCode: 201,
       message: '상품 등록 성공',

@@ -1,5 +1,6 @@
+import { IsOptional } from 'class-validator';
 import { Brand } from 'src/routes/brand/entities/brand.entity';
-import { CategoriesDetail } from 'src/routes/categories/detail/entities/CategoriesDetail.entity';
+import { Categories } from 'src/routes/categories/entities/Categories.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -11,24 +12,21 @@ import {
 @Entity('Products')
 export class Products {
   @PrimaryGeneratedColumn()
-  product_id: number;
+  productId?: number;
 
   @Column({ unique: true })
-  product_code: string;
+  productCode: string;
 
   @ManyToOne(() => Brand, (brand) => brand)
   @JoinColumn({ name: 'brand_id' })
   brand: Brand;
 
   @Column({ length: 100 })
-  product_name: string;
+  productName: string;
 
-  @Column()
-  category_detail_id: number;
-
-  @ManyToOne(() => CategoriesDetail, (category) => category)
-  @JoinColumn({ name: 'category_detail_id' })
-  category_detail: CategoriesDetail;
+  @ManyToOne(() => Categories, (categories) => categories)
+  @JoinColumn({ name: 'categoryId' })
+  category: Categories;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;
@@ -36,12 +34,10 @@ export class Products {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column()
-  stock: number;
-
   @Column({ type: 'datetime' })
-  created_at: Date;
+  createdAt?: Date;
 
   @Column({ type: 'datetime', nullable: true })
-  updated_at: Date;
+  @IsOptional()
+  updatedAt?: Date;
 }

@@ -5,7 +5,7 @@ import { Brand } from 'src/routes/brand/entities/brand.entity';
 @Entity('Members')
 export class Members {
   @PrimaryGeneratedColumn()
-  user_id: number;
+  userId: number;
 
   @Column({ length: 100, unique: true })
   email: string;
@@ -30,10 +30,10 @@ export class Members {
   role: string;
 
   @Column({ length: 100, nullable: true })
-  profile_photo: string;
+  profilePhoto: string;
 
   @Column({ type: 'date' })
-  created_at: Date;
+  createdAt: Date;
 
   @Column({ default: 500000 })
   point: number;

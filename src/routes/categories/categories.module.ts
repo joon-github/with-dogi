@@ -6,14 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Categories } from './entities/Categories.entity';
 import { Members } from 'src/routes/auth/entities/Members.entity';
 import { AuthModule } from 'src/routes/auth/auth.module';
-import { DetailModule } from './detail/detail.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Categories, Members]),
-    AuthModule,
-    DetailModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Categories, Members]), AuthModule],
   controllers: [CategoriesController],
   providers: [CategoriesService, AuthService],
 })

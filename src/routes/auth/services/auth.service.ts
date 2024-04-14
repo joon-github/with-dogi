@@ -31,9 +31,9 @@ export class AuthService {
     return findUser;
   }
 
-  public async findUserById(user_id: number): Promise<Members> {
+  public async findUserById(userId: number): Promise<Members> {
     const findUser = await this.memberRepository.findOne({
-      where: { user_id },
+      where: { userId },
     });
     if (!findUser) {
       throw new AuthException(AuthException.LOGIN_FAIL);
@@ -41,8 +41,8 @@ export class AuthService {
     return findUser;
   }
 
-  public async adminCheck(user_id: number): Promise<Members> {
-    const findUser = await this.findUserById(user_id);
+  public async adminCheck(userId: number): Promise<Members> {
+    const findUser = await this.findUserById(userId);
     if (findUser.role !== 'admin') {
       throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
     }
@@ -89,7 +89,7 @@ export class AuthService {
     const findUser = await this.checkUserInfo(loginDto);
 
     const payload: TokenPayload = {
-      user_id: findUser.user_id,
+      userId: findUser.userId,
       email: findUser.email,
     };
 
@@ -107,7 +107,7 @@ export class AuthService {
       process.env.REFRESH_TOKEN_SECRET,
     );
     const payload: TokenPayload = {
-      user_id: decoded.user_id,
+      userId: decoded.userId,
       email: decoded.email,
     };
     this.jwtService.generateAccessToken(response, payload);
@@ -116,7 +116,7 @@ export class AuthService {
   async updateMember(updateMemberDto: UpdateMemberDto, request: Request) {
     const payload = request['user'] as TokenPayload;
 
-    await this.memberRepository.update(payload.user_id, updateMemberDto);
+    await this.memberRepository.update(payload.userId, updateMemberDto);
   }
 
   async updatePassword(
@@ -141,7 +141,7 @@ export class AuthService {
       throw new AuthException(AuthException.SAME_PASSWORD);
     }
 
-    await this.memberRepository.update(payload.user_id, {
+    await this.memberRepository.update(payload.userId, {
       password: newPassword,
     });
   }
@@ -149,11 +149,11 @@ export class AuthService {
   async updateRole(updateRoleDto: { role: string }, request: Request) {
     const payload = request['user'] as TokenPayload;
     const findUser = await this.memberRepository.findOne({
-      where: { user_id: payload.user_id },
+      where: { userId: payload.userId },
     });
     if (findUser.role !== 'admin') {
       throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
     }
-    await this.memberRepository.update(payload.user_id, updateRoleDto);
+    await this.memberRepository.update(payload.userId, updateRoleDto);
   }
 }

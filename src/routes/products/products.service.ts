@@ -9,6 +9,7 @@ import { AuthService } from 'src/routes/auth/services/auth.service';
 import { AuthException } from 'src/routes/auth/exceptions/auth-exceptions';
 import { v4 as uuidv4 } from 'uuid';
 import { BrandService } from 'src/routes/brand/brand.service';
+import { CategoriesService } from '../categories/categories.service';
 
 @Injectable()
 export class ProductService {
@@ -18,6 +19,7 @@ export class ProductService {
 
     private readonly authService: AuthService,
     private readonly brandService: BrandService,
+    private readonly categoryService: CategoriesService,
   ) {}
 
   private getProducts(): SelectQueryBuilder<Products> {
@@ -25,14 +27,12 @@ export class ProductService {
       .createQueryBuilder('Products')
       .leftJoinAndSelect('Products.brand', 'Brand')
       .leftJoinAndSelect('Brand.user', 'Members')
-      .leftJoinAndSelect('Products.category_detail', 'CategoriesDetail')
       .leftJoinAndSelect('CategoriesDetail.category', 'Categories')
       .select([
         'Products',
         'Brand',
         'Members.name',
-        'Members.user_id',
-        'CategoriesDetail',
+        'Members.userId',
         'Categories',
       ]);
     return queryBuilder;
@@ -51,55 +51,58 @@ export class ProductService {
   private async checkProductOwner(id: number, email: string): Promise<void> {
     const findUser = await this.authService.findUserByEmail(email);
     const findProduct = await this.findProduct(id);
-    if (findUser.user_id !== findProduct.brand.user.user_id) {
+    if (findUser.userId !== findProduct.brand.user.userId) {
       throw new AuthException(AuthException.LOGIN_FAIL);
     }
   }
 
   async create(
     createProductDto: CreateProductDto,
-    user_id: number,
+    userId: number,
   ): Promise<void> {
-    const findUser = await this.authService.findUserById(user_id);
+    const findUser = await this.authService.findUserById(userId);
     if (findUser.role === 'user') {
       throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
     }
     const brand = await this.brandService.checkBrandOwner(
-      createProductDto.brand_id,
-      user_id,
+      createProductDto.brandId,
+      userId,
     );
+    const category = await this.categoryService.findCategoriesByCategoriId(
+      createProductDto.categoryId,
+    );
+
     const productCode = uuidv4();
-    const product = {
-      ...createProductDto,
-      product_code: productCode,
+    const product: Products = {
+      productName: createProductDto.productName,
+      price: createProductDto.price,
+      description: createProductDto.description,
+      productCode: productCode,
       brand: brand,
+      category: category,
     };
     await this.productRepository.save(product);
   }
 
   async findAll(
-    user_id: number,
-    category_detail_id: number,
-    category_id: number,
-    product_code: string,
+    userId: number,
+    categoryId: number,
+    productCode: string,
     limit: number,
     offset: number,
   ) {
     const queryBuilder = this.getProducts();
     const where = {};
     const like = {};
-    if (user_id) {
-      where['Members.user_id'] = user_id;
+    if (userId) {
+      where['Members.userId'] = userId;
     }
-    if (category_detail_id) {
-      where['CategoriesDetail.category_detail_id'] = category_detail_id;
-    }
-    if (category_id) {
-      where['Categories.category_id'] = category_id;
+    if (categoryId) {
+      where['Categories.categoryId'] = categoryId;
     }
 
-    if (product_code) {
-      like['Products.product_code'] = product_code;
+    if (productCode) {
+      like['Products.productCode'] = productCode;
     }
     Object.entries(where).forEach(([key, value]) => {
       queryBuilder.andWhere(`${key} = :value`, { value });

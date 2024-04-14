@@ -5,25 +5,22 @@ export class FindAllProductsQueryDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  readonly user_id?: number;
+  readonly userId?: number;
 
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  readonly category_detail_id?: number;
-
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  readonly category_id?: number;
+  readonly categoryId?: number;
 
   @IsOptional()
   @IsString()
-  readonly product_code?: string;
+  readonly productCode?: string;
 
   @IsInt()
+  @Type(() => Number)
   readonly limit?: number; // 한 페이지의 최대 항목 수
 
   @IsInt()
+  @Type(() => Number)
   readonly offset?: number;
 }
