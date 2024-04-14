@@ -40,7 +40,7 @@ export class ProductService {
 
   private async findProduct(id: number) {
     const product = await this.getProduct()
-      .where(`Product.product_id = :id`, { id })
+      .where(`Product.productId = :id`, { id })
       .getOne();
     if (!product) {
       throw new ProductException(ProductException.PRODUCT_NOT_FOUND);
@@ -129,7 +129,7 @@ export class ProductService {
 
   async update(id: number, updateProductDto: UpdateProductDto, email: string) {
     await this.checkProductOwner(id, email);
-    updateProductDto.updated_at = new Date();
+    updateProductDto.updatedAt = new Date();
     return await this.productRepository.update(id, updateProductDto);
   }
 

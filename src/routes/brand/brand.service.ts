@@ -49,15 +49,15 @@ export class BrandService {
     return await this.brandRepository.save(brand);
   }
 
-  async findAll(brand_name: string, userId: number) {
+  async findAll(brandName: string, userId: number) {
     const queryBuilder = this.brandRepository.createQueryBuilder('Brand');
     const where = {};
     const like = {};
     if (userId) {
       where['userId'] = userId;
     }
-    if (brand_name) {
-      like['brandName'] = brand_name;
+    if (brandName) {
+      like['brandName'] = brandName;
     }
     Object.entries(where).forEach(([key, value]) => {
       queryBuilder.andWhere(`${key} = :value`, { value });

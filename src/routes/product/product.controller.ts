@@ -16,7 +16,7 @@ import { Product } from './entities/product.entity';
 import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface';
 
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
-import { FindAllProductQueryDto } from './dto/find_all_product.dto';
+import { FindAllProductQueryDto } from './dto/findAllProduct.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 

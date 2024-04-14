@@ -18,7 +18,7 @@ import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Category } from './entities/Category.entity';
-import { FindCategoryQueryDto } from './dto/find_all_category.dto';
+import { FindCategoryQueryDto } from './dto/findAllCategory.dto';
 
 @Controller('category')
 @ApiTags('category')

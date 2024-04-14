@@ -14,11 +14,11 @@ export class Option {
 
   @ManyToOne(() => Product, (product) => product)
   @JoinColumn({ name: 'productId' })
-  category_detail: Product;
+  categoryDetail: Product;
 
   @Column({ length: 20 })
-  option_name: string;
+  optionName: string;
 
   @Column()
-  add_price: number;
+  addPrice: number;
 }
