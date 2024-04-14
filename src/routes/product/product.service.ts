@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { DataSource, Repository, SelectQueryBuilder } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { ProductException } from './exceptions/product-exceptions';
 import { AuthService } from 'src/routes/auth/services/auth.service';
@@ -10,6 +10,7 @@ import { AuthException } from 'src/routes/auth/exceptions/auth-exceptions';
 import { v4 as uuidv4 } from 'uuid';
 import { BrandService } from 'src/routes/brand/brand.service';
 import { CategoryService } from '../category/category.service';
+import { Option } from './options/entities/option.entity';
 
 @Injectable()
 export class ProductService {
@@ -20,6 +21,7 @@ export class ProductService {
     private readonly authService: AuthService,
     private readonly brandService: BrandService,
     private readonly categoryService: CategoryService,
+    private dataSource: DataSource,
   ) {}
 
   private getProduct(): SelectQueryBuilder<Product> {
@@ -27,7 +29,7 @@ export class ProductService {
       .createQueryBuilder('Product')
       .leftJoinAndSelect('Product.brand', 'Brand')
       .leftJoinAndSelect('Brand.user', 'Members')
-      .leftJoinAndSelect('CategoryDetail.category', 'Category')
+      .leftJoinAndSelect('Product.category', 'Category')
       .select([
         'Product',
         'Brand',
@@ -48,40 +50,64 @@ export class ProductService {
     return product;
   }
 
-  private async checkProductOwner(id: number, email: string): Promise<void> {
-    const findUser = await this.authService.findUserByEmail(email);
-    const findProduct = await this.findProduct(id);
+  public async checkProductOwner(productId: number, userId: number) {
+    const findUser = await this.authService.findUserById(userId);
+    const findProduct = await this.findProduct(productId);
     if (findUser.userId !== findProduct.brand.user.userId) {
       throw new AuthException(AuthException.LOGIN_FAIL);
     }
+    return findProduct;
   }
 
   async create(
     createProductDto: CreateProductDto,
     userId: number,
   ): Promise<void> {
-    const findUser = await this.authService.findUserById(userId);
-    if (findUser.role === 'user') {
-      throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
-    }
-    const brand = await this.brandService.checkBrandOwner(
-      createProductDto.brandId,
-      userId,
-    );
-    const category = await this.categoryService.findCategoryByCategoriId(
-      createProductDto.categoryId,
-    );
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const findUser = await this.authService.findUserById(userId);
+      if (findUser.role === 'user') {
+        throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
+      }
+      const brand = await this.brandService.checkBrandOwner(
+        createProductDto.brandId,
+        userId,
+      );
+      const category = await this.categoryService.findCategoryByCategoryId(
+        createProductDto.categoryId,
+      );
 
-    const productCode = uuidv4();
-    const product: Product = {
-      productName: createProductDto.productName,
-      price: createProductDto.price,
-      description: createProductDto.description,
-      productCode: productCode,
-      brand: brand,
-      category: category,
-    };
-    await this.productRepository.save(product);
+      const product = new Product();
+      product.productName = createProductDto.productName;
+      product.price = createProductDto.price;
+      product.description = createProductDto.description;
+      product.productCode = uuidv4();
+      product.brand = brand;
+      product.category = category;
+
+      const savedProduct = await queryRunner.manager.save(product);
+
+      createProductDto.options.forEach(async (option) => {
+        const optionEntity = new Option();
+
+        optionEntity.optionName = option.optionName;
+        optionEntity.product = savedProduct;
+        optionEntity.addPrice = option.addPrice;
+        optionEntity.stock = option.stock;
+
+        await queryRunner.manager.save(optionEntity);
+      });
+
+      await queryRunner.commitTransaction();
+    } catch (err) {
+      console.log('실패?');
+      await queryRunner.rollbackTransaction();
+      throw new ProductException(ProductException.PRODUCT_CREATE_FAIL);
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async findAll(
@@ -127,14 +153,14 @@ export class ProductService {
     return product;
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto, email: string) {
-    await this.checkProductOwner(id, email);
+  async update(id: number, updateProductDto: UpdateProductDto, userId: number) {
+    await this.checkProductOwner(id, userId);
     updateProductDto.updatedAt = new Date();
     return await this.productRepository.update(id, updateProductDto);
   }
 
-  async remove(id: number, email: string) {
-    await this.checkProductOwner(id, email);
+  async remove(id: number, userId: number) {
+    await this.checkProductOwner(id, userId);
     return await this.productRepository.delete(id);
   }
 }

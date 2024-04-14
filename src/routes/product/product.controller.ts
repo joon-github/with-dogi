@@ -88,7 +88,7 @@ export class ProductController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.productService.update(+id, updateProductDto, user.email);
+    await this.productService.update(+id, updateProductDto, user.userId);
     return {
       statusCode: 200,
       message: `${id}번 상품 수정 성공`,
@@ -103,7 +103,7 @@ export class ProductController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.productService.remove(+id, user.email);
+    await this.productService.remove(+id, user.userId);
     return {
       statusCode: 200,
       message: `${id}번 상품 삭제 성공`,

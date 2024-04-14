@@ -14,14 +14,9 @@ import { OptionsModule } from './options/options.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      Product,
-      Members,
-      Brand,
-      Category,
-      OptionsModule,
-    ]),
+    TypeOrmModule.forFeature([Product, Members, Brand, Category]),
     AuthModule,
+    OptionsModule,
   ],
   controllers: [ProductController],
   providers: [ProductService, AuthService, BrandService, CategoryService],

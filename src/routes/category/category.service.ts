@@ -16,10 +16,10 @@ export class CategoryService {
     private authService: AuthService,
   ) {}
 
-  public async findCategoryByCategoriId(categoriId: number) {
+  public async findCategoryByCategoryId(categoryId: number) {
     const category = await this.categoryRepository
       .createQueryBuilder('Category')
-      .where('Category.categoriId = :categoriId', { categoriId })
+      .where('Category.categoryId = :categoryId', { categoryId: categoryId })
       .getOne();
     if (!category) {
       throw new CategoryException(CategoryException.Category_NOT_FOUND);
@@ -29,16 +29,15 @@ export class CategoryService {
 
   async create(createCategoryDto: CreateCategoryDto, userId: number) {
     await this.authService.adminCheck(userId);
-    const category: Category = {
-      categoryName: createCategoryDto.categoryName,
-      type: createCategoryDto.type,
-    };
-    if (createCategoryDto.parentsCategoryId) {
-      const findCategory = await this.findCategoryByCategoriId(
-        createCategoryDto.parentsCategoryId,
-      );
-      category.parent = findCategory;
-    }
+    const category = new Category();
+    category.categoryName = createCategoryDto.categoryName;
+    category.type = createCategoryDto.type;
+    // if (createCategoryDto.parentsCategoryId) {
+    //   const findCategory = await this.findCategoryByCategoryId(
+    //     createCategoryDto.parentsCategoryId,
+    //   );
+    //   category.parent = findCategory;
+    // }
     return this.categoryRepository.save(category);
   }
 
@@ -55,13 +54,13 @@ export class CategoryService {
     userId: number,
   ) {
     await this.authService.adminCheck(userId);
-    await this.findCategoryByCategoriId(id);
+    await this.findCategoryByCategoryId(id);
     return this.categoryRepository.update(id, updateCategoryDto);
   }
 
   async remove(id: number, userId: number) {
     await this.authService.adminCheck(userId);
-    await this.findCategoryByCategoriId(id);
+    await this.findCategoryByCategoryId(id);
     return this.categoryRepository.delete(id);
   }
 }

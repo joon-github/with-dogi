@@ -15,7 +15,6 @@ async function bootstrap() {
     new QueryFailedExceptionFilter(),
   );
   app.use(cookieParser());
-  // pnpm install class-validator class-transformer
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // true로 설정하면 요청 본문에서 정의된 속성만 허용하고 나머지는 제거합니다.

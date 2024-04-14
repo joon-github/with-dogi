@@ -7,7 +7,9 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
+import { Option } from '../options/entities/option.entity';
 
 @Entity('Product')
 export class Product {
@@ -40,4 +42,7 @@ export class Product {
   @Column({ type: 'datetime', nullable: true })
   @IsOptional()
   updatedAt?: Date;
+
+  @OneToMany(() => Option, (option) => option.product)
+  options?: Option[];
 }

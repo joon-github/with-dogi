@@ -15,17 +15,18 @@ import { ProductModule } from './product/product.module';
 import { AuthModule } from './auth/auth.module';
 import { BrandModule } from './brand/brand.module';
 import { CategoryModule } from './category/category.module';
+
 @Module({
   imports: [
     AuthModule,
+    ProductModule,
+    BrandModule,
+    CategoryModule,
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useClass: TypeOrmConfigService,
     }),
-    ProductModule,
-    BrandModule,
-    CategoryModule,
   ],
   controllers: [AppController],
 })

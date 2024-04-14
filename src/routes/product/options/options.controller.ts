@@ -1,15 +1,34 @@
-import { Controller, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Req,
+} from '@nestjs/common';
 import { OptionsService } from './options.service';
-import { CreateOptionDto } from './dto/create-option.dto';
+import { AddOptionForProductDto } from './dto/addOptionForProductDto.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface';
 
-@Controller('options')
+@Controller('product/options')
+@ApiTags('options')
 export class OptionsController {
   constructor(private readonly optionsService: OptionsService) {}
 
-  @Post()
-  create(@Body() createOptionDto: CreateOptionDto) {
-    return this.optionsService.create(createOptionDto);
+  @Post(':productId')
+  @ApiOperation({ summary: '옵션 추가' })
+  async addOptionForProduct(
+    @Body() addOptionForProductDto: AddOptionForProductDto,
+    @Req() request: Request,
+  ) {
+    const user = request['user'] as TokenPayload;
+    await this.optionsService.addOptionForProduct(
+      addOptionForProductDto,
+      user.userId,
+    );
   }
 
   @Patch(':id')

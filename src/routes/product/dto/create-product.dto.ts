@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, Length } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
+import { AddOptionForProductDto } from '../options/dto/addOptionForProductDto.dto';
 export class CreateProductDto {
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
@@ -22,7 +23,16 @@ export class CreateProductDto {
   @IsString()
   readonly description: string;
 
-  @ApiProperty({ example: 20, description: '기본값' })
-  @IsNumber()
-  readonly stock?: number;
+  @ApiProperty({
+    example: [
+      {
+        optionName: '옵션값',
+        addPrice: 2000,
+        stock: 200,
+      },
+    ],
+    description: '기본값',
+  })
+  @IsOptional()
+  readonly options?: AddOptionForProductDto[];
 }

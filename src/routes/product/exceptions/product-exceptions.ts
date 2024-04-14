@@ -9,6 +9,13 @@ export class ProductException extends HttpException {
     };
   }
 
+  public static get PRODUCT_CREATE_FAIL(): EXCEPTION {
+    return {
+      message: '상품 등록에 실패하였습니다.',
+      status: HttpStatus.BAD_REQUEST,
+    };
+  }
+
   constructor(exception: EXCEPTION) {
     super(exception.message, exception.status);
   }

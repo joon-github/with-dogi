@@ -1,11 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOptionDto } from './dto/create-option.dto';
+import { AddOptionForProductDto } from './dto/addOptionForProductDto.dto';
 import { UpdateOptionDto } from './dto/update-option.dto';
-
+import { InjectRepository } from '@nestjs/typeorm';
+import { Option } from './entities/option.entity';
+import { Repository } from 'typeorm';
+import { ProductService } from '../product.service';
 @Injectable()
 export class OptionsService {
-  create(createOptionDto: CreateOptionDto) {
-    return 'This action adds a new option';
+  constructor(
+    @InjectRepository(Option)
+    private productOptionRepository: Repository<Option>,
+
+    private readonly productService: ProductService,
+  ) {}
+  async addOptionForProduct(
+    addOptionForProductDto: AddOptionForProductDto,
+    userId: number,
+  ) {
+    const product = await this.productService.checkProductOwner(
+      addOptionForProductDto.productId,
+      userId,
+    );
+
+    const option: Option = this.productOptionRepository.create({
+      product: product,
+      optionName: addOptionForProductDto.optionName,
+      addPrice: addOptionForProductDto.addPrice,
+      stock: addOptionForProductDto.stock,
+    });
+    await this.productOptionRepository.save(option);
   }
 
   findAll() {

@@ -7,6 +7,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { CategoryType } from '../enums/category_type.enum';
+import { IsOptional } from 'class-validator';
 
 @Entity('Category')
 export class Category {
@@ -22,6 +23,10 @@ export class Category {
     default: CategoryType.Product,
   })
   type: string;
+
+  @Column()
+  @IsOptional()
+  parentsCategoryId?: number;
 
   @TreeParent()
   @JoinColumn({ name: 'parentsCategoryId' })

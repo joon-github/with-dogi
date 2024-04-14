@@ -1,11 +1,15 @@
-import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+} from '@nestjs/common';
 import { Response } from 'express';
-import { AuthException } from '../../routes/auth/exceptions/auth-exceptions';
 import { ErrorResponesDto } from 'src/global/dto/respones-container.dto';
 
-@Catch(AuthException)
+@Catch(HttpException)
 export class CustomExceptionFilter implements ExceptionFilter {
-  catch(exception: AuthException, host: ArgumentsHost) {
+  catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const status = exception.getStatus();

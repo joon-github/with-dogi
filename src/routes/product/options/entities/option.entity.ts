@@ -10,15 +10,18 @@ import { Product } from '../../entities/product.entity';
 @Entity('ProductOptions')
 export class Option {
   @PrimaryGeneratedColumn()
-  ProductOptions?: number;
+  optionId?: number;
 
   @ManyToOne(() => Product, (product) => product)
   @JoinColumn({ name: 'productId' })
-  categoryDetail: Product;
+  product: Product;
 
   @Column({ length: 20 })
   optionName: string;
 
   @Column()
   addPrice: number;
+
+  @Column()
+  stock: number;
 }

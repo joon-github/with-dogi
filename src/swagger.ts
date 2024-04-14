@@ -4,6 +4,7 @@ import { ProductModule } from './routes/product/product.module';
 import { BrandModule } from './routes/brand/brand.module';
 import { AuthModule } from './routes/auth/auth.module';
 import { CategoryModule } from './routes/category/category.module';
+import { OptionsModule } from './routes/product/options/options.module';
 
 export function setupSwagger(app: INestApplication): void {
   //현재 경로
@@ -29,7 +30,7 @@ export function setupSwagger(app: INestApplication): void {
     .build();
 
   const productsDocument = SwaggerModule.createDocument(app, productsOptions, {
-    include: [ProductModule, BrandModule],
+    include: [ProductModule, BrandModule, OptionsModule],
   });
 
   SwaggerModule.setup('api-products-docs', app, productsDocument);
