@@ -10,18 +10,18 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-import { ProductService } from './products.service';
+import { ProductService } from './product.service';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Products } from './entities/products.entity';
+import { Product } from './entities/product.entity';
 import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface';
 
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
-import { FindAllProductsQueryDto } from './dto/find_all_product.dto';
+import { FindAllProductQueryDto } from './dto/find_all_product.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
-@Controller('products')
-@ApiTags('products')
+@Controller('product')
+@ApiTags('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
@@ -33,8 +33,8 @@ export class ProductController {
   @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiQuery({ name: 'offset', required: false, type: Number })
   async findAll(
-    @Query() queryDto: FindAllProductsQueryDto,
-  ): Promise<ResponesContainerDto<Products[]>> {
+    @Query() queryDto: FindAllProductQueryDto,
+  ): Promise<ResponesContainerDto<Product[]>> {
     const data = await this.productService.findAll(
       queryDto.userId,
       queryDto.categoryId,
@@ -45,7 +45,7 @@ export class ProductController {
     return {
       statusCode: 200,
       message: '상품 전체 조회 성공',
-      data: data.products,
+      data: data.product,
       total: data.total,
       limit: queryDto.limit,
       offset: queryDto.offset,
@@ -56,7 +56,7 @@ export class ProductController {
   @ApiOperation({ summary: '상품 단일 조회' })
   async findOne(
     @Param('id') id: string,
-  ): Promise<ResponesContainerDto<Products>> {
+  ): Promise<ResponesContainerDto<Product>> {
     const data = await this.productService.findOne(+id);
     return {
       statusCode: 200,

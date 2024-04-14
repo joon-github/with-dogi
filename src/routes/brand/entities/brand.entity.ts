@@ -1,5 +1,5 @@
 import { Members } from 'src/routes/auth/entities/Members.entity';
-import { Products } from 'src/routes/products/entities/products.entity';
+import { Product } from 'src/routes/product/entities/product.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -21,6 +21,6 @@ export class Brand {
   @JoinColumn({ name: 'userId' })
   user: Members;
 
-  @OneToMany(() => Products, (products) => products.brand)
-  products: Products[];
+  @OneToMany(() => Product, (product) => product.brand)
+  product: Product[];
 }

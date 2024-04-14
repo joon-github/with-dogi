@@ -3,8 +3,8 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
-import { Products } from './entities/products.entity';
-import { ProductsException } from './exceptions/products-exceptions';
+import { Product } from './entities/product.entity';
+import { ProductException } from './exceptions/product-exceptions';
 import { AuthService } from 'src/routes/auth/services/auth.service';
 import { AuthException } from 'src/routes/auth/exceptions/auth-exceptions';
 import { v4 as uuidv4 } from 'uuid';
@@ -14,22 +14,22 @@ import { CategoriesService } from '../categories/categories.service';
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectRepository(Products)
-    private productRepository: Repository<Products>,
+    @InjectRepository(Product)
+    private productRepository: Repository<Product>,
 
     private readonly authService: AuthService,
     private readonly brandService: BrandService,
     private readonly categoryService: CategoriesService,
   ) {}
 
-  private getProducts(): SelectQueryBuilder<Products> {
+  private getProduct(): SelectQueryBuilder<Product> {
     const queryBuilder = this.productRepository
-      .createQueryBuilder('Products')
-      .leftJoinAndSelect('Products.brand', 'Brand')
+      .createQueryBuilder('Product')
+      .leftJoinAndSelect('Product.brand', 'Brand')
       .leftJoinAndSelect('Brand.user', 'Members')
       .leftJoinAndSelect('CategoriesDetail.category', 'Categories')
       .select([
-        'Products',
+        'Product',
         'Brand',
         'Members.name',
         'Members.userId',
@@ -39,11 +39,11 @@ export class ProductService {
   }
 
   private async findProduct(id: number) {
-    const product = await this.getProducts()
-      .where(`Products.product_id = :id`, { id })
+    const product = await this.getProduct()
+      .where(`Product.product_id = :id`, { id })
       .getOne();
     if (!product) {
-      throw new ProductsException(ProductsException.PRODUCT_NOT_FOUND);
+      throw new ProductException(ProductException.PRODUCT_NOT_FOUND);
     }
     return product;
   }
@@ -73,7 +73,7 @@ export class ProductService {
     );
 
     const productCode = uuidv4();
-    const product: Products = {
+    const product: Product = {
       productName: createProductDto.productName,
       price: createProductDto.price,
       description: createProductDto.description,
@@ -91,7 +91,7 @@ export class ProductService {
     limit: number,
     offset: number,
   ) {
-    const queryBuilder = this.getProducts();
+    const queryBuilder = this.getProduct();
     const where = {};
     const like = {};
     if (userId) {
@@ -102,7 +102,7 @@ export class ProductService {
     }
 
     if (productCode) {
-      like['Products.productCode'] = productCode;
+      like['Product.productCode'] = productCode;
     }
     Object.entries(where).forEach(([key, value]) => {
       queryBuilder.andWhere(`${key} = :value`, { value });
@@ -113,12 +113,12 @@ export class ProductService {
 
     queryBuilder.skip(offset);
     queryBuilder.take(limit);
-    const [products, total] = await queryBuilder.getManyAndCount();
+    const [product, total] = await queryBuilder.getManyAndCount();
     // const data = await queryBuilder.getMany();
 
     return {
       total,
-      products,
+      product,
     };
   }
 

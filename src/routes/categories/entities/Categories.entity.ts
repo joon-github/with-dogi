@@ -19,7 +19,7 @@ export class Categories {
   @Column({
     type: 'enum',
     enum: CategoriesType,
-    default: CategoriesType.Products,
+    default: CategoriesType.Product,
   })
   type: string;
 

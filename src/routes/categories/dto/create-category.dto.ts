@@ -7,9 +7,9 @@ export class CreateCategoryDto {
   @IsString()
   readonly categoryName: string;
 
-  @ApiProperty({ example: 'products', description: '기본값' })
+  @ApiProperty({ example: 'product', description: '기본값' })
   @IsString()
-  @IsIn(['products', 'community'])
+  @IsIn(['product', 'community'])
   readonly type: string;
 
   @ApiProperty({ example: 1, description: '기본값' })

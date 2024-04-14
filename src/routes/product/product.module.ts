@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ProductService } from './products.service';
-import { ProductController } from './products.controller';
+import { ProductService } from './product.service';
+import { ProductController } from './product.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Products } from './entities/products.entity';
+import { Product } from './entities/product.entity';
 import { AuthService } from 'src/routes/auth/services/auth.service';
 import { AuthModule } from 'src/routes/auth/auth.module';
 import { Members } from 'src/routes/auth/entities/Members.entity';
@@ -15,7 +15,7 @@ import { OptionsModule } from './options/options.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      Products,
+      Product,
       Members,
       Brand,
       Categories,

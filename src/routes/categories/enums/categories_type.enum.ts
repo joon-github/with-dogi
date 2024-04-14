@@ -1,4 +1,4 @@
 export enum CategoriesType {
-  Products = 'products',
+  Product = 'product',
   Community = 'community',
 }

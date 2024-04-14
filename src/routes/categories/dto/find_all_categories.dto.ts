@@ -3,6 +3,6 @@ import { CategoriesType } from '../enums/categories_type.enum';
 
 export class FindCategoriesQueryDto {
   @IsString()
-  @IsIn(['products', 'community'])
+  @IsIn(['product', 'community'])
   readonly type?: CategoriesType;
 }

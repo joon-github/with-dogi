@@ -1,6 +1,6 @@
 import { INestApplication } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { ProductModule } from './routes/products/products.module';
+import { ProductModule } from './routes/product/product.module';
 import { BrandModule } from './routes/brand/brand.module';
 import { AuthModule } from './routes/auth/auth.module';
 import { CategoriesModule } from './routes/categories/categories.module';

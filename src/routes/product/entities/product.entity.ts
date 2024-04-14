@@ -9,8 +9,8 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-@Entity('Products')
-export class Products {
+@Entity('Product')
+export class Product {
   @PrimaryGeneratedColumn()
   productId?: number;
 
@@ -18,7 +18,7 @@ export class Products {
   productCode: string;
 
   @ManyToOne(() => Brand, (brand) => brand)
-  @JoinColumn({ name: 'brand_id' })
+  @JoinColumn({ name: 'brandId' })
   brand: Brand;
 
   @Column({ length: 100 })

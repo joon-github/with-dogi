@@ -5,16 +5,16 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Products } from '../../entities/products.entity';
+import { Product } from '../../entities/product.entity';
 
 @Entity('ProductOptions')
 export class Option {
   @PrimaryGeneratedColumn()
   ProductOptions?: number;
 
-  @ManyToOne(() => Products, (products) => products)
-  @JoinColumn({ name: 'products_id' })
-  category_detail: Products;
+  @ManyToOne(() => Product, (product) => product)
+  @JoinColumn({ name: 'productId' })
+  category_detail: Product;
 
   @Column({ length: 20 })
   option_name: string;
