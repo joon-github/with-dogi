@@ -9,9 +9,11 @@ import {
   Delete,
   Query,
   Req,
+  UploadedFiles,
 } from '@nestjs/common';
-import { ProductService } from './product.service';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
+
+import { ProductService } from './product.service';
 import { Product } from './entities/product.entity';
 import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface';
 
@@ -19,11 +21,16 @@ import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { FindAllProductQueryDto } from './dto/findAllProduct.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { AwsService } from 'src/global/aws/aws.service';
+import { CreateProduct } from './decorator/CreateProduct';
 
 @Controller('product')
 @ApiTags('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly awsService: AwsService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: '상품 전체 조회' })
@@ -66,13 +73,20 @@ export class ProductController {
   }
 
   @Post()
-  @ApiOperation({ summary: '상품 등록' })
+  @CreateProduct()
   async create(
     @Body() createProductDto: CreateProductDto,
     @Req() request: Request,
+    @UploadedFiles() images: Array<Express.Multer.File>,
   ): Promise<ResponesContainerDto<null>> {
+    const file = request.file;
     const user = request['user'] as TokenPayload;
-    await this.productService.create(createProductDto, user.userId);
+    const product = await this.productService.create(
+      createProductDto,
+      user.userId,
+    );
+    const url = await this.awsService.imageUpload(file);
+    await this.productService.addImages(product, url);
     return {
       statusCode: 201,
       message: '상품 등록 성공',

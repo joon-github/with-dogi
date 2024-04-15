@@ -8,7 +8,7 @@ export class CreateProductDto {
 
   @ApiProperty({ example: '테스트 상품', description: '기본값' })
   @Length(1, 10, { message: '카테고리 이름은 50글자 미만으로 입력해주세요.' })
-  @IsString()
+  @IsString({ message: '카테고리 이름은 문자열로 입력해주세요.' })
   readonly productName: string;
 
   @ApiProperty({ example: 1, description: '기본값' })

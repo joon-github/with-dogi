@@ -10,6 +10,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Option } from '../options/entities/option.entity';
+import { ProductImage } from './productImage.entity';
 
 @Entity('Product')
 export class Product {
@@ -45,4 +46,7 @@ export class Product {
 
   @OneToMany(() => Option, (option) => option.product)
   options?: Option[];
+
+  @OneToMany(() => ProductImage, (image) => image.product)
+  images?: ProductImage[];
 }

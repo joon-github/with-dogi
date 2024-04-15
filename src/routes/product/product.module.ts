@@ -11,14 +11,26 @@ import { BrandService } from 'src/routes/brand/brand.service';
 import { CategoryService } from '../category/category.service';
 import { Category } from '../category/entities/Category.entity';
 import { OptionsModule } from './options/options.module';
+import { AwsService } from 'src/global/aws/aws.service';
+import { ConfigService } from '@nestjs/config';
+import { ProductImage } from './entities/productImage.entity';
+import { ProductImageModule } from './productImage.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, Members, Brand, Category]),
+    TypeOrmModule.forFeature([Product, Members, Brand, Category, ProductImage]),
     AuthModule,
     OptionsModule,
+    ProductImageModule,
   ],
   controllers: [ProductController],
-  providers: [ProductService, AuthService, BrandService, CategoryService],
+  providers: [
+    ProductService,
+    AuthService,
+    BrandService,
+    CategoryService,
+    AwsService,
+    ConfigService,
+  ],
 })
 export class ProductModule {}

@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { BrandService } from 'src/routes/brand/brand.service';
 import { CategoryService } from '../category/category.service';
 import { Option } from './options/entities/option.entity';
+import { ProductImage } from './entities/productImage.entity';
 
 @Injectable()
 export class ProductService {
@@ -18,9 +19,13 @@ export class ProductService {
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
 
+    @InjectRepository(ProductImage)
+    public productImageRepository: Repository<ProductImage>,
+
     private readonly authService: AuthService,
     private readonly brandService: BrandService,
     private readonly categoryService: CategoryService,
+
     private dataSource: DataSource,
   ) {}
 
@@ -30,12 +35,14 @@ export class ProductService {
       .leftJoinAndSelect('Product.brand', 'Brand')
       .leftJoinAndSelect('Brand.user', 'Members')
       .leftJoinAndSelect('Product.category', 'Category')
+      .leftJoinAndSelect('Product.options', 'Option')
       .select([
         'Product',
         'Brand',
         'Members.name',
         'Members.userId',
         'Category',
+        'Option',
       ]);
     return queryBuilder;
   }
@@ -59,10 +66,18 @@ export class ProductService {
     return findProduct;
   }
 
+  public async addImages(product: Product, image) {
+    const productImage = new ProductImage();
+    productImage.product = product;
+    productImage.imageUrl = image.imageUrl;
+    productImage.imageName = image.imageName;
+    return await this.productImageRepository.save(productImage);
+  }
+
   async create(
     createProductDto: CreateProductDto,
     userId: number,
-  ): Promise<void> {
+  ): Promise<Product> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -101,6 +116,7 @@ export class ProductService {
       });
 
       await queryRunner.commitTransaction();
+      return savedProduct;
     } catch (err) {
       console.log('실패?');
       await queryRunner.rollbackTransaction();
