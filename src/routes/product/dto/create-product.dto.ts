@@ -1,14 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
 import { AddOptionForProductDto } from '../options/dto/addOptionForProductDto.dto';
+import { Transform } from 'class-transformer';
 export class CreateProductDto {
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
   readonly brandId: number;
 
   @ApiProperty({ example: '테스트 상품', description: '기본값' })
-  @Length(1, 10, { message: '카테고리 이름은 50글자 미만으로 입력해주세요.' })
-  @IsString({ message: '카테고리 이름은 문자열로 입력해주세요.' })
+  @Length(1, 10, {
+    message: '상품 이름은 1글자 이상 50글자 미만으로 입력해주세요.',
+  })
+  @IsString({ message: '상품 이름은 문자열로 입력해주세요.' })
   readonly productName: string;
 
   @ApiProperty({ example: 1, description: '기본값' })
@@ -34,5 +37,8 @@ export class CreateProductDto {
     description: '기본값',
   })
   @IsOptional()
+  @Transform(({ value }) =>
+    typeof value === 'string' ? JSON.parse(value) : value,
+  )
   readonly options?: AddOptionForProductDto[];
 }

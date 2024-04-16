@@ -11,16 +11,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { BrandService } from 'src/routes/brand/brand.service';
 import { CategoryService } from '../category/category.service';
 import { Option } from './options/entities/option.entity';
-import { ProductImage } from './entities/productImage.entity';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
-
-    @InjectRepository(ProductImage)
-    public productImageRepository: Repository<ProductImage>,
 
     private readonly authService: AuthService,
     private readonly brandService: BrandService,
@@ -66,14 +62,6 @@ export class ProductService {
     return findProduct;
   }
 
-  public async addImages(product: Product, image) {
-    const productImage = new ProductImage();
-    productImage.product = product;
-    productImage.imageUrl = image.imageUrl;
-    productImage.imageName = image.imageName;
-    return await this.productImageRepository.save(productImage);
-  }
-
   async create(
     createProductDto: CreateProductDto,
     userId: number,
@@ -103,8 +91,8 @@ export class ProductService {
       product.category = category;
 
       const savedProduct = await queryRunner.manager.save(product);
-
       createProductDto.options.forEach(async (option) => {
+        console.log('option', option);
         const optionEntity = new Option();
 
         optionEntity.optionName = option.optionName;
@@ -118,8 +106,9 @@ export class ProductService {
       await queryRunner.commitTransaction();
       return savedProduct;
     } catch (err) {
-      console.log('실패?');
+      console.log('실패?', err);
       await queryRunner.rollbackTransaction();
+      throw err;
       throw new ProductException(ProductException.PRODUCT_CREATE_FAIL);
     } finally {
       await queryRunner.release();

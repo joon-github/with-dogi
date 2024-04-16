@@ -23,6 +23,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AwsService } from 'src/global/aws/aws.service';
 import { CreateProduct } from './decorator/CreateProduct';
+import { ProductImageService } from './productImage.service';
 
 @Controller('product')
 @ApiTags('product')
@@ -30,6 +31,7 @@ export class ProductController {
   constructor(
     private readonly productService: ProductService,
     private readonly awsService: AwsService,
+    private readonly productImageService: ProductImageService,
   ) {}
 
   @Get()
@@ -73,12 +75,14 @@ export class ProductController {
   }
 
   @Post()
+  @ApiOperation({ summary: '상품 등록' })
   @CreateProduct()
   async create(
     @Body() createProductDto: CreateProductDto,
     @Req() request: Request,
     @UploadedFiles() images: Array<Express.Multer.File>,
   ): Promise<ResponesContainerDto<null>> {
+    console.log(images);
     const file = request.file;
     const user = request['user'] as TokenPayload;
     const product = await this.productService.create(
@@ -86,7 +90,7 @@ export class ProductController {
       user.userId,
     );
     const url = await this.awsService.imageUpload(file);
-    await this.productService.addImages(product, url);
+    await this.productImageService.addImages(product, url);
     return {
       statusCode: 201,
       message: '상품 등록 성공',

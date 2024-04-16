@@ -1,12 +1,16 @@
-import { UseInterceptors, applyDecorators } from '@nestjs/common';
+import {
+  UseInterceptors,
+  UsePipes,
+  ValidationPipe,
+  applyDecorators,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiOperation, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { ApiConsumes, ApiBody } from '@nestjs/swagger';
 
 export function CreateProduct() {
   return applyDecorators(
     UseInterceptors(FileInterceptor('images')),
     ApiConsumes('multipart/form-data'),
-    ApiOperation({ summary: '상품 등록' }),
     ApiBody({
       schema: {
         type: 'object',
@@ -35,7 +39,9 @@ export function CreateProduct() {
             },
           },
         },
+        required: ['productName', 'brandId', 'categoryId', 'price', 'options'],
       },
     }),
+    UsePipes(new ValidationPipe({ transform: true })),
   );
 }

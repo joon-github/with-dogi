@@ -1,9 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Res } from '@nestjs/common';
+import { Response } from 'express';
 
 @Controller()
 export class AppController {
   @Get()
-  getHello(): string {
-    return '안녕하세요. with_dogi API 입니다.';
+  getHello(@Res() res: Response): void {
+    res.send(
+      '<html><body><h1>안녕하세요. with_dogi API 입니다.</h1><a href="http://localhost:8000/api-base-docs#/">docs로 이동</a></a></body></html>',
+    );
   }
 }
