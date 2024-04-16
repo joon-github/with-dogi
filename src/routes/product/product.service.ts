@@ -11,6 +11,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { BrandService } from 'src/routes/brand/brand.service';
 import { CategoryService } from '../category/category.service';
 import { Option } from './options/entities/option.entity';
+import { AwsService } from 'src/global/aws/aws.service';
+import { ProductImageService } from './productImage.service';
+import { ProductImage } from './entities/productImage.entity';
 
 @Injectable()
 export class ProductService {
@@ -18,10 +21,14 @@ export class ProductService {
     @InjectRepository(Product)
     private productRepository: Repository<Product>,
 
+    @InjectRepository(ProductImage)
+    public productImageRepository: Repository<ProductImage>,
+
     private readonly authService: AuthService,
     private readonly brandService: BrandService,
     private readonly categoryService: CategoryService,
-
+    private readonly awsService: AwsService,
+    private readonly productImageService: ProductImageService,
     private dataSource: DataSource,
   ) {}
 
@@ -65,6 +72,7 @@ export class ProductService {
   async create(
     createProductDto: CreateProductDto,
     userId: number,
+    file: Express.Multer.File,
   ): Promise<Product> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -91,7 +99,8 @@ export class ProductService {
       product.category = category;
 
       const savedProduct = await queryRunner.manager.save(product);
-      createProductDto.options.forEach(async (option) => {
+
+      for (const option of createProductDto.options) {
         console.log('option', option);
         const optionEntity = new Option();
 
@@ -101,8 +110,16 @@ export class ProductService {
         optionEntity.stock = option.stock;
 
         await queryRunner.manager.save(optionEntity);
-      });
-
+      }
+      if (file) {
+        const url = await this.awsService.imageUpload(file);
+        const productImage = new ProductImage();
+        productImage.product = product;
+        productImage.imageName = 'test';
+        productImage.type = 'main';
+        productImage.imageUrl = url.imageUrl;
+        await queryRunner.manager.save(productImage);
+      }
       await queryRunner.commitTransaction();
       return savedProduct;
     } catch (err) {

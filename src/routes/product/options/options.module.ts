@@ -12,11 +12,23 @@ import { Brand } from 'src/routes/brand/entities/brand.entity';
 import { BrandService } from 'src/routes/brand/brand.service';
 import { CategoryService } from 'src/routes/category/category.service';
 import { Category } from 'src/routes/category/entities/Category.entity';
+import { AwsModule } from 'src/global/aws/aws.module';
+import { ProductImageModule } from '../productImage.module';
+import { ProductImage } from '../entities/productImage.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, Option, Brand, Members, Category]),
+    TypeOrmModule.forFeature([
+      Product,
+      Option,
+      Brand,
+      Members,
+      Category,
+      ProductImage,
+    ]),
     AuthModule,
+    AwsModule,
+    ProductImageModule,
   ],
   controllers: [OptionsController],
   providers: [

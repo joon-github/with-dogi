@@ -11,11 +11,12 @@ export class ProductImageService {
     public productImageRepository: Repository<ProductImage>,
   ) {}
 
-  public async addImages(product: Product, image) {
+  public async addImages(product: Product, url: string) {
     const productImage = new ProductImage();
     productImage.product = product;
-    productImage.imageUrl = image.imageUrl;
-    productImage.imageName = image.imageName;
+    productImage.imageName = 'test';
+    productImage.type = 'main';
+    productImage.imageUrl = url;
     return await this.productImageRepository.save(productImage);
   }
 }

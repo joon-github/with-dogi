@@ -23,13 +23,10 @@ export class ProductImage {
   @JoinColumn({ name: 'productId' })
   product: Product;
 
-  @Column({ length: 100 })
-  productName: string;
-
   @Column({
     type: 'enum',
     enum: ProductImageEnum,
     default: ProductImageEnum.MAIN,
   })
-  tpye: string;
+  type: string;
 }

@@ -1,20 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class AwsService {
   s3Client: S3Client;
 
-  constructor(private configService: ConfigService) {
+  constructor() {
     // AWS S3 클라이언트 초기화. 환경 설정 정보를 사용하여 AWS 리전, Access Key, Secret Key를 설정.
     this.s3Client = new S3Client({
-      region: this.configService.get('AWS_REGION'), // AWS Region
+      region: process.env.AWS_REGION, // AWS Region
       credentials: {
-        accessKeyId: this.configService.get(process.env.AWS_S3_ACCESS_KEY), // Access Key
-        secretAccessKey: this.configService.get(
-          process.env.AWS_S3_SECRET_ACCESS_KEY,
-        ), // Secret Key
+        accessKeyId: process.env.AWS_S3_ACCESS_KEY, // Access Key
+        secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+        // Secret Key
       },
     });
   }
@@ -24,9 +22,10 @@ export class AwsService {
     file: Express.Multer.File, // 업로드할 파일
     ext: string, // 파일 확장자
   ) {
+    console.log('asdfadsfadf', process.env.AWS_S3_BUCKET_NAME);
     // AWS S3에 이미지 업로드 명령을 생성합니다. 파일 이름, 파일 버퍼, 파일 접근 권한, 파일 타입 등을 설정합니다.
     const command = new PutObjectCommand({
-      Bucket: this.configService.get('AWS_S3_BUCKET_NAME'), // S3 버킷 이름
+      Bucket: process.env.AWS_S3_BUCKET_NAME, // S3 버킷 이름
       Key: fileName, // 업로드될 파일의 이름
       Body: file.buffer, // 업로드할 파일
       ACL: 'public-read', // 파일 접근 권한

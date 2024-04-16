@@ -15,12 +15,14 @@ import { AwsService } from 'src/global/aws/aws.service';
 import { ConfigService } from '@nestjs/config';
 import { ProductImage } from './entities/productImage.entity';
 import { ProductImageService } from './productImage.service';
+import { AwsModule } from 'src/global/aws/aws.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Product, Members, Brand, Category, ProductImage]),
     AuthModule,
     OptionsModule,
+    AwsModule,
   ],
   controllers: [ProductController],
   providers: [
@@ -29,8 +31,9 @@ import { ProductImageService } from './productImage.service';
     BrandService,
     CategoryService,
     AwsService,
-    ConfigService,
     ProductImageService,
+    ConfigService,
+    ProductImage,
   ],
 })
 export class ProductModule {}

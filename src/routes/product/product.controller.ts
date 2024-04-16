@@ -85,30 +85,12 @@ export class ProductController {
     console.log(images);
     const file = request.file;
     const user = request['user'] as TokenPayload;
-    let product = null;
-    try {
-      console.log(1);
-      product = await this.productService.create(createProductDto, user.userId);
-      console.log(2);
-      const url = await this.awsService.imageUpload(file);
-      console.log(3);
-      await this.productImageService.addImages(product, url);
-      return {
-        statusCode: 201,
-        message: '상품 등록 성공',
-        data: null,
-      };
-    } catch (err) {
-      console.log(product);
-      if (product) {
-        await this.productService.remove(product.productId, user.userId);
-      }
-      return {
-        statusCode: 400,
-        message: '상품 등록 실패',
-        data: null,
-      };
-    }
+    await this.productService.create(createProductDto, user.userId, file);
+    return {
+      statusCode: 201,
+      message: '상품 등록 성공',
+      data: null,
+    };
   }
 
   @Patch(':id')
