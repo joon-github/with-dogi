@@ -31,7 +31,10 @@ export class ProductService {
     private dataSource: DataSource,
   ) {}
 
-  private getProduct(): SelectQueryBuilder<Product> {
+  private getProduct(
+    limit?: number,
+    offset?: number,
+  ): SelectQueryBuilder<Product> {
     const queryBuilder = this.productRepository
       .createQueryBuilder('Product')
       .leftJoin('Product.brand', 'Brand')
@@ -48,6 +51,13 @@ export class ProductService {
         'Option',
         'ProductImage',
       ]);
+
+    if (limit) {
+      queryBuilder.limit(limit);
+    }
+    if (offset) {
+      queryBuilder.offset((offset - 1) * limit); // 올바른 오프셋 계산
+    }
     return queryBuilder;
   }
 
@@ -140,7 +150,7 @@ export class ProductService {
     limit: number,
     offset: number,
   ) {
-    const queryBuilder = this.getProduct();
+    const queryBuilder = this.getProduct(limit, offset);
     const where = {};
     const like = {};
     if (userId) {
@@ -160,10 +170,7 @@ export class ProductService {
       queryBuilder.andWhere(`${key} LIKE :value`, { value: `%${value}%` });
     });
 
-    queryBuilder.skip(offset);
-    queryBuilder.take(limit);
     const [product, total] = await queryBuilder.getManyAndCount();
-    // const data = await queryBuilder.getMany();
 
     return {
       total,
