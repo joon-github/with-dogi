@@ -4,7 +4,7 @@ import { UpdateOptionDto } from './dto/update-option.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Option } from './entities/option.entity';
 import { Repository } from 'typeorm';
-import { ProductService } from '../product.service';
+import { ProductService } from '../../product.service';
 @Injectable()
 export class OptionsService {
   constructor(

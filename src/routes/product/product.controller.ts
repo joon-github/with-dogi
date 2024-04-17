@@ -18,8 +18,8 @@ import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface
 
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { FindAllProductQueryDto } from './dto/findAllProduct.dto';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateProductDto } from './dto/createProduct.dto';
+import { UpdateProductDto } from './dto/updateProduct.dto';
 import { CreateProduct } from './decorator/CreateProduct';
 import { ImageInfo } from './dto/ImageInfo';
 
@@ -55,15 +55,15 @@ export class ProductController {
     };
   }
 
-  @Get(':id')
+  @Get(':productId')
   @ApiOperation({ summary: '상품 단일 조회' })
   async findOne(
-    @Param('id') id: string,
+    @Param('productId') productId: number,
   ): Promise<ResponesContainerDto<Product>> {
-    const data = await this.productService.findOne(+id);
+    const data = await this.productService.findOne(productId);
     return {
       statusCode: 200,
-      message: `${id}번 상품 조회 성공`,
+      message: `${productId}번 상품 조회 성공`,
       data: data,
     };
   }
@@ -88,33 +88,33 @@ export class ProductController {
     };
   }
 
-  @Patch(':id')
+  @Patch(':productId')
   @ApiOperation({ summary: '상품 수정' })
   async update(
-    @Param('id') id: string,
+    @Param('productId') productId: number,
     @Body() updateProductDto: UpdateProductDto,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.productService.update(+id, updateProductDto, user.userId);
+    await this.productService.update(productId, updateProductDto, user.userId);
     return {
       statusCode: 200,
-      message: `${id}번 상품 수정 성공`,
+      message: `${productId}번 상품 수정 성공`,
       data: null,
     };
   }
 
-  @Delete(':id')
+  @Delete(':productId')
   @ApiOperation({ summary: '상품 삭제' })
   async remove(
-    @Param('id') id: string,
+    @Param('productId') productId: number,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.productService.remove(+id, user.userId);
+    await this.productService.remove(productId, user.userId);
     return {
       statusCode: 200,
-      message: `${id}번 상품 삭제 성공`,
+      message: `${productId}번 상품 삭제 성공`,
       data: null,
     };
   }

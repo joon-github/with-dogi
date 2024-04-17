@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateProductDto } from './dto/createProduct.dto';
+import { UpdateProductDto } from './dto/updateProduct.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository, SelectQueryBuilder } from 'typeorm';
 import { Product } from './entities/product.entity';
@@ -10,7 +10,7 @@ import { AuthException } from 'src/routes/auth/exceptions/auth-exceptions';
 import { v4 as uuidv4 } from 'uuid';
 import { BrandService } from 'src/routes/brand/brand.service';
 import { CategoryService } from '../category/category.service';
-import { Option } from './options/entities/option.entity';
+import { Option } from './routes/options/entities/option.entity';
 import { AwsService } from 'src/global/aws/aws.service';
 import { ProductImage } from './entities/productImage.entity';
 import { ImageInfo } from './dto/ImageInfo';

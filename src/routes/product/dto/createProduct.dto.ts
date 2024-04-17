@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
-import { AddOptionForProductDto } from '../options/dto/addOptionForProductDto.dto';
+import { AddOptionForProductDto } from '../routes/options/dto/addOptionForProductDto.dto';
 import { Transform } from 'class-transformer';
 import { ImageInfo } from './ImageInfo';
 export class CreateProductDto {

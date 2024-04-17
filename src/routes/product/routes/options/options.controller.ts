@@ -31,13 +31,16 @@ export class OptionsController {
     );
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOptionDto: UpdateOptionDto) {
-    return this.optionsService.update(+id, updateOptionDto);
+  @Patch(':productId')
+  update(
+    @Param('productId') productId: number,
+    @Body() updateOptionDto: UpdateOptionDto,
+  ) {
+    return this.optionsService.update(productId, updateOptionDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.optionsService.remove(+id);
+  @Delete(':productId')
+  remove(@Param('productId') productId: number) {
+    return this.optionsService.remove(productId);
   }
 }

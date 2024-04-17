@@ -9,8 +9,9 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { Option } from '../options/entities/option.entity';
+import { Option } from '../routes/options/entities/option.entity';
 import { ProductImage } from './productImage.entity';
+import { ProductQuestion } from '../routes/question/entities/productQuestion.entity';
 
 @Entity('Product')
 export class Product {
@@ -49,4 +50,7 @@ export class Product {
 
   @OneToMany(() => ProductImage, (image) => image.product)
   images?: ProductImage[];
+
+  @OneToMany(() => ProductQuestion, (question) => question.product)
+  productQuestions?: ProductQuestion[];
 }

@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { UserRole } from '../enums/user_role.enum';
 import { Brand } from 'src/routes/brand/entities/brand.entity';
+import { ProductQuestion } from 'src/routes/product/routes/question/entities/productQuestion.entity';
 
 @Entity('Members')
 export class Members {
@@ -40,4 +41,7 @@ export class Members {
 
   @OneToMany(() => Brand, (brand) => brand.user)
   brands: Brand[];
+
+  @OneToMany(() => ProductQuestion, (question) => question.user)
+  productQuestions?: ProductQuestion[];
 }

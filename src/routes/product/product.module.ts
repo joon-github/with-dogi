@@ -10,7 +10,7 @@ import { Brand } from 'src/routes/brand/entities/brand.entity';
 import { BrandService } from 'src/routes/brand/brand.service';
 import { CategoryService } from '../category/category.service';
 import { Category } from '../category/entities/Category.entity';
-import { OptionsModule } from './options/options.module';
+import { OptionsModule } from './routes/options/options.module';
 import { AwsService } from 'src/global/aws/aws.service';
 import { ConfigService } from '@nestjs/config';
 import { ProductImage } from './entities/productImage.entity';
