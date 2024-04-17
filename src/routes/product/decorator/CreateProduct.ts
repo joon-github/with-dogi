@@ -22,7 +22,7 @@ export function CreateProduct() {
             items: {
               type: 'object',
               properties: {
-                image: {
+                file: {
                   type: 'string',
                   format: 'binary',
                 },

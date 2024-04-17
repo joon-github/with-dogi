@@ -13,7 +13,6 @@ import { BrandService } from 'src/routes/brand/brand.service';
 import { CategoryService } from 'src/routes/category/category.service';
 import { Category } from 'src/routes/category/entities/Category.entity';
 import { AwsModule } from 'src/global/aws/aws.module';
-import { ProductImageModule } from '../productImage.module';
 import { ProductImage } from '../entities/productImage.entity';
 
 @Module({
@@ -28,7 +27,6 @@ import { ProductImage } from '../entities/productImage.entity';
     ]),
     AuthModule,
     AwsModule,
-    ProductImageModule,
   ],
   controllers: [OptionsController],
   providers: [

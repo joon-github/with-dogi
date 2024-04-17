@@ -12,7 +12,6 @@ import { BrandService } from 'src/routes/brand/brand.service';
 import { CategoryService } from '../category/category.service';
 import { Option } from './options/entities/option.entity';
 import { AwsService } from 'src/global/aws/aws.service';
-import { ProductImageService } from './productImage.service';
 import { ProductImage } from './entities/productImage.entity';
 import { ImageInfo } from './dto/ImageInfo';
 
@@ -29,7 +28,6 @@ export class ProductService {
     private readonly brandService: BrandService,
     private readonly categoryService: CategoryService,
     private readonly awsService: AwsService,
-    private readonly productImageService: ProductImageService,
     private dataSource: DataSource,
   ) {}
 
@@ -102,7 +100,6 @@ export class ProductService {
       const savedProduct = await queryRunner.manager.save(product);
 
       for (const option of createProductDto.options) {
-        console.log('option', option);
         const optionEntity = new Option();
 
         optionEntity.optionName = option.optionName;

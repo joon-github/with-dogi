@@ -20,19 +20,13 @@ import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { FindAllProductQueryDto } from './dto/findAllProduct.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { AwsService } from 'src/global/aws/aws.service';
 import { CreateProduct } from './decorator/CreateProduct';
-import { ProductImageService } from './productImage.service';
 import { ImageInfo } from './dto/ImageInfo';
 
 @Controller('product')
 @ApiTags('product')
 export class ProductController {
-  constructor(
-    private readonly productService: ProductService,
-    private readonly awsService: AwsService,
-    private readonly productImageService: ProductImageService,
-  ) {}
+  constructor(private readonly productService: ProductService) {}
 
   @Get()
   @ApiOperation({ summary: '상품 전체 조회' })
@@ -75,7 +69,10 @@ export class ProductController {
   }
 
   @Post()
-  @ApiOperation({ summary: '상품 등록' })
+  @ApiOperation({
+    summary:
+      '상품 등록 (스웨거 multipart/form-data 데이터 표현 한계로 테스트 불가능. 클라이언트에서 테스트 진행할것)',
+  })
   @CreateProduct()
   async create(
     @Body() createProductDto: CreateProductDto,

@@ -14,7 +14,6 @@ import { OptionsModule } from './options/options.module';
 import { AwsService } from 'src/global/aws/aws.service';
 import { ConfigService } from '@nestjs/config';
 import { ProductImage } from './entities/productImage.entity';
-import { ProductImageService } from './productImage.service';
 import { AwsModule } from 'src/global/aws/aws.module';
 
 @Module({
@@ -31,7 +30,6 @@ import { AwsModule } from 'src/global/aws/aws.module';
     BrandService,
     CategoryService,
     AwsService,
-    ProductImageService,
     ConfigService,
     ProductImage,
   ],
