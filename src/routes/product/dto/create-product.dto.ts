@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
 import { AddOptionForProductDto } from '../options/dto/addOptionForProductDto.dto';
 import { Transform } from 'class-transformer';
+import { ImageInfo } from './ImageInfo';
 export class CreateProductDto {
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
@@ -41,4 +42,10 @@ export class CreateProductDto {
     typeof value === 'string' ? JSON.parse(value) : value,
   )
   readonly options?: AddOptionForProductDto[];
+
+  @IsOptional()
+  @Transform(({ value }) =>
+    typeof value === 'string' ? JSON.parse(value) : value,
+  )
+  readonly images?: ImageInfo[];
 }

@@ -14,6 +14,7 @@ import { Option } from './options/entities/option.entity';
 import { AwsService } from 'src/global/aws/aws.service';
 import { ProductImageService } from './productImage.service';
 import { ProductImage } from './entities/productImage.entity';
+import { ImageInfo } from './dto/ImageInfo';
 
 @Injectable()
 export class ProductService {
@@ -72,7 +73,7 @@ export class ProductService {
   async create(
     createProductDto: CreateProductDto,
     userId: number,
-    file: Express.Multer.File,
+    images: ImageInfo[],
   ): Promise<Product> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -111,14 +112,16 @@ export class ProductService {
 
         await queryRunner.manager.save(optionEntity);
       }
-      if (file) {
-        const url = await this.awsService.imageUpload(file);
-        const productImage = new ProductImage();
-        productImage.product = product;
-        productImage.imageName = 'test';
-        productImage.type = 'main';
-        productImage.imageUrl = url.imageUrl;
-        await queryRunner.manager.save(productImage);
+      if (images) {
+        for (const image of images) {
+          const url = await this.awsService.imageUpload(image.file);
+          const productImage = new ProductImage();
+          productImage.product = product;
+          productImage.imageName = image.imageName;
+          productImage.type = image.type;
+          productImage.imageUrl = url.imageUrl;
+          await queryRunner.manager.save(productImage);
+        }
       }
       await queryRunner.commitTransaction();
       return savedProduct;

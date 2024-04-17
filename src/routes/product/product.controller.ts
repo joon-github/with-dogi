@@ -9,7 +9,6 @@ import {
   Delete,
   Query,
   Req,
-  UploadedFiles,
 } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 
@@ -24,6 +23,7 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { AwsService } from 'src/global/aws/aws.service';
 import { CreateProduct } from './decorator/CreateProduct';
 import { ProductImageService } from './productImage.service';
+import { ImageInfo } from './dto/ImageInfo';
 
 @Controller('product')
 @ApiTags('product')
@@ -80,12 +80,10 @@ export class ProductController {
   async create(
     @Body() createProductDto: CreateProductDto,
     @Req() request: Request,
-    @UploadedFiles() images: Array<Express.Multer.File>,
   ): Promise<ResponesContainerDto<null>> {
-    console.log(images);
-    const file = request.file;
+    const images: ImageInfo[] = request.images;
     const user = request['user'] as TokenPayload;
-    await this.productService.create(createProductDto, user.userId, file);
+    await this.productService.create(createProductDto, user.userId, images);
     return {
       statusCode: 201,
       message: '상품 등록 성공',

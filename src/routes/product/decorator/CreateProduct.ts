@@ -6,11 +6,13 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { ImagesInterceptor } from '../images.interceptor';
 
 export function CreateProduct() {
   return applyDecorators(
     UseInterceptors(FileInterceptor('images')),
     ApiConsumes('multipart/form-data'),
+    UseInterceptors(ImagesInterceptor),
     ApiBody({
       schema: {
         type: 'object',
@@ -18,8 +20,15 @@ export function CreateProduct() {
           images: {
             type: 'array',
             items: {
-              type: 'string',
-              format: 'binary',
+              type: 'object',
+              properties: {
+                image: {
+                  type: 'string',
+                  format: 'binary',
+                },
+                imageName: { type: 'string' },
+                type: { type: 'string' },
+              },
             },
           },
           brandId: { type: 'number' },
