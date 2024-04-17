@@ -3,9 +3,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Product } from '../../../entities/product.entity';
+import { ProductQuestion } from '../../question/entities/productQuestion.entity';
 
 @Entity('ProductOptions')
 export class Option {
@@ -24,4 +26,7 @@ export class Option {
 
   @Column()
   stock: number;
+
+  @OneToMany(() => ProductQuestion, (question) => question.option)
+  productQuestions?: ProductQuestion[];
 }

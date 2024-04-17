@@ -5,17 +5,17 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Product } from '../../../entities/product.entity';
 import { Members } from 'src/routes/auth/entities/Members.entity';
+import { Option } from '../../options/entities/option.entity';
 
 @Entity('ProductQuestion')
 export class ProductQuestion {
   @PrimaryGeneratedColumn()
   questionId?: number;
 
-  @ManyToOne(() => Product, (product) => product)
-  @JoinColumn({ name: 'productId' })
-  product: Product;
+  @ManyToOne(() => Option, (product) => product)
+  @JoinColumn({ name: 'optionId' })
+  option: Option;
 
   @ManyToOne(() => Members, (members) => members)
   @JoinColumn({ name: 'userId' })

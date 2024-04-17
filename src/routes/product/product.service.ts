@@ -34,10 +34,11 @@ export class ProductService {
   private getProduct(): SelectQueryBuilder<Product> {
     const queryBuilder = this.productRepository
       .createQueryBuilder('Product')
-      .leftJoinAndSelect('Product.brand', 'Brand')
-      .leftJoinAndSelect('Brand.user', 'Members')
-      .leftJoinAndSelect('Product.category', 'Category')
-      .leftJoinAndSelect('Product.options', 'Option')
+      .leftJoin('Product.brand', 'Brand')
+      .leftJoin('Brand.user', 'Members')
+      .leftJoin('Product.category', 'Category')
+      .leftJoin('Product.options', 'Option')
+      .leftJoin('Product.images', 'ProductImage')
       .select([
         'Product',
         'Brand',
@@ -45,6 +46,7 @@ export class ProductService {
         'Members.userId',
         'Category',
         'Option',
+        'ProductImage',
       ]);
     return queryBuilder;
   }
@@ -126,7 +128,6 @@ export class ProductService {
       console.log('실패?', err);
       await queryRunner.rollbackTransaction();
       throw err;
-      throw new ProductException(ProductException.PRODUCT_CREATE_FAIL);
     } finally {
       await queryRunner.release();
     }

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Option } from './entities/option.entity';
 import { Repository } from 'typeorm';
 import { ProductService } from '../../product.service';
+import { ProductException } from '../../exceptions/product-exceptions';
 @Injectable()
 export class OptionsService {
   constructor(
@@ -13,6 +14,18 @@ export class OptionsService {
 
     private readonly productService: ProductService,
   ) {}
+
+  public async findOptionByOptionId(optionId: number) {
+    const option = await this.productOptionRepository
+      .createQueryBuilder('Option')
+      .where('Option.optionId = :optionId', { optionId: optionId })
+      .getOne();
+    if (!option) {
+      throw new ProductException(ProductException.OPTION_NOT_FOUND);
+    }
+    return option;
+  }
+
   async addOptionForProduct(
     addOptionForProductDto: AddOptionForProductDto,
     userId: number,
@@ -40,6 +53,7 @@ export class OptionsService {
   }
 
   update(id: number, updateOptionDto: UpdateOptionDto) {
+    console.log(updateOptionDto);
     return `This action updates a #${id} option`;
   }
 
