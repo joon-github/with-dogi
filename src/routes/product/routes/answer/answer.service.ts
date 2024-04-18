@@ -20,6 +20,19 @@ export class AnswerService {
     private readonly productService: ProductService,
     private readonly questionService: QuestionService,
   ) {}
+  private async answerOwnerCheck(answerId: number, userId: number) {
+    const answer = await this.productAnswerRepository.findOne({
+      where: { answerId: answerId },
+      relations: ['question', 'user'],
+    });
+    if (!answer) {
+      throw new AnswerException(AnswerException.ANSWER_NOT_FOUND);
+    }
+    if (answer.user.userId !== userId) {
+      throw new AnswerException(AnswerException.NOT_ANSWER_OWNER);
+    }
+    return answer;
+  }
 
   private async productOwnerCheck(questionId: number, userId: number) {
     const productId =
@@ -35,6 +48,7 @@ export class AnswerService {
     userId: number,
   ) {
     await this.productOwnerCheck(questionId, userId);
+
     const answer = new ProductAnswer();
     answer.user = await this.authService.findUserById(userId);
     answer.question =
@@ -49,20 +63,12 @@ export class AnswerService {
     updateAnswerDto: UpdateAnswerDto,
     userId: number,
   ) {
-    const answer = await this.productAnswerRepository.findOne({
-      where: { answerId: answerId },
-      relations: ['question', 'user'],
-    });
-    console.log(answer);
-    if (!answer) {
-      throw new AnswerException(AnswerException.ANSWER_NOT_FOUND);
-    }
-    if (answer.user.userId !== userId) {
-      throw new AnswerException(AnswerException.NOT_ANSWER_OWNER);
-    }
-    await this.productOwnerCheck(answer.question.questionId, userId);
+    await this.answerOwnerCheck(answerId, userId);
+    return await this.productAnswerRepository.update(answerId, updateAnswerDto);
+  }
 
-    answer.answerContent = updateAnswerDto.answerContent;
-    return await this.productAnswerRepository.update(answerId, answer);
+  async deleteAnswer(answerId: number, userId: number) {
+    await this.answerOwnerCheck(answerId, userId);
+    return await this.productAnswerRepository.delete(answerId);
   }
 }

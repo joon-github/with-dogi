@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Patch, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  Patch,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { AnswerService } from './answer.service';
 import { AddAnswerDto } from './dto/AddAnswerDto.dto';
@@ -45,4 +53,6 @@ export class AnswerController {
       data: null,
     };
   }
+
+  // @Delete()
 }
