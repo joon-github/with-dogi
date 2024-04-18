@@ -16,6 +16,7 @@ import { ConfigService } from '@nestjs/config';
 import { ProductImage } from './entities/productImage.entity';
 import { AwsModule } from 'src/global/aws/aws.module';
 import { QuestionModule } from './routes/question/question.module';
+import { AnwserModule } from './routes/answer/answer.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { QuestionModule } from './routes/question/question.module';
     OptionsModule,
     AwsModule,
     QuestionModule,
+    AnwserModule,
   ],
   controllers: [ProductController],
   providers: [

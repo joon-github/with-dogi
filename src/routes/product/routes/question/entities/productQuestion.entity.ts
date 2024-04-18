@@ -3,10 +3,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Members } from 'src/routes/auth/entities/Members.entity';
 import { Option } from '../../options/entities/option.entity';
+import { ProductAnswer } from '../../answer/entities/productAnswer.entity';
 
 @Entity('ProductQuestion')
 export class ProductQuestion {
@@ -26,4 +28,7 @@ export class ProductQuestion {
 
   @Column({ type: 'text' })
   questionContent: string;
+
+  @OneToMany(() => ProductAnswer, (answer) => answer.question)
+  answer: ProductAnswer[];
 }

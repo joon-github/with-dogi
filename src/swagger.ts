@@ -6,6 +6,7 @@ import { AuthModule } from './routes/auth/auth.module';
 import { CategoryModule } from './routes/category/category.module';
 import { OptionsModule } from './routes/product/routes/options/options.module';
 import { QuestionModule } from './routes/product/routes/question/question.module';
+import { AnwserModule } from './routes/product/routes/answer/answer.module';
 
 export function setupSwagger(app: INestApplication): void {
   //현재 경로
@@ -31,7 +32,13 @@ export function setupSwagger(app: INestApplication): void {
     .build();
 
   const productsDocument = SwaggerModule.createDocument(app, productsOptions, {
-    include: [ProductModule, BrandModule, OptionsModule, QuestionModule],
+    include: [
+      ProductModule,
+      BrandModule,
+      OptionsModule,
+      QuestionModule,
+      AnwserModule,
+    ],
   });
 
   SwaggerModule.setup('api-products-docs', app, productsDocument);

@@ -19,6 +19,27 @@ export class QuestionService {
     private readonly productService: ProductService,
   ) {}
 
+  public async findQuestionByQuestionId(questionId: number) {
+    const question = await this.productQuestionRepository.findOne({
+      where: { questionId },
+    });
+    if (!question) {
+      throw new QuestionException(QuestionException.QUESTION_NOT_FOUND);
+    }
+    return question;
+  }
+
+  public async findProductIdByQuestionId(questionId: number) {
+    const question = await this.productQuestionRepository.findOne({
+      where: { questionId },
+      relations: ['option.product'],
+    });
+    if (!question) {
+      throw new QuestionException(QuestionException.QUESTION_NOT_FOUND);
+    }
+    return question.option.product.productId;
+  }
+
   private async questionQueryBuilder() {
     return this.productQuestionRepository
       .createQueryBuilder('ProductQuestion')

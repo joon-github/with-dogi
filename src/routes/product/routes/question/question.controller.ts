@@ -58,7 +58,7 @@ export class QuestionController {
   }
 
   @Get('/user')
-  @ApiOperation({ summary: '유저 별 문의 조회' })
+  @ApiOperation({ summary: '개인 별 문의 조회' })
   async getQuestionByUserId(
     @Req() request: Request,
   ): Promise<ResponesContainerDto<ProductQuestion[]>> {
