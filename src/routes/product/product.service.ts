@@ -8,7 +8,7 @@ import { ProductException } from './exceptions/product-exceptions';
 import { AuthService } from 'src/routes/auth/services/auth.service';
 import { AuthException } from 'src/routes/auth/exceptions/auth-exceptions';
 import { v4 as uuidv4 } from 'uuid';
-import { BrandService } from 'src/routes/brand/brand.service';
+import { BrandService } from 'src/routes/product/routes/brand/brand.service';
 import { CategoryService } from '../category/category.service';
 import { Option } from './routes/options/entities/option.entity';
 import { AwsService } from 'src/global/aws/aws.service';

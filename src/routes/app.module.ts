@@ -13,7 +13,7 @@ import { VerifyTokenMiddleware } from '../middleware/verifyToken.middleware';
 
 import { ProductModule } from './product/product.module';
 import { AuthModule } from './auth/auth.module';
-import { BrandModule } from './brand/brand.module';
+import { BrandModule } from './product/routes/brand/brand.module';
 import { CategoryModule } from './category/category.module';
 
 @Module({

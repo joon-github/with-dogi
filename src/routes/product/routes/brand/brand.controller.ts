@@ -18,7 +18,7 @@ import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { FindAllBrandQueryDto } from './dto/find_all_brand.dto';
 import { Brand } from './entities/brand.entity';
 
-@Controller('brand')
+@Controller('product/brand')
 @ApiTags('brand')
 export class BrandController {
   constructor(private readonly brandService: BrandService) {}

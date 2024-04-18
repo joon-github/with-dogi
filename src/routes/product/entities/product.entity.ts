@@ -1,5 +1,5 @@
 import { IsOptional } from 'class-validator';
-import { Brand } from 'src/routes/brand/entities/brand.entity';
+import { Brand } from 'src/routes/product/routes/brand/entities/brand.entity';
 import { Category } from 'src/routes/category/entities/Category.entity';
 import {
   Entity,
