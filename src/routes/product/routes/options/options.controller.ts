@@ -13,8 +13,8 @@ import { UpdateOptionDto } from './dto/update-option.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface';
 
-@Controller('product/options')
-@ApiTags('options')
+@Controller('product/option')
+@ApiTags('option')
 export class OptionsController {
   constructor(private readonly optionsService: OptionsService) {}
 

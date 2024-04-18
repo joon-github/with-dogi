@@ -75,7 +75,7 @@ export class ProductService {
     const findUser = await this.authService.findUserById(userId);
     const findProduct = await this.findProduct(productId);
     if (findUser.userId !== findProduct.brand.user.userId) {
-      throw new AuthException(AuthException.LOGIN_FAIL);
+      throw new ProductException(ProductException.NOT_PRODUCT_OWNER);
     }
     return findProduct;
   }

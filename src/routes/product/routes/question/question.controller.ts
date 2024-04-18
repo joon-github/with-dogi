@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AddQuestionDto } from './dto/AddQuestionDto.dto';
 import { QuestionService } from './question.service';
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
@@ -28,15 +28,19 @@ export class QuestionController {
 
   @Get('/:productId')
   @ApiOperation({ summary: '상품 별 문의 조회' })
+  @ApiQuery({ name: 'isOwner', required: false, type: Boolean })
   async getQuestionByProductId(
     @Param('productId') productId: number,
     @Req() request: Request,
+    @Query('isOwner') isOwner?: boolean,
   ): Promise<ResponesContainerDto<ProductQuestion[]>> {
     const user = request['user'] as TokenPayload;
-    const data: ProductQuestion[] = await this.questionService.getQuestion(
-      productId,
-      user.userId,
-    );
+    const data: ProductQuestion[] =
+      await this.questionService.getQuestionByProductId(
+        productId,
+        user.userId,
+        isOwner,
+      );
     return {
       statusCode: 200,
       message: `상품 문의 조회 성공`,
@@ -50,10 +54,8 @@ export class QuestionController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<ProductQuestion[]>> {
     const user = request['user'] as TokenPayload;
-    const data: ProductQuestion[] = await this.questionService.getQuestion(
-      user.userId,
-      user.userId,
-    );
+    const data: ProductQuestion[] =
+      await this.questionService.getQuestionByUserId(user.userId);
     return {
       statusCode: 200,
       message: `상품 문의 조회 성공`,
