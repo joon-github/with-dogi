@@ -26,15 +26,32 @@ export class QuestionController {
     };
   }
 
-  @Get(':productId')
-  @ApiOperation({ summary: '상품 문의 조회' })
-  async getQuestion(
+  @Get('/:productId')
+  @ApiOperation({ summary: '상품 별 문의 조회' })
+  async getQuestionByProductId(
     @Param('productId') productId: number,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<ProductQuestion[]>> {
     const user = request['user'] as TokenPayload;
     const data: ProductQuestion[] = await this.questionService.getQuestion(
       productId,
+      user.userId,
+    );
+    return {
+      statusCode: 200,
+      message: `상품 문의 조회 성공`,
+      data: data,
+    };
+  }
+
+  @Get('/user')
+  @ApiOperation({ summary: '유저 별 문의 조회' })
+  async getQuestionByUserId(
+    @Req() request: Request,
+  ): Promise<ResponesContainerDto<ProductQuestion[]>> {
+    const user = request['user'] as TokenPayload;
+    const data: ProductQuestion[] = await this.questionService.getQuestion(
+      user.userId,
       user.userId,
     );
     return {
