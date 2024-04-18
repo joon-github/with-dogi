@@ -6,6 +6,7 @@ import { AddQuestionDto } from './dto/AddQuestionDto.dto';
 import { AuthService } from 'src/routes/auth/services/auth.service';
 import { OptionsService } from '../options/options.service';
 import { ProductService } from '../../product.service';
+import { QuestionException } from './exceptions/question-exceptions';
 
 @Injectable()
 export class QuestionService {
@@ -63,5 +64,27 @@ export class QuestionService {
     queryBuilder.where('User.userId = :userId', { userId });
     const question = await queryBuilder.getMany();
     return question;
+  }
+
+  async deleteQuestion(questionId: number, userId: number) {
+    const findProductIdbyQuestion = await this.productQuestionRepository
+      .createQueryBuilder('ProductQuestion')
+      .leftJoin('ProductQuestion.user', 'User')
+      .leftJoin('ProductQuestion.option', 'Option')
+      .leftJoin('Option.product', 'Product')
+      .select('Product.productId', 'productId')
+      .addSelect('User.userId', 'userId')
+      .where('ProductQuestion.questionId = :questionId', { questionId })
+      .getRawOne();
+    if (!findProductIdbyQuestion) {
+      throw new QuestionException(QuestionException.QUESTION_NOT_FOUND);
+    }
+    const productId = findProductIdbyQuestion?.productId;
+    const questionOwner = findProductIdbyQuestion?.userId === userId;
+    const isOwner = await this.productService.isProductOwner(productId, userId);
+    if (!questionOwner && !isOwner) {
+      throw new QuestionException(QuestionException.NOT_DELETE_PERMISSION);
+    }
+    await this.productQuestionRepository.delete(questionId);
   }
 }

@@ -71,10 +71,19 @@ export class ProductService {
     return product;
   }
 
-  public async checkProductOwner(productId: number, userId: number) {
+  public async isProductOwner(productId: number, userId: number) {
     const findUser = await this.authService.findUserById(userId);
     const findProduct = await this.findProduct(productId);
     if (findUser.userId !== findProduct.brand.user.userId) {
+      return false;
+    }
+    return true;
+  }
+
+  public async checkProductOwner(productId: number, userId: number) {
+    const findProduct = await this.findProduct(productId);
+    const isOwner = await this.isProductOwner(productId, userId);
+    if (!isOwner) {
       throw new ProductException(ProductException.NOT_PRODUCT_OWNER);
     }
     return findProduct;

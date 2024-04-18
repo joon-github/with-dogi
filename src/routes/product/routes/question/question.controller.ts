@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AddQuestionDto } from './dto/AddQuestionDto.dto';
 import { QuestionService } from './question.service';
@@ -60,6 +69,21 @@ export class QuestionController {
       statusCode: 200,
       message: `상품 문의 조회 성공`,
       data: data,
+    };
+  }
+
+  @Delete('/:questionId')
+  @ApiOperation({ summary: '상품 문의 삭제' })
+  async deleteQuestion(
+    @Param('questionId') questionId: number,
+    @Req() request: Request,
+  ): Promise<ResponesContainerDto<null>> {
+    const user = request['user'] as TokenPayload;
+    await this.questionService.deleteQuestion(questionId, user.userId);
+    return {
+      statusCode: 200,
+      message: '상품 문의 삭제 성공',
+      data: null,
     };
   }
 }
