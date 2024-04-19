@@ -9,6 +9,7 @@ import {
 import { Product } from '../../../entities/product.entity';
 import { ProductQuestion } from '../../question/entities/productQuestion.entity';
 import { ProductReview } from '../../review/entities/review.entity';
+import { Cart } from '../../cart/entities/cart.entity';
 
 @Entity('ProductOptions')
 export class Option {
@@ -33,4 +34,7 @@ export class Option {
 
   @OneToMany(() => ProductReview, (review) => review.option)
   reviews: ProductReview[];
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  carts: Cart[];
 }

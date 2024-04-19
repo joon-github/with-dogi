@@ -4,6 +4,7 @@ import { Brand } from 'src/routes/product/routes/brand/entities/brand.entity';
 import { ProductQuestion } from 'src/routes/product/routes/question/entities/productQuestion.entity';
 import { ProductAnswer } from 'src/routes/product/routes/answer/entities/productAnswer.entity';
 import { ProductReview } from 'src/routes/product/routes/review/entities/review.entity';
+import { Cart } from 'src/routes/product/routes/cart/entities/cart.entity';
 
 @Entity('Members')
 export class Members {
@@ -52,4 +53,7 @@ export class Members {
 
   @OneToMany(() => ProductReview, (review) => review.user)
   reviews: ProductReview[];
+
+  @OneToMany(() => Cart, (cart) => cart.user)
+  carts: Cart[];
 }

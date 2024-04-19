@@ -17,7 +17,8 @@ import { ProductImage } from './entities/productImage.entity';
 import { AwsModule } from 'src/global/aws/aws.module';
 import { QuestionModule } from './routes/question/question.module';
 import { AnwserModule } from './routes/answer/answer.module';
-import { ReviewModule } from './routes/review/review.module';
+// import { ReviewModule } from './routes/review/review.module';
+import { CartModule } from './routes/cart/cart.module';
 
 @Module({
   imports: [
@@ -26,8 +27,9 @@ import { ReviewModule } from './routes/review/review.module';
     OptionsModule,
     AwsModule,
     QuestionModule,
+    CartModule,
     AnwserModule,
-    ReviewModule,
+    // ReviewModule,
   ],
   controllers: [ProductController],
   providers: [

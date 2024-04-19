@@ -61,7 +61,7 @@ export class ProductService {
     return queryBuilder;
   }
 
-  private async findProduct(id: number) {
+  public async findProduct(id: number) {
     const product = await this.getProduct()
       .where(`Product.productId = :id`, { id })
       .getOne();
@@ -199,7 +199,7 @@ export class ProductService {
   }
 
   async remove(id: number, userId: number) {
-    await this.checkProductOwner(id, userId);
-    return await this.productRepository.delete(id);
+    const product = await this.checkProductOwner(id, userId);
+    return await this.productRepository.remove(product);
   }
 }

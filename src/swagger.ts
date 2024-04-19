@@ -7,6 +7,7 @@ import { CategoryModule } from './routes/category/category.module';
 import { OptionsModule } from './routes/product/routes/options/options.module';
 import { QuestionModule } from './routes/product/routes/question/question.module';
 import { AnwserModule } from './routes/product/routes/answer/answer.module';
+import { CartModule } from './routes/product/routes/cart/cart.module';
 
 export function setupSwagger(app: INestApplication): void {
   //현재 경로
@@ -34,6 +35,7 @@ export function setupSwagger(app: INestApplication): void {
   const productsDocument = SwaggerModule.createDocument(app, productsOptions, {
     include: [
       ProductModule,
+      CartModule,
       BrandModule,
       OptionsModule,
       QuestionModule,
