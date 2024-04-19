@@ -17,6 +17,7 @@ import { ProductImage } from './entities/productImage.entity';
 import { AwsModule } from 'src/global/aws/aws.module';
 import { QuestionModule } from './routes/question/question.module';
 import { AnwserModule } from './routes/answer/answer.module';
+import { ReviewModule } from './routes/review/review.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AnwserModule } from './routes/answer/answer.module';
     AwsModule,
     QuestionModule,
     AnwserModule,
+    ReviewModule,
   ],
   controllers: [ProductController],
   providers: [

@@ -3,6 +3,7 @@ import { UserRole } from '../enums/user_role.enum';
 import { Brand } from 'src/routes/product/routes/brand/entities/brand.entity';
 import { ProductQuestion } from 'src/routes/product/routes/question/entities/productQuestion.entity';
 import { ProductAnswer } from 'src/routes/product/routes/answer/entities/productAnswer.entity';
+import { ProductReview } from 'src/routes/product/routes/review/entities/review.entity';
 
 @Entity('Members')
 export class Members {
@@ -48,4 +49,7 @@ export class Members {
 
   @OneToMany(() => ProductAnswer, (answer) => answer.question)
   answer: ProductAnswer[];
+
+  @OneToMany(() => ProductReview, (review) => review.user)
+  reviews: ProductReview[];
 }

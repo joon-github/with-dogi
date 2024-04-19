@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Product } from '../../../entities/product.entity';
 import { ProductQuestion } from '../../question/entities/productQuestion.entity';
+import { ProductReview } from '../../review/entities/review.entity';
 
 @Entity('ProductOptions')
 export class Option {
@@ -29,4 +30,7 @@ export class Option {
 
   @OneToMany(() => ProductQuestion, (question) => question.option)
   productQuestions?: ProductQuestion[];
+
+  @OneToMany(() => ProductReview, (review) => review.option)
+  reviews: ProductReview[];
 }
