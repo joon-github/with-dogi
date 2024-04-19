@@ -44,20 +44,22 @@ export class OptionsService {
     await this.productOptionRepository.save(option);
   }
 
-  findAll() {
-    return `This action returns all options`;
+  async update(
+    optionId: number,
+    updateOptionDto: UpdateOptionDto,
+    userId: number,
+  ) {
+    const option = await this.findOptionByOptionId(optionId);
+    const product = option.product;
+    await this.productService.checkProductOwner(product.productId, userId);
+
+    await this.productOptionRepository.update(optionId, updateOptionDto);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} option`;
-  }
-
-  update(id: number, updateOptionDto: UpdateOptionDto) {
-    console.log(updateOptionDto);
-    return `This action updates a #${id} option`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} option`;
+  async deleteOption(optionId: number, userId: number) {
+    const option = await this.findOptionByOptionId(optionId);
+    const product = option.product;
+    await this.productService.checkProductOwner(product.productId, userId);
+    await this.productOptionRepository.delete({ optionId: optionId });
   }
 }

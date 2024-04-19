@@ -54,5 +54,17 @@ export class AnswerController {
     };
   }
 
-  // @Delete()
+  @Delete()
+  async deleteAnswer(
+    @Param('answerId') answerId: number,
+    @Req() request: Request,
+  ): Promise<ResponesContainerDto<null>> {
+    const user = request['user'] as TokenPayload;
+    await this.answerService.deleteAnswer(answerId, user.userId);
+    return {
+      statusCode: 200,
+      message: '문의 답변 삭제 성공',
+      data: null,
+    };
+  }
 }

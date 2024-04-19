@@ -5,7 +5,12 @@ export class AddOptionForProductDto {
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
   @IsOptional()
-  readonly productId?: number;
+  readonly optionId?: number;
+
+  @ApiProperty({ example: 1, description: '기본값' })
+  @IsNumber()
+  @IsOptional()
+  readonly productId: number;
 
   @ApiProperty({ example: '옵션값', description: '기본값' })
   @IsString()
