@@ -19,7 +19,7 @@ export class CartService {
     private readonly optionService: OptionsService,
   ) {}
 
-  private async findMyCartItems(userId: number, cartId: number) {
+  private async findMyCartItem(userId: number, cartId: number) {
     const cartItem = await this.cartRepository
       .createQueryBuilder('Cart')
       .where('Cart.userId = :userId', { userId: userId })
@@ -29,6 +29,18 @@ export class CartService {
       throw new CartException(CartException.CART_NOT_FOUND);
     }
     return cartItem;
+  }
+  public async findMyCartItems(userId: number, cartIds: number[]) {
+    const cartItems = await this.cartRepository
+      .createQueryBuilder('Cart')
+      .where('Cart.userId = :userId', { userId: userId })
+      .andWhere('Cart.cartId IN (:...cartIds)', { cartIds: cartIds })
+      .getMany();
+    if (!cartItems || cartItems.length === 0) {
+      throw new CartException(CartException.CART_NOT_FOUND);
+    }
+
+    return cartItems;
   }
 
   public async findCartByUserId(userId: number) {
@@ -58,7 +70,7 @@ export class CartService {
   }
 
   async deleteCart(cartId: number, userId: number): Promise<void> {
-    const cart = await this.findMyCartItems(userId, cartId);
+    const cart = await this.findMyCartItem(userId, cartId);
     await this.cartRepository.remove(cart);
   }
 
@@ -67,7 +79,7 @@ export class CartService {
     updateCartDto: UpdateOptionDto,
     userId: number,
   ): Promise<void> {
-    await this.findMyCartItems(userId, cartId);
+    await this.findMyCartItem(userId, cartId);
     await this.cartRepository.update(cartId, updateCartDto);
   }
 }

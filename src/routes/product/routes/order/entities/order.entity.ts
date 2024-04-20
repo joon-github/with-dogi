@@ -14,13 +14,13 @@ export class Order {
   @PrimaryGeneratedColumn()
   orderId?: number;
 
-  @Column({ length: 20 })
-  orderNumber: number;
+  @Column()
+  orderNumber: string;
 
   @ManyToOne(() => Members, (member) => member)
   @JoinColumn({ name: 'userId' })
   user: Members;
 
   @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order)
-  orderDetails: OrderDetail[];
+  orderDetails?: OrderDetail[];
 }
