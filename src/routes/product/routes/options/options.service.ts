@@ -18,6 +18,7 @@ export class OptionsService {
   public async findOptionByOptionId(optionId: number) {
     const option = await this.productOptionRepository
       .createQueryBuilder('Option')
+      .leftJoinAndSelect('Option.product', 'Product')
       .where('Option.optionId = :optionId', { optionId: optionId })
       .getOne();
     if (!option) {

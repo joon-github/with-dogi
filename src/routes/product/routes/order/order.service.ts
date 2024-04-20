@@ -11,6 +11,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { Option } from '../options/entities/option.entity';
 import { Members } from 'src/routes/auth/entities/Members.entity';
 import { Cart } from '../cart/entities/cart.entity';
+import { OptionsService } from '../options/options.service';
+import { OrderDirectDto } from './dto/orderDirect.dto';
 @Injectable()
 export class OrderService {
   constructor(
@@ -20,8 +22,9 @@ export class OrderService {
     private readonly dataSource: DataSource,
     private readonly authService: AuthService,
     private readonly cartService: CartService,
+    private readonly optionService: OptionsService,
   ) {}
-  async OrderWithItemsInCart(
+  async orderWithItemsInCart(
     orderWithItemsInCartDto: OrderWithItemsInCartDto,
     userId: number,
   ) {
@@ -94,16 +97,65 @@ export class OrderService {
     } finally {
       await queryRunner.release();
     }
-    // 트렌젝션 실행
-    // userId로 user를 가져온다.
-    // uuIdfmf 생성한다. (orderNumber)
-    // 새로운 order을 생성한다.
-    // orderCartDto.cartIds를 순회한다
-    // cartId로 cart를 각각 가져온다.
-    // cart.userId와 userId가 비교한다.
-    // cart.optionId로 option을 가져온다.
-    // cart.quantity와 와 option.stock을 비교해서 option.stock이 더 클 경우 (작을 경우 '{optionName} 의 수량이 부족합니다')
-    // 새로 만든 order와 찾은 option,cart로 OrderItem을 추가한다.
-    // option.stock 을 cart.quantity 뺀 값으로 수정한다.
+  }
+
+  async orderDirect(
+    orderDirectDto: OrderDirectDto,
+    userId: number,
+  ): Promise<void> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const option = await this.optionService.findOptionByOptionId(
+        orderDirectDto.optionId,
+      );
+      if (option.stock < orderDirectDto.quantity) {
+        throw new OrderException(
+          OrderException.OPTION_QUANTITY_SHORTAGE(option.optionName),
+        );
+      }
+      const user = await this.authService.findUserById(userId);
+      const buyPrice =
+        (option.product.price + option.addPrice) * orderDirectDto.quantity;
+
+      if (user.point < buyPrice) {
+        throw new OrderException(OrderException.LACK_POINTS);
+      }
+
+      const orderNumber: string = uuidv4();
+      const order = new Order();
+      order.orderNumber = orderNumber;
+      order.user = user;
+
+      const saveOrder = await queryRunner.manager.save(order);
+      const orderItem = new OrderItem();
+      orderItem.order = saveOrder;
+      orderItem.price = buyPrice;
+      orderItem.option = option;
+
+      await queryRunner.manager.save(orderItem);
+      await queryRunner.manager.update(
+        Option,
+        { optionId: orderDirectDto.optionId },
+        {
+          stock: option.stock - orderDirectDto.quantity,
+        },
+      );
+      const newPoint = Math.floor(user.point - buyPrice);
+      await queryRunner.manager.update(
+        Members,
+        { userId: user.userId },
+        {
+          point: newPoint,
+        },
+      );
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
