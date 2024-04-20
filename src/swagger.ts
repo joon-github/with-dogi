@@ -8,6 +8,7 @@ import { OptionsModule } from './routes/product/routes/options/options.module';
 import { QuestionModule } from './routes/product/routes/question/question.module';
 import { AnwserModule } from './routes/product/routes/answer/answer.module';
 import { CartModule } from './routes/product/routes/cart/cart.module';
+import { OrderModule } from './routes/product/routes/order/order.module';
 
 export function setupSwagger(app: INestApplication): void {
   //현재 경로
@@ -40,6 +41,7 @@ export function setupSwagger(app: INestApplication): void {
       OptionsModule,
       QuestionModule,
       AnwserModule,
+      OrderModule,
     ],
   });
 

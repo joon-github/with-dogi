@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Members } from 'src/routes/auth/entities/Members.entity';
-import { OrderDetail } from './orderDetaile';
+import { OrderItem } from './orderItem.entity';
 
 @Entity('Order')
 export class Order {
@@ -21,6 +21,6 @@ export class Order {
   @JoinColumn({ name: 'userId' })
   user: Members;
 
-  @OneToMany(() => OrderDetail, (orderDetail) => orderDetail.order)
-  orderDetails?: OrderDetail[];
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
+  OrderItems?: OrderItem[];
 }

@@ -34,6 +34,8 @@ export class CartService {
     const cartItems = await this.cartRepository
       .createQueryBuilder('Cart')
       .where('Cart.userId = :userId', { userId: userId })
+      .leftJoinAndSelect('Cart.option', 'Option')
+      .leftJoinAndSelect('Option.product', 'Product')
       .andWhere('Cart.cartId IN (:...cartIds)', { cartIds: cartIds })
       .getMany();
     if (!cartItems || cartItems.length === 0) {

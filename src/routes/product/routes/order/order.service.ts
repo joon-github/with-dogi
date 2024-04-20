@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { OrderWithItemsInCartDto } from './dto/orderCart.dto';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, In, Repository } from 'typeorm';
 import { AuthService } from 'src/routes/auth/services/auth.service';
 import { CartService } from '../cart/cart.service';
-import { OptionsService } from '../options/options.service';
 import { OrderException } from './exceptions/order-exceptions';
-import { OrderDetail } from './entities/orderDetaile';
+import { OrderItem } from './entities/orderItem.entity';
 import { Order } from './entities/order.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { v4 as uuidv4 } from 'uuid';
 import { Option } from '../options/entities/option.entity';
 import { Members } from 'src/routes/auth/entities/Members.entity';
+import { Cart } from '../cart/entities/cart.entity';
 @Injectable()
 export class OrderService {
   constructor(
@@ -20,7 +20,6 @@ export class OrderService {
     private readonly dataSource: DataSource,
     private readonly authService: AuthService,
     private readonly cartService: CartService,
-    private readonly optionService: OptionsService,
   ) {}
   async OrderWithItemsInCart(
     orderWithItemsInCartDto: OrderWithItemsInCartDto,
@@ -33,10 +32,11 @@ export class OrderService {
       const user = await this.authService.findUserById(userId);
 
       const orderNumber: string = uuidv4();
-      const order: Order = await queryRunner.manager.save({
-        orderNumber,
-        user,
-      });
+      const order = new Order();
+      order.orderNumber = orderNumber;
+      order.user = user;
+
+      const saveOrder = await queryRunner.manager.save(order);
 
       const cartItems = await this.cartService.findMyCartItems(
         userId,
@@ -45,7 +45,7 @@ export class OrderService {
       let totalCost = 0;
 
       for (const cartItem of cartItems) {
-        if (cartItem.quantity < cartItem.option.stock) {
+        if (cartItem.quantity > cartItem.option.stock) {
           throw new OrderException(
             OrderException.OPTION_QUANTITY_SHORTAGE(cartItem.option.optionName),
           );
@@ -53,26 +53,38 @@ export class OrderService {
         totalCost +=
           (cartItem.option.product.price + cartItem.option.addPrice) *
           cartItem.quantity;
-        const orderDetail: OrderDetail = {
-          order,
-          option: cartItem.option,
-          quantity: cartItem.quantity,
-          price:
-            (cartItem.option.product.price + cartItem.option.addPrice) *
-            cartItem.quantity,
-        };
-        await queryRunner.manager.save(orderDetail);
-        await queryRunner.manager.update(Option, cartItem.option, {
-          stock: cartItem.option.stock - cartItem.quantity,
-        });
+        const orderItem = new OrderItem();
+        orderItem.order = saveOrder;
+        orderItem.option = cartItem.option;
+        orderItem.quantity = cartItem.quantity;
+        orderItem.price =
+          (cartItem.option.product.price + cartItem.option.addPrice) *
+          cartItem.quantity;
+
+        await queryRunner.manager.save(orderItem);
+        await queryRunner.manager.update(
+          Option,
+          { optionId: cartItem.option.optionId },
+          {
+            stock: cartItem.option.stock - cartItem.quantity,
+          },
+        );
       }
 
       if (user.point < totalCost) {
         throw new OrderException(OrderException.LACK_POINTS);
       }
+      const newPoint = Math.floor(user.point - totalCost);
+      await queryRunner.manager.update(
+        Members,
+        { userId: user.userId },
+        {
+          point: newPoint,
+        },
+      );
 
-      await queryRunner.manager.update(Members, user, {
-        point: user.point - totalCost,
+      await queryRunner.manager.delete(Cart, {
+        cartId: In(orderWithItemsInCartDto.cartIds),
       });
 
       await queryRunner.commitTransaction();
@@ -91,7 +103,7 @@ export class OrderService {
     // cart.userId와 userId가 비교한다.
     // cart.optionId로 option을 가져온다.
     // cart.quantity와 와 option.stock을 비교해서 option.stock이 더 클 경우 (작을 경우 '{optionName} 의 수량이 부족합니다')
-    // 새로 만든 order와 찾은 option,cart로 orderDetail을 추가한다.
+    // 새로 만든 order와 찾은 option,cart로 OrderItem을 추가한다.
     // option.stock 을 cart.quantity 뺀 값으로 수정한다.
   }
 }

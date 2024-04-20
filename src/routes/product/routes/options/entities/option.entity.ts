@@ -10,7 +10,7 @@ import { Product } from '../../../entities/product.entity';
 import { ProductQuestion } from '../../question/entities/productQuestion.entity';
 import { ProductReview } from '../../review/entities/review.entity';
 import { Cart } from '../../cart/entities/cart.entity';
-import { OrderDetail } from '../../order/entities/orderDetaile';
+import { OrderItem } from '../../order/entities/orderItem.entity';
 
 @Entity('ProductOptions')
 export class Option {
@@ -36,9 +36,9 @@ export class Option {
   @OneToMany(() => ProductReview, (review) => review.option)
   reviews: ProductReview[];
 
-  @OneToMany(() => Cart, (cart) => cart.user)
+  @OneToMany(() => Cart, (cart) => cart.option)
   carts: Cart[];
 
-  @OneToMany(() => OrderDetail, (cart) => cart.option)
-  orderDetails: OrderDetail[];
+  @OneToMany(() => OrderItem, (detail) => detail.option)
+  OrderItems: OrderItem[];
 }

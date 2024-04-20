@@ -8,8 +8,8 @@ import {
 import { Order } from './order.entity';
 import { Option } from '../../options/entities/option.entity';
 
-@Entity('OrderDetail')
-export class OrderDetail {
+@Entity('OrderItem')
+export class OrderItem {
   @PrimaryGeneratedColumn()
   orderDetailId?: number;
 

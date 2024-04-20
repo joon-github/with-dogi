@@ -78,7 +78,7 @@ export class ProductController {
     @Body() createProductDto: CreateProductDto,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
-    const images: ImageInfo[] = request.images;
+    const images: ImageInfo[] = request.images || [];
     const user = request['user'] as TokenPayload;
     await this.productService.create(createProductDto, user.userId, images);
     return {

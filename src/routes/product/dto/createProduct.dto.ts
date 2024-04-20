@@ -44,8 +44,8 @@ export class CreateProductDto {
   readonly options?: AddOptionForProductDto[];
 
   @IsOptional()
-  @Transform(({ value }) =>
-    typeof value === 'string' ? JSON.parse(value) : value,
-  )
+  // @Transform(({ value }) =>
+  //   typeof value === 'string' ? JSON.parse(value) : value,
+  // )
   readonly images?: ImageInfo[];
 }

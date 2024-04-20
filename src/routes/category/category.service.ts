@@ -32,12 +32,13 @@ export class CategoryService {
     const category = new Category();
     category.categoryName = createCategoryDto.categoryName;
     category.type = createCategoryDto.type;
-    // if (createCategoryDto.parentsCategoryId) {
-    //   const findCategory = await this.findCategoryByCategoryId(
-    //     createCategoryDto.parentsCategoryId,
-    //   );
-    //   category.parent = findCategory;
-    // }
+    console.log(category);
+    if (createCategoryDto.parentsCategoryId) {
+      const findCategory = await this.findCategoryByCategoryId(
+        createCategoryDto.parentsCategoryId,
+      );
+      category.parent = findCategory;
+    }
     return this.categoryRepository.save(category);
   }
 

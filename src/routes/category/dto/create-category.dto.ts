@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsIn, IsNumber, IsString, Length } from 'class-validator';
+import { IsIn, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
 export class CreateCategoryDto {
   @ApiProperty({ example: '테스트 카테고리', description: '기본값' })
@@ -14,5 +14,6 @@ export class CreateCategoryDto {
 
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
+  @IsOptional()
   readonly parentsCategoryId?: number;
 }

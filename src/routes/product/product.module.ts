@@ -19,6 +19,7 @@ import { QuestionModule } from './routes/question/question.module';
 import { AnwserModule } from './routes/answer/answer.module';
 // import { ReviewModule } from './routes/review/review.module';
 import { CartModule } from './routes/cart/cart.module';
+import { OrderModule } from './routes/order/order.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { CartModule } from './routes/cart/cart.module';
     QuestionModule,
     CartModule,
     AnwserModule,
+    OrderModule,
     // ReviewModule,
   ],
   controllers: [ProductController],
@@ -39,7 +41,6 @@ import { CartModule } from './routes/cart/cart.module';
     CategoryService,
     AwsService,
     ConfigService,
-    ProductImage,
   ],
   exports: [ProductService],
 })

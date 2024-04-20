@@ -14,11 +14,13 @@ export class ImagesInterceptor implements NestInterceptor {
     const body = request.body;
 
     // files 배열과 body에서 메타데이터를 조합하여 새로운 images 배열 생성
-    request.images = files.map((file, index) => ({
-      file: file,
-      type: body.types[index],
-      imageName: body.imageNames[index],
-    }));
+    request.images = files
+      ? files.map((file, index) => ({
+          file: file,
+          type: body.types[index],
+          imageName: body.imageNames[index],
+        }))
+      : [];
 
     return next.handle();
   }

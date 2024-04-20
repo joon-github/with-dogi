@@ -11,7 +11,7 @@ export class CartException extends HttpException {
 
   public static get CART_NOT_FOUND(): EXCEPTION {
     return {
-      message: '해당 장바구니애 담긴 상품을 찾을 수 없습니다.',
+      message: '장바구니에 담긴 상품을 찾을 수 없습니다.',
       status: HttpStatus.NOT_FOUND,
     };
   }
