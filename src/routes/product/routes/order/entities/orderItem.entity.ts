@@ -3,10 +3,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Order } from './order.entity';
 import { Option } from '../../options/entities/option.entity';
+import { ProductReview } from '../../review/entities/review.entity';
 
 @Entity('OrderItem')
 export class OrderItem {
@@ -26,4 +28,7 @@ export class OrderItem {
 
   @Column()
   price: number;
+
+  @OneToOne(() => ProductReview)
+  review: ProductReview;
 }

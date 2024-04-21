@@ -18,6 +18,7 @@ import { CartModule } from './routes/cart/cart.module';
 import { AnwserModule } from './routes/answer/answer.module';
 import { OrderModule } from './routes/order/order.module';
 import { AuthModule } from '../auth/auth.module';
+import { ReviewModule } from './routes/review/review.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AuthModule } from '../auth/auth.module';
     AnwserModule,
     OrderModule,
     AuthModule,
+    ReviewModule,
   ],
   controllers: [ProductController],
   providers: [

@@ -4,9 +4,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Option } from '../../options/entities/option.entity';
+import { OrderItem } from '../../order/entities/orderItem.entity';
 
 @Entity('ProductReview')
 export class ProductReview {
@@ -17,9 +18,9 @@ export class ProductReview {
   @JoinColumn({ name: 'userId' })
   user: Members;
 
-  @ManyToOne(() => Option, (option) => option)
-  @JoinColumn({ name: 'optionId' })
-  option: Option;
+  @OneToOne(() => OrderItem)
+  @JoinColumn({ name: 'orderDetailId' })
+  orderItem: OrderItem;
 
   @Column()
   rating: number;

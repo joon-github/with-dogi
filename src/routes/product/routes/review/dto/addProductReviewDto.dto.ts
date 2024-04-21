@@ -8,7 +8,7 @@ export class AddReviewDto {
 
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
-  readonly optionId: number;
+  readonly orderDetailId: number;
 
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()

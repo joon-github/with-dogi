@@ -52,21 +52,17 @@ export class BrandService {
   }
 
   async findAll(brandName: string, userId: number) {
-    const queryBuilder = this.brandRepository.createQueryBuilder('Brand');
-    const where = {};
-    const like = {};
+    const queryBuilder = this.brandRepository
+      .createQueryBuilder('Brand')
+      .leftJoinAndSelect('Brand.user', 'Members');
     if (userId) {
-      where['userId'] = userId;
+      queryBuilder.andWhere('Members.userId = :userId', { userId: userId });
     }
     if (brandName) {
-      like['brandName'] = brandName;
+      queryBuilder.andWhere('Brand.brandName = :brandName', {
+        brandName: brandName,
+      });
     }
-    Object.entries(where).forEach(([key, value]) => {
-      queryBuilder.andWhere(`${key} = :value`, { value });
-    });
-    Object.entries(like).forEach(([key, value]) => {
-      queryBuilder.andWhere(`${key} LIKE :value`, { value: `%${value}%` });
-    });
     const brandList = await queryBuilder.getMany();
     return brandList;
   }

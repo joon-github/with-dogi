@@ -11,7 +11,7 @@ export class OrderException extends HttpException {
 
   public static get SALES_HISTORY(): EXCEPTION {
     return {
-      message: '구매된 이력이 있어 삭제할 수 없습니다.',
+      message: '구매된 이력이 없습니다.',
       status: HttpStatus.BAD_REQUEST,
     };
   }

@@ -14,6 +14,13 @@ import { OptionsService } from './routes/options/options.service';
 import { Option } from './routes/options/entities/option.entity';
 import { QuestionService } from './routes/question/question.service';
 import { ProductQuestion } from './routes/question/entities/productQuestion.entity';
+import { ProductReview } from './routes/review/entities/review.entity';
+import { ReviewService } from './routes/review/review.service';
+import { OrderService } from './routes/order/order.service';
+import { Order } from './routes/order/entities/order.entity';
+import { OrderItem } from './routes/order/entities/orderItem.entity';
+import { CartService } from './routes/cart/cart.service';
+import { Cart } from './routes/cart/entities/cart.entity';
 
 @Module({
   imports: [
@@ -25,6 +32,10 @@ import { ProductQuestion } from './routes/question/entities/productQuestion.enti
       ProductImage,
       Option,
       ProductQuestion,
+      ProductReview,
+      Order,
+      OrderItem,
+      Cart,
     ]),
     AuthModule,
   ],
@@ -35,6 +46,9 @@ import { ProductQuestion } from './routes/question/entities/productQuestion.enti
     AwsService,
     OptionsService,
     QuestionService,
+    ReviewService,
+    OrderService,
+    CartService,
   ],
   exports: [
     ProductService,
@@ -44,6 +58,9 @@ import { ProductQuestion } from './routes/question/entities/productQuestion.enti
     AuthModule,
     OptionsService,
     QuestionService,
+    ReviewService,
+    OrderService,
+    CartService,
     TypeOrmModule.forFeature([
       Product,
       Members,
@@ -52,6 +69,10 @@ import { ProductQuestion } from './routes/question/entities/productQuestion.enti
       ProductImage,
       Option,
       ProductQuestion,
+      ProductReview,
+      Order,
+      OrderItem,
+      Cart,
     ]),
   ],
 })

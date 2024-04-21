@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 import { Product } from '../../../entities/product.entity';
 import { ProductQuestion } from '../../question/entities/productQuestion.entity';
-import { ProductReview } from '../../review/entities/review.entity';
 import { Cart } from '../../cart/entities/cart.entity';
 import { OrderItem } from '../../order/entities/orderItem.entity';
 
@@ -32,9 +31,6 @@ export class Option {
 
   @OneToMany(() => ProductQuestion, (question) => question.option)
   productQuestions?: ProductQuestion[];
-
-  @OneToMany(() => ProductReview, (review) => review.option)
-  reviews: ProductReview[];
 
   @OneToMany(() => Cart, (cart) => cart.option)
   carts: Cart[];

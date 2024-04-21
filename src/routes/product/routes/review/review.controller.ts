@@ -6,7 +6,7 @@ import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface
 import { AddReviewDto } from './dto/addProductReviewDto.dto';
 
 @Controller('product/review')
-@ApiTags('option')
+@ApiTags('review')
 export class ReviewController {
   constructor(private readonly reviewService: ReviewService) {}
 

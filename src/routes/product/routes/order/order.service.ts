@@ -24,6 +24,22 @@ export class OrderService {
     private readonly cartService: CartService,
     private readonly optionService: OptionsService,
   ) {}
+
+  public async checkSalesHistoryWithUserIdAndorderDetailId(
+    userId: number,
+    orderDetailId: number,
+  ) {
+    const salesHistory = await this.orderItemRepository
+      .createQueryBuilder('Order')
+      .leftJoinAndSelect('Order.orderItem', 'OrderItem')
+      .where('Order.userId = :userId', { userId })
+      .andWhere('OrderItem.orderDetailId = :orderDetailId', { orderDetailId })
+      .getOne();
+    if (!salesHistory) {
+      throw new OrderException(OrderException.SALES_HISTORY);
+    }
+    return salesHistory;
+  }
   public async checkSalesHistoryWithbrandId(brandId: number) {
     const salesHistory = await this.orderItemRepository
       .createQueryBuilder('OrderItem')
