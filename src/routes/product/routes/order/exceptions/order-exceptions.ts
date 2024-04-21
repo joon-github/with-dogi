@@ -9,7 +9,12 @@ export class OrderException extends HttpException {
     };
   }
 
-  // 포인트 부족
+  public static get SALES_HISTORY(): EXCEPTION {
+    return {
+      message: '구매된 이력이 있어 삭제할 수 없습니다.',
+      status: HttpStatus.BAD_REQUEST,
+    };
+  }
   public static get LACK_POINTS(): EXCEPTION {
     return {
       message: '포인트가 부족합니다.',

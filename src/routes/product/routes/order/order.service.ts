@@ -16,14 +16,26 @@ import { OrderDirectDto } from './dto/orderDirect.dto';
 @Injectable()
 export class OrderService {
   constructor(
-    @InjectRepository(Order)
-    private readonly orderRepository: Repository<Order>,
+    @InjectRepository(OrderItem)
+    private readonly orderItemRepository: Repository<OrderItem>,
 
     private readonly dataSource: DataSource,
     private readonly authService: AuthService,
     private readonly cartService: CartService,
     private readonly optionService: OptionsService,
   ) {}
+  public async checkSalesHistoryWithbrandId(brandId: number) {
+    const salesHistory = await this.orderItemRepository
+      .createQueryBuilder('OrderItem')
+      .leftJoinAndSelect('OrderItem.option', 'Option')
+      .leftJoinAndSelect('Option.product', 'Product')
+      .leftJoinAndSelect('Option.brand', 'Brand')
+      .where('Brand.brandId = :brandId', { brandId })
+      .getMany();
+    if (salesHistory || salesHistory.length > 0) {
+      throw new OrderException(OrderException.SALES_HISTORY);
+    }
+  }
   async orderWithItemsInCart(
     orderWithItemsInCartDto: OrderWithItemsInCartDto,
     userId: number,

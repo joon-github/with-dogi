@@ -7,6 +7,7 @@ import { Brand } from './entities/brand.entity';
 import { AuthService } from 'src/routes/auth/services/auth.service';
 import { AuthException } from 'src/routes/auth/exceptions/auth-exceptions';
 import { BrandException } from './exceptions/brand-exceptions';
+// import { OrderService } from '../order/order.service';
 
 @Injectable()
 export class BrandService {
@@ -15,6 +16,7 @@ export class BrandService {
     private brandRepository: Repository<Brand>,
 
     private authService: AuthService,
+    // private orderService: OrderService,
   ) {}
 
   public async findBrandById(id: number) {
@@ -69,13 +71,19 @@ export class BrandService {
     return brandList;
   }
 
-  async update(id: number, updateBrandDto: UpdateBrandDto, userId: number) {
-    await this.checkBrandOwner(id, userId);
-    return await this.brandRepository.update(id, updateBrandDto);
+  async update(
+    brandId: number,
+    updateBrandDto: UpdateBrandDto,
+    userId: number,
+  ) {
+    await this.checkBrandOwner(brandId, userId);
+    // await this.orderService.checkSalesHistoryWithbrandId(brandId);
+    return await this.brandRepository.update(brandId, updateBrandDto);
   }
 
-  async remove(id: number, userId: number) {
-    await this.checkBrandOwner(id, userId);
-    return await this.brandRepository.delete(id);
+  async remove(brandId: number, userId: number) {
+    await this.checkBrandOwner(brandId, userId);
+    // await this.orderService.checkSalesHistoryWithbrandId(brandId);
+    return await this.brandRepository.delete(brandId);
   }
 }
