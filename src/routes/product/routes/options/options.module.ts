@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { OptionsController } from './options.controller';
-import { ProductModule } from '../../product.module';
+import { ProductDependenciesModule } from '../../productDependencies.module';
 
 @Module({
-  imports: [ProductModule],
+  imports: [ProductDependenciesModule],
   controllers: [OptionsController],
 })
 export class OptionsModule {}
