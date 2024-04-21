@@ -7,7 +7,7 @@ import {
   Post,
   Req,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AnswerService } from './answer.service';
 import { AddAnswerDto } from './dto/AddAnswerDto.dto';
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
@@ -20,6 +20,7 @@ export class AnswerController {
   constructor(private readonly answerService: AnswerService) {}
 
   @Post(':questionId')
+  @ApiOperation({ summary: '문의 답변 등록' })
   async addAnswer(
     @Param('questionId') questionId: number,
     @Body() addAnswerDto: AddAnswerDto,
@@ -35,12 +36,12 @@ export class AnswerController {
   }
 
   @Patch(':answerId')
+  @ApiOperation({ summary: '문의 답변 수정' })
   async updateAnswer(
     @Param('answerId') answerId: number,
     @Body() updateAnswerDto: UpdateAnswerDto,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
-    console.log('UpdateAnswerDto', UpdateAnswerDto);
     const user = request['user'] as TokenPayload;
     await this.answerService.updateAnswer(
       answerId,
@@ -55,6 +56,7 @@ export class AnswerController {
   }
 
   @Delete()
+  @ApiOperation({ summary: '문의 답변 삭제' })
   async deleteAnswer(
     @Param('answerId') answerId: number,
     @Req() request: Request,

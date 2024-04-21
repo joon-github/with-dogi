@@ -31,9 +31,9 @@ export class BrandService {
     return brand;
   }
 
-  public async checkBrandOwner(id: number, userId: number) {
+  public async checkBrandOwner(brandId: number, userId: number) {
     const findUser = await this.authService.findUserById(userId);
-    const findBrand = await this.findBrandById(id);
+    const findBrand = await this.findBrandById(brandId);
     if (findUser.userId !== findBrand.user.userId) {
       throw new AuthException(AuthException.LOGIN_FAIL);
     }

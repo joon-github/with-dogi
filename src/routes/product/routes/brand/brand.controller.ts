@@ -57,31 +57,33 @@ export class BrandController {
     };
   }
 
-  @Patch(':id')
+  @Patch(':brandId')
+  @ApiOperation({ summary: '브랜드 수정' })
   async update(
-    @Param('id') id: string,
+    @Param('brandId') brandId: number,
     @Body() updateBrandDto: UpdateBrandDto,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.brandService.update(+id, updateBrandDto, user.userId);
+    await this.brandService.update(brandId, updateBrandDto, user.userId);
     return {
       statusCode: 200,
-      message: `${id}번 상품 수정 성공`,
+      message: `${brandId}번 상품 수정 성공`,
       data: null,
     };
   }
 
-  @Delete(':id')
+  @Delete(':brandId')
+  @ApiOperation({ summary: '브랜드 삭제' })
   async remove(
-    @Param('id') id: string,
+    @Param('brandId') brandId: number,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
     const user = request['user'] as TokenPayload;
-    await this.brandService.remove(+id, user.userId);
+    await this.brandService.remove(brandId, user.userId);
     return {
       statusCode: 200,
-      message: `${id}번 브랜드 삭제 성공`,
+      message: `${brandId}번 브랜드 삭제 성공`,
       data: null,
     };
   }
