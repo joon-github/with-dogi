@@ -48,4 +48,17 @@ export class ReviewService {
 
     await this.reviewRepository.save(review);
   }
+
+  async getReview(productId: number): Promise<ProductReview[]> {
+    const review = await this.reviewRepository
+      .createQueryBuilder('ProductReview')
+      .leftJoin('ProductReview.user', 'Memebers')
+      .leftJoin('ProductReview.orderItem', 'orderItem')
+      .leftJoin('orderItem.option', 'option')
+      .leftJoin('option.product', 'product')
+      .select(['ProductReview', 'Memebers.name'])
+      .where('product.productId = :productId', { productId })
+      .getMany();
+    return review;
+  }
 }

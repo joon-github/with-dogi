@@ -1,9 +1,10 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ReviewService } from './review.service';
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { TokenPayload } from 'src/routes/auth/interfaces/token-payload.interface';
 import { AddReviewDto } from './dto/addProductReviewDto.dto';
+import { ProductReview } from './entities/review.entity';
 
 @Controller('product/review')
 @ApiTags('review')
@@ -22,6 +23,19 @@ export class ReviewController {
       statusCode: 201,
       message: '옵션 추가 성공',
       data: null,
+    };
+  }
+
+  @Get(':productId')
+  @ApiOperation({ summary: '상품 리뷰 조회' })
+  async getReview(
+    @Param('productId') productId: number,
+  ): Promise<ResponesContainerDto<ProductReview[]>> {
+    const data = await this.reviewService.getReview(productId);
+    return {
+      statusCode: 200,
+      message: '옵션 조회 성공',
+      data: data,
     };
   }
 }
