@@ -26,5 +26,5 @@ export class ProductReview {
   rating: number;
 
   @Column({ length: 100 })
-  commnet: string;
+  comment: string;
 }

@@ -4,10 +4,6 @@ import { IsNumber, IsString, Max, Min } from 'class-validator';
 export class AddReviewDto {
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
-  readonly userId: number;
-
-  @ApiProperty({ example: 1, description: '기본값' })
-  @IsNumber()
   readonly orderDetailId: number;
 
   @ApiProperty({ example: 1, description: '기본값' })
