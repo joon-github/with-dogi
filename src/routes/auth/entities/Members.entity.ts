@@ -6,6 +6,7 @@ import { ProductAnswer } from 'src/routes/product/routes/answer/entities/product
 import { ProductReview } from 'src/routes/product/routes/review/entities/review.entity';
 import { Cart } from 'src/routes/product/routes/cart/entities/cart.entity';
 import { Order } from 'src/routes/product/routes/order/entities/order.entity';
+import { likeProductReview } from 'src/routes/product/routes/review/entities/likeReview.entity';
 
 @Entity('Members')
 export class Members {
@@ -60,4 +61,7 @@ export class Members {
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
+
+  @OneToMany(() => likeProductReview, (likeReview) => likeReview.user)
+  likeReview: likeProductReview[];
 }

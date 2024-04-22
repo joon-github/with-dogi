@@ -6,12 +6,16 @@ import { AddReviewDto } from './dto/addProductReviewDto.dto';
 import { OrderService } from '../order/order.service';
 import { AuthService } from 'src/routes/auth/services/auth.service';
 import { ReviewException } from './exceptions/question-exceptions';
+import { likeProductReview } from './entities/likeReview.entity';
 
 @Injectable()
 export class ReviewService {
   constructor(
     @InjectRepository(ProductReview)
     private readonly reviewRepository: Repository<ProductReview>,
+
+    @InjectRepository(likeProductReview)
+    private readonly likeReviewRepository: Repository<likeProductReview>,
 
     private readonly orderService: OrderService,
 
@@ -60,5 +64,30 @@ export class ReviewService {
       .where('product.productId = :productId', { productId })
       .getMany();
     return review;
+  }
+
+  async toggleLike(reviewId: number, userId: number): Promise<void> {
+    const review = await this.reviewRepository.findOne({
+      where: { reviewId },
+    });
+    if (!review) {
+      throw new ReviewException(ReviewException.REVIEW_NOT_FOUND);
+    }
+    const user = await this.authService.findUserById(userId);
+
+    const like = await this.likeReviewRepository
+      .createQueryBuilder('LikeProductReview')
+      .where('LikeProductReview.reviewId = :reviewId', { reviewId })
+      .andWhere('LikeProductReview.userId = :userId', { userId })
+      .getOne();
+
+    if (like) {
+      await this.likeReviewRepository.remove(like);
+    } else {
+      const like = new likeProductReview();
+      like.user = user;
+      like.review = review;
+      await this.likeReviewRepository.save(like);
+    }
   }
 }

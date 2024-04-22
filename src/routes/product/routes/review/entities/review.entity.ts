@@ -4,10 +4,12 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OrderItem } from '../../order/entities/orderItem.entity';
+import { likeProductReview } from './likeReview.entity';
 
 @Entity('ProductReview')
 export class ProductReview {
@@ -27,4 +29,7 @@ export class ProductReview {
 
   @Column({ length: 100 })
   comment: string;
+
+  @OneToMany(() => likeProductReview, (likeReview) => likeReview.review)
+  likeReview: likeProductReview[];
 }

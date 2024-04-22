@@ -21,6 +21,7 @@ import { Order } from './routes/order/entities/order.entity';
 import { OrderItem } from './routes/order/entities/orderItem.entity';
 import { CartService } from './routes/cart/cart.service';
 import { Cart } from './routes/cart/entities/cart.entity';
+import { likeProductReview } from './routes/review/entities/likeReview.entity';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { Cart } from './routes/cart/entities/cart.entity';
       Order,
       OrderItem,
       Cart,
+      likeProductReview,
     ]),
     AuthModule,
   ],
@@ -61,19 +63,19 @@ import { Cart } from './routes/cart/entities/cart.entity';
     ReviewService,
     OrderService,
     CartService,
-    TypeOrmModule.forFeature([
-      Product,
-      Members,
-      Brand,
-      Category,
-      ProductImage,
-      Option,
-      ProductQuestion,
-      ProductReview,
-      Order,
-      OrderItem,
-      Cart,
-    ]),
+    // TypeOrmModule.forFeature([
+    //   Product,
+    //   Members,
+    //   Brand,
+    //   Category,
+    //   ProductImage,
+    //   Option,
+    //   ProductQuestion,
+    //   ProductReview,
+    //   Order,
+    //   OrderItem,
+    //   Cart,
+    // ]),
   ],
 })
 export class ProductDependenciesModule {}

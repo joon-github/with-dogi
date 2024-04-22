@@ -38,4 +38,19 @@ export class ReviewController {
       data: data,
     };
   }
+
+  @Post(':reviewId/toggle-like')
+  @ApiOperation({ summary: '리뷰 좋아요 토글' })
+  async toggleLike(
+    @Param('reviewId') reviewId: number,
+    @Req() request: Request,
+  ): Promise<ResponesContainerDto<null>> {
+    const user = request['user'] as TokenPayload;
+    await this.reviewService.toggleLike(reviewId, user.userId);
+    return {
+      statusCode: 200,
+      message: '좋아요 토글 성공',
+      data: null,
+    };
+  }
 }
