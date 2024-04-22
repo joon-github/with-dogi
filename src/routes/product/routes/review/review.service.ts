@@ -34,7 +34,6 @@ export class ReviewService {
       })
       .andWhere('ProductReview.userId = :userId', { userId })
       .getOne();
-    console.log(savedData);
     if (savedData) {
       throw new ReviewException(ReviewException.REVIEW_ALREADY_WRITTEN);
     }
@@ -54,22 +53,23 @@ export class ReviewService {
   }
 
   async getReview(productId: number): Promise<ProductReview[]> {
-    const review = await this.reviewRepository
+    const reviews = await this.reviewRepository
       .createQueryBuilder('ProductReview')
       .leftJoin('ProductReview.user', 'Members')
-      .leftJoin('ProductReview.orderItem', 'orderItem')
-      .leftJoin('orderItem.option', 'option')
-      .leftJoin('option.product', 'product')
-      .select(['ProductReview', 'Members.name'])
-      .addSelect((subQuery) => {
-        return subQuery
-          .select('COUNT(Like.likeProductReviewId)', 'likeCount')
-          .from('LikeProductReview', 'Like')
-          .where('Like.reviewId = ProductReview.reviewId');
-      }, 'likeCount')
-      .where('product.productId = :productId', { productId })
+      .leftJoin('ProductReview.orderItem', 'OrderItem')
+      .leftJoin('OrderItem.option', 'Option')
+      .leftJoinAndSelect('Option.product', 'Product')
+      .leftJoinAndSelect('ProductReview.likeReview', 'LikeProductReview') // 리뷰 좋아요 테이블과 조인
+      .select([
+        'ProductReview', // 모든 ProductReview 필드 선택
+        'LikeProductReview',
+        'Members.name', // 회원 이름 선택
+        'Product.productName',
+      ])
+      .where('Product.productId = :productId', { productId })
       .getMany();
-    return review;
+
+    return reviews;
   }
 
   async toggleLike(reviewId: number, userId: number): Promise<void> {

@@ -17,7 +17,7 @@ export class Brand {
   @Column({ length: 30, unique: true })
   brandName: string;
 
-  @ManyToOne(() => Members, (members) => members.brands)
+  @ManyToOne(() => Members, (members) => members)
   @JoinColumn({ name: 'userId' })
   user: Members;
 

@@ -51,19 +51,12 @@ export class BrandService {
     return await this.brandRepository.save(brand);
   }
 
-  async findAll(brandName: string, userId: number) {
-    const queryBuilder = this.brandRepository
+  async findAll(userId: number) {
+    const brandList = this.brandRepository
       .createQueryBuilder('Brand')
-      .leftJoinAndSelect('Brand.user', 'Members');
-    if (userId) {
-      queryBuilder.andWhere('Members.userId = :userId', { userId: userId });
-    }
-    if (brandName) {
-      queryBuilder.andWhere('Brand.brandName = :brandName', {
-        brandName: brandName,
-      });
-    }
-    const brandList = await queryBuilder.getMany();
+      .leftJoin('Brand.user', 'Members')
+      .where('Members.userId = :userId', { userId: userId })
+      .getMany();
     return brandList;
   }
 
