@@ -30,8 +30,8 @@ export class OrderService {
     orderDetailId: number,
   ) {
     const salesHistory = await this.orderItemRepository
-      .createQueryBuilder('Order')
-      .leftJoinAndSelect('Order.orderItem', 'OrderItem')
+      .createQueryBuilder('OrderItem')
+      .leftJoinAndSelect('OrderItem.order', 'Order')
       .where('Order.userId = :userId', { userId })
       .andWhere('OrderItem.orderDetailId = :orderDetailId', { orderDetailId })
       .getOne();

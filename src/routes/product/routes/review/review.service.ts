@@ -28,7 +28,7 @@ export class ReviewService {
   ): Promise<void> {
     const savedData = await this.reviewRepository
       .createQueryBuilder('ProductReview')
-      .leftJoinAndSelect('ProductReview.orderItem', 'orderItem')
+      .leftJoin('ProductReview.orderItem', 'orderItem')
       .where('orderItem.orderDetailId = :orderDetailId', {
         orderDetailId: addOptionForProductDto.orderDetailId,
       })

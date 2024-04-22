@@ -5,7 +5,6 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { OrderItem } from '../../order/entities/orderItem.entity';
@@ -20,7 +19,7 @@ export class ProductReview {
   @JoinColumn({ name: 'userId' })
   user: Members;
 
-  @OneToOne(() => OrderItem)
+  @ManyToOne(() => OrderItem, (orderItem) => orderItem)
   @JoinColumn({ name: 'orderDetailId' })
   orderItem: OrderItem;
 
