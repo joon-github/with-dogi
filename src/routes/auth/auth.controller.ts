@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, Req, Patch } from '@nestjs/common';
+import { Controller, Post, Body, Res, Req, Patch, Param } from '@nestjs/common';
 
 import { AuthService } from './services/auth.service';
 
@@ -85,13 +85,14 @@ export class AuthController {
     };
   }
 
-  @Patch('/role')
+  @Patch('/role/:userId')
   @ApiOperation({ summary: '권한 수정' })
   async updateRole(
     @Body() updateRoleDto: UpdateRoleDto,
     @Req() request: Request,
+    @Param('userId') userId: number,
   ): Promise<ResponesContainerDto<null>> {
-    this.authService.updateRole(updateRoleDto, request);
+    this.authService.updateRole(updateRoleDto, request, userId);
     return {
       statusCode: 200,
       message: '권한 수정 성공',

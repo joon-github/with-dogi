@@ -146,7 +146,11 @@ export class AuthService {
     });
   }
 
-  async updateRole(updateRoleDto: { role: string }, request: Request) {
+  async updateRole(
+    updateRoleDto: { role: string },
+    request: Request,
+    userId: number,
+  ) {
     const payload = request['user'] as TokenPayload;
     const findUser = await this.memberRepository.findOne({
       where: { userId: payload.userId },
@@ -154,6 +158,6 @@ export class AuthService {
     if (findUser.role !== 'admin') {
       throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
     }
-    await this.memberRepository.update(payload.userId, updateRoleDto);
+    await this.memberRepository.update(userId, updateRoleDto);
   }
 }
