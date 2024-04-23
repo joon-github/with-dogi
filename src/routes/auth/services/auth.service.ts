@@ -11,6 +11,7 @@ import { UpdateMemberDto } from '../dto/update-Memeber.dto';
 import { TokenPayload } from '../interfaces/token-payload.interface';
 import { AuthException } from '../exceptions/auth-exceptions';
 import { UpdatePasswordrDto } from '../dto/update-Password.dto';
+import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 
 @Injectable()
 export class AuthService {
@@ -159,5 +160,23 @@ export class AuthService {
       throw new AuthException(AuthException.IS_NOT_AUTHORIZED);
     }
     await this.memberRepository.update(userId, updateRoleDto);
+  }
+
+  async loginCheck(request: Request): Promise<ResponesContainerDto<boolean>> {
+    const token = request.cookies['accessToken'];
+    console.log(token);
+    if (!token) {
+      return {
+        statusCode: 200,
+        message: '로그인 전',
+        data: false,
+      };
+    } else {
+      return {
+        statusCode: 200,
+        message: '로그인 상태 확인 성공',
+        data: true,
+      };
+    }
   }
 }

@@ -33,7 +33,7 @@ export class AuthException extends HttpException {
   public static get LOGIN_REQUIRED(): EXCEPTION {
     return {
       message: '로그인이 필요합니다.',
-      status: HttpStatus.UNAUTHORIZED,
+      status: HttpStatus.FORBIDDEN,
     };
   }
 

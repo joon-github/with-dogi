@@ -41,6 +41,7 @@ export class AppModule implements NestModule {
         { path: 'auth/login', method: RequestMethod.POST }, // 로그인 경로 제외
         { path: 'auth/logout', method: RequestMethod.POST }, // 로그인 경로 제외
         { path: 'auth/signup', method: RequestMethod.POST }, // 회원가입 경로 제외
+        { path: 'auth/loginCheck', method: RequestMethod.GET }, // 회원가입 경로 제외
         { path: 'auth/accessToken', method: RequestMethod.POST }, // 토큰재발급 경로 제외
       )
       .forRoutes('*');

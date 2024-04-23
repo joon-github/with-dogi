@@ -1,4 +1,13 @@
-import { Controller, Post, Body, Res, Req, Patch, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Res,
+  Req,
+  Patch,
+  Param,
+  Get,
+} from '@nestjs/common';
 
 import { AuthService } from './services/auth.service';
 
@@ -15,6 +24,14 @@ import { UpdateRoleDto } from './dto/update-Role.dto';
 @ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get('/loginCheck')
+  @ApiOperation({ summary: '로그인 상태 확인' })
+  async loginCheck(
+    @Req() request: Request,
+  ): Promise<ResponesContainerDto<boolean>> {
+    return await this.authService.loginCheck(request);
+  }
 
   @Post('/signup')
   @ApiOperation({ summary: '회원가입' })
