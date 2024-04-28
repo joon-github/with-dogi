@@ -55,7 +55,7 @@ export class AuthController {
     await this.authService.login(loginDto, response);
     return {
       statusCode: 200,
-      message: '로그인 성공',
+      message: null,
       data: null,
     };
   }

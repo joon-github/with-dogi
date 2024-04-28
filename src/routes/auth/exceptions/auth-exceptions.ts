@@ -2,6 +2,12 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { EXCEPTION } from 'src/global/interfaces/exception.interface';
 
 export class AuthException extends HttpException {
+  public static get PASSWORD_NOT_MATCH(): EXCEPTION {
+    return {
+      message: '비밀번호가 동일하지 않습니다.',
+      status: HttpStatus.BAD_REQUEST,
+    };
+  }
   public static get LOGIN_FAIL(): EXCEPTION {
     return {
       message: '로그인 정보가 정확하지 않습니다.',

@@ -21,14 +21,15 @@ export class CreateMemberDto {
   })
   password: string;
 
+  @ApiProperty({ example: 'test', description: '기본값' })
+  @IsString()
+  passwordConfirm: string;
+
   @ApiProperty({ example: 'tester', description: '기본값' })
   @IsString()
   name: string;
 
   @ApiProperty({ example: '010-0000-0000', description: '기본값' })
-  @Matches(/^\d{3}-\d{3,4}-\d{4}$/, {
-    message: '전화번호는 3-3(또는 4)-4 형식이어야 합니다.',
-  })
   @IsString()
   phone: string;
 

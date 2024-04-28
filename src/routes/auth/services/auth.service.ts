@@ -67,6 +67,9 @@ export class AuthService {
   }
 
   async signUp(createMemberDto: CreateMemberDto): Promise<void> {
+    if (createMemberDto.password !== createMemberDto.passwordConfirm) {
+      throw new AuthException(AuthException.PASSWORD_NOT_MATCH);
+    }
     const findUser = await this.memberRepository.findOne({
       where: { email: createMemberDto.email },
     });

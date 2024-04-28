@@ -14,7 +14,6 @@ export class JwtTokenService {
     });
     response.cookie('accessToken', accessToken, {
       maxAge: 1000 * 60 * 30,
-      sameSite: 'strict',
       httpOnly: true,
     });
     return accessToken;
@@ -29,7 +28,6 @@ export class JwtTokenService {
     response.cookie('refreshToken', refreshToken, {
       maxAge: 1000 * 60 * 60,
       httpOnly: true,
-      sameSite: 'strict',
       path: '/auth/accessToken',
     });
     return refreshToken;
