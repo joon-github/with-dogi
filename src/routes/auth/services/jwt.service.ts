@@ -13,7 +13,7 @@ export class JwtTokenService {
       expiresIn: '60m', // 액세스 토큰 유효 시간
     });
     response.cookie('accessToken', accessToken, {
-      maxAge: 1000 * 60 * 30,
+      maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
     });
     return accessToken;
@@ -26,7 +26,7 @@ export class JwtTokenService {
     });
 
     response.cookie('refreshToken', refreshToken, {
-      maxAge: 1000 * 60 * 60,
+      maxAge: 1000 * 60 * 60 * 24,
       httpOnly: true,
       path: '/auth/accessToken',
     });
