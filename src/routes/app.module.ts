@@ -36,6 +36,7 @@ export class AppModule implements NestModule {
       .apply(VerifyTokenMiddleware)
       .exclude(
         { path: '', method: RequestMethod.GET }, // 상품조회 제외
+        { path: 'category', method: RequestMethod.GET }, // 카테고리 조회 제외
         { path: 'product', method: RequestMethod.GET }, // 상품조회 제외
         { path: 'product/:id', method: RequestMethod.GET }, // 상품단일조회 제외
         { path: 'auth/login', method: RequestMethod.POST }, // 로그인 경로 제외

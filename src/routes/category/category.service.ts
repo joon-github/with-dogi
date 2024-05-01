@@ -43,10 +43,31 @@ export class CategoryService {
   }
 
   async findByType(type: string) {
-    const queryBuilder = this.categoryRepository
+    const categories = await this.categoryRepository
       .createQueryBuilder('Category')
-      .where('Category.type = :type', { type });
-    return queryBuilder.getMany();
+      .where('Category.type = :type', { type })
+      .getMany();
+    return this.buildCategoryTree(categories);
+  }
+
+  private buildCategoryTree(categories: Category[]): Category[] {
+    const categoryMap = new Map<number, Category>();
+
+    categories.forEach((category) => {
+      category.children = [];
+      categoryMap.set(category.categoryId, category);
+    });
+
+    categories.forEach((category) => {
+      if (category.parentsCategoryId) {
+        const parent = categoryMap.get(category.parentsCategoryId);
+        if (parent) {
+          parent.children.push(category);
+        }
+      }
+    });
+
+    return categories.filter((category) => category.parentsCategoryId === null);
   }
 
   async update(
