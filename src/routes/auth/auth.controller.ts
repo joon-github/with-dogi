@@ -7,11 +7,13 @@ import {
   Patch,
   Param,
   Get,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 
 import { AuthService } from './services/auth.service';
 
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateMemberDto } from './dto/create-Member.dto';
 import { LoginDto } from './dto/login.dto';
 import { Request, Response } from 'express';
@@ -19,6 +21,9 @@ import { UpdateMemberDto } from './dto/update-Memeber.dto';
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
 import { UpdatePasswordrDto } from './dto/update-Password.dto';
 import { UpdateRoleDto } from './dto/update-Role.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { TokenPayload } from './interfaces/token-payload.interface';
+import { Members } from './entities/Members.entity';
 
 @Controller('auth')
 @ApiTags('auth')
@@ -31,6 +36,23 @@ export class AuthController {
     @Req() request: Request,
   ): Promise<ResponesContainerDto<boolean>> {
     return await this.authService.loginCheck(request);
+  }
+
+  @Get('/myInfo')
+  @ApiOperation({ summary: '내 정보 가져오기' })
+  async myInfo(
+    @Req() request: Request,
+  ): Promise<ResponesContainerDto<Members>> {
+    const user = request['user'] as TokenPayload;
+    const findUser = await this.authService.findUserById(user.userId);
+
+    delete findUser.userId;
+    delete findUser.password;
+    return {
+      statusCode: 200,
+      message: '내 정보 가져오기 성공',
+      data: findUser,
+    };
   }
 
   @Post('/signup')
@@ -80,7 +102,7 @@ export class AuthController {
     @Body() updateProfileDto: UpdateMemberDto,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
-    this.authService.updateMember(updateProfileDto, request);
+    await this.authService.updateMember(updateProfileDto, request);
     return {
       statusCode: 200,
       message: '회원 정보 수정 성공',
@@ -94,7 +116,7 @@ export class AuthController {
     @Body() updatePasswordrDto: UpdatePasswordrDto,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
-    this.authService.updatePassword(updatePasswordrDto, request);
+    await this.authService.updatePassword(updatePasswordrDto, request);
     return {
       statusCode: 200,
       message: '비밀번호 수정 성공',
@@ -109,10 +131,40 @@ export class AuthController {
     @Req() request: Request,
     @Param('userId') userId: number,
   ): Promise<ResponesContainerDto<null>> {
-    this.authService.updateRole(updateRoleDto, request, userId);
+    await this.authService.updateRole(updateRoleDto, request, userId);
     return {
       statusCode: 200,
       message: '권한 수정 성공',
+      data: null,
+    };
+  }
+
+  @Patch('/profile')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: '프로필 사진 변경' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: '프로필 사진',
+    type: 'multipart/form-data',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async updateProfile(
+    @UploadedFile() file: Express.Multer.File,
+    @Req() request: Request,
+  ): Promise<ResponesContainerDto<null>> {
+    const user = request['user'] as TokenPayload;
+    await this.authService.updateProfile(file, user);
+    return {
+      statusCode: 200,
+      message: '프로필 사진 변경 성공',
       data: null,
     };
   }

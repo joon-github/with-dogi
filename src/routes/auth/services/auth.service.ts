@@ -12,6 +12,7 @@ import { TokenPayload } from '../interfaces/token-payload.interface';
 import { AuthException } from '../exceptions/auth-exceptions';
 import { UpdatePasswordrDto } from '../dto/update-Password.dto';
 import { ResponesContainerDto } from 'src/global/dto/respones-container.dto';
+import { AwsService } from 'src/global/aws/aws.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +21,7 @@ export class AuthService {
     private memberRepository: Repository<Members>,
 
     private jwtService: JwtTokenService,
+    private readonly awsService: AwsService,
   ) {}
 
   public async findUserByEmail(email: string): Promise<Members> {
@@ -167,7 +169,6 @@ export class AuthService {
 
   async loginCheck(request: Request): Promise<ResponesContainerDto<boolean>> {
     const token = request.cookies['accessToken'];
-    console.log(token);
     if (!token) {
       return {
         statusCode: 200,
@@ -181,5 +182,16 @@ export class AuthService {
         data: true,
       };
     }
+  }
+
+  async updateProfile(file: Express.Multer.File, user: TokenPayload) {
+    const findUser = await this.findUserById(user.userId);
+    const url = await this.awsService.imageUpload(file);
+    if (findUser.profilePhoto) {
+      await this.awsService.deleteImage(findUser.profilePhoto);
+    }
+    await this.memberRepository.update(user.userId, {
+      profilePhoto: url.imageUrl,
+    });
   }
 }
