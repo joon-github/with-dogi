@@ -121,8 +121,15 @@ export class AuthService {
 
   async updateMember(updateMemberDto: UpdateMemberDto, request: Request) {
     const payload = request['user'] as TokenPayload;
-
-    await this.memberRepository.update(payload.userId, updateMemberDto);
+    if (updateMemberDto.password !== updateMemberDto.passwordConfirm) {
+      throw new AuthException(AuthException.PASSWORD_NOT_MATCH);
+    }
+    await this.memberRepository.update(payload.userId, {
+      address: updateMemberDto.address,
+      phone: updateMemberDto.phone,
+      name: updateMemberDto.name,
+      password: updateMemberDto.password,
+    });
   }
 
   async updatePassword(
