@@ -12,11 +12,11 @@ import { OrderModule } from './routes/product/routes/order/order.module';
 import { ReviewModule } from './routes/product/routes/review/review.module';
 
 export function setupSwagger(app: INestApplication): void {
-  //현재 경로
+  const baseUrl = process.env.BASE_URL || 'http://localhost:8000';
   const nav = `
-  <a href="http://localhost:8000/api-base-docs#/">기본 api</a>
+  <a href="${baseUrl}/api-base-docs#/">기본 api</a>
   <br/>
-  <a href="http://localhost:8000/api-products-docs">상품 api</a>
+  <a href="${baseUrl}/api-products-docs">상품 api</a>
   `;
   const options = new DocumentBuilder()
     .setTitle('기본 API')
