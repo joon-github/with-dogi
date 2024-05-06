@@ -5,7 +5,7 @@ declare global {
     export interface Request {
       images?: {
         file: Express.Multer.File;
-        type: string;
+        seq: number;
         imageName: string;
       }[];
     }
@@ -14,7 +14,7 @@ declare global {
 export interface Request extends ExpressRequest {
   images?: {
     file: Express.Multer.File;
-    type: string;
+    seq: number;
     imageName: string;
   }[];
 }

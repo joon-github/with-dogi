@@ -88,6 +88,15 @@ export class ProductService {
     }
     return findProduct;
   }
+  async saveBase64ToFile(base64Data: string) {
+    const matches = base64Data.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (!matches || matches.length !== 3) {
+      throw new Error('Invalid base64 data');
+    }
+
+    const data = Buffer.from(matches[2], 'base64');
+    return data;
+  }
 
   async create(
     createProductDto: CreateProductDto,
@@ -122,11 +131,13 @@ export class ProductService {
 
       for (const option of createProductDto.options) {
         const optionEntity = new Option();
-
+        const file = await this.saveBase64ToFile(option.file);
+        const url = await this.awsService.imageUpload(file);
         optionEntity.optionName = option.optionName;
         optionEntity.product = savedProduct;
         optionEntity.addPrice = option.addPrice;
         optionEntity.stock = option.stock;
+        optionEntity.imageUrl = url.imageUrl;
 
         await queryRunner.manager.save(optionEntity);
       }
@@ -136,7 +147,7 @@ export class ProductService {
           const productImage = new ProductImage();
           productImage.product = product;
           productImage.imageName = image.imageName;
-          productImage.type = image.type;
+          productImage.seq = image.seq;
           productImage.imageUrl = url.imageUrl;
           await queryRunner.manager.save(productImage);
         }

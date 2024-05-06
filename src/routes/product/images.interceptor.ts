@@ -17,7 +17,7 @@ export class ImagesInterceptor implements NestInterceptor {
     request.images = files
       ? files.map((file, index) => ({
           file: file,
-          type: body.types[index],
+          seq: body.seq[index],
           imageName: body.imageNames[index],
         }))
       : [];

@@ -29,6 +29,9 @@ export class Option {
   @Column()
   stock: number;
 
+  @Column()
+  imageUrl: string;
+
   @OneToMany(() => ProductQuestion, (question) => question.option)
   productQuestions?: ProductQuestion[];
 

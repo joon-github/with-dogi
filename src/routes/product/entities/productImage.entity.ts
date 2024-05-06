@@ -6,7 +6,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Product } from './product.entity';
-import { ProductImageEnum } from '../enums/productImageType.enum';
+// import { ProductImageEnum } from '../enums/productImageType.enum';
 
 @Entity('ProductImage')
 export class ProductImage {
@@ -23,10 +23,6 @@ export class ProductImage {
   @JoinColumn({ name: 'productId' })
   product: Product;
 
-  @Column({
-    type: 'enum',
-    enum: ProductImageEnum,
-    default: ProductImageEnum.MAIN,
-  })
-  type: string;
+  @Column()
+  seq: number;
 }

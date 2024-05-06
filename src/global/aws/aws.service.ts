@@ -19,14 +19,15 @@ export class AwsService {
 
   async imageUploadToS3(
     fileName: string, // 업로드될 파일의 이름
-    file: Express.Multer.File, // 업로드할 파일
+    file: Express.Multer.File | Buffer, // 업로드할 파일
     ext: string, // 파일 확장자
   ) {
+    const fileBody = file instanceof Buffer ? file : file.buffer;
     // AWS S3에 이미지 업로드 명령을 생성합니다. 파일 이름, 파일 버퍼, 파일 접근 권한, 파일 타입 등을 설정합니다.
     const command = new PutObjectCommand({
       Bucket: process.env.AWS_S3_BUCKET_NAME, // S3 버킷 이름
       Key: fileName, // 업로드될 파일의 이름
-      Body: file.buffer, // 업로드할 파일
+      Body: fileBody, // 업로드할 파일
       ACL: 'public-read', // 파일 접근 권한
       ContentType: `image/${ext}`, // 파일 타입
     });
@@ -38,10 +39,10 @@ export class AwsService {
     return `https://s3.${process.env.AWS_REGION}.amazonaws.com/${process.env.AWS_S3_BUCKET_NAME}/${fileName}`;
   }
 
-  async imageUpload(file: Express.Multer.File) {
+  async imageUpload(file: Express.Multer.File | Buffer) {
     const imageName = uuidv4();
-    const ext = file.originalname.split('.').pop();
-
+    const ext =
+      file instanceof Buffer ? '.jpg' : file.originalname.split('.').pop();
     const imageUrl = await this.imageUploadToS3(
       `${imageName}.${ext}`,
       file,

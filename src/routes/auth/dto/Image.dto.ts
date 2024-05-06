@@ -1,5 +1,5 @@
 export class ImageInfo {
   file: Express.Multer.File;
-  type: string;
+  seq: number;
   imageName: string;
 }

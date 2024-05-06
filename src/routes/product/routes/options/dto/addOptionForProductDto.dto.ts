@@ -12,6 +12,11 @@ export class AddOptionForProductDto {
   @IsOptional()
   readonly productId?: number;
 
+  @ApiProperty({ example: 1, description: '기본값' })
+  @IsString()
+  @IsOptional()
+  readonly file?: string;
+
   @ApiProperty({ example: '옵션값', description: '기본값' })
   @IsString()
   readonly optionName: string;
