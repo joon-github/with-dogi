@@ -27,6 +27,9 @@ export class Product {
   @Column({ length: 100 })
   productName: string;
 
+  @Column({ length: 100 })
+  mainImageUrl: string;
+
   @ManyToOne(() => Category, (category) => category)
   @JoinColumn({ name: 'categoryId' })
   category: Category;

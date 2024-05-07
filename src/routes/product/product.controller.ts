@@ -21,7 +21,6 @@ import { FindAllProductQueryDto } from './dto/findAllProduct.dto';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { UpdateProductDto } from './dto/updateProduct.dto';
 import { CreateProduct } from './decorator/CreateProduct';
-import { ImageInfo } from './dto/ImageInfo';
 
 @Controller('product')
 @ApiTags('product')
@@ -91,9 +90,8 @@ export class ProductController {
     @Body() createProductDto: CreateProductDto,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
-    const images: ImageInfo[] = request.images || [];
     const user = request['user'] as TokenPayload;
-    await this.productService.create(createProductDto, user.userId, images);
+    await this.productService.create(createProductDto, user.userId);
     return {
       statusCode: 201,
       message: '상품 등록 성공',
