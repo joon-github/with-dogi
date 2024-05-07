@@ -71,6 +71,12 @@ export class ProductService {
     return product;
   }
 
+  public findMyProduct(userId: number) {
+    return this.getProduct()
+      .where(`Members.userId = :userId`, { userId })
+      .getMany();
+  }
+
   public async isProductOwner(productId: number, userId: number) {
     const findUser = await this.authService.findUserById(userId);
     const findProduct = await this.findProduct(productId);
@@ -164,7 +170,6 @@ export class ProductService {
   }
 
   async findAll(
-    userId: number,
     categoryId: number,
     productCode: string,
     limit: number,
@@ -173,9 +178,7 @@ export class ProductService {
     const queryBuilder = this.getProduct(limit, offset);
     const where = {};
     const like = {};
-    if (userId) {
-      where['Members.userId'] = userId;
-    }
+
     if (categoryId) {
       where['Category.categoryId'] = categoryId;
     }

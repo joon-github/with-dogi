@@ -1,11 +1,11 @@
 import { Type } from 'class-transformer';
-import { IsOptional, IsInt, IsString } from 'class-validator';
+import { IsOptional, IsInt, IsString, IsBoolean } from 'class-validator';
 
 export class FindAllProductQueryDto {
   @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  readonly userId?: number;
+  @Type(() => Boolean)
+  @IsBoolean()
+  readonly my?: boolean;
 
   @IsOptional()
   @Type(() => Number)
