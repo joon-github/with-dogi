@@ -33,6 +33,10 @@ export class JwtTokenService {
     return refreshToken;
   };
 
+  public clearCookie = (response: Response, tokenName: string) => {
+    response.clearCookie(tokenName);
+  };
+
   public verifyToken = (req: Request, tokenName: string, secret: string) => {
     const token = req.cookies[tokenName];
     if (!token) {

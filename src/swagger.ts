@@ -12,7 +12,10 @@ import { OrderModule } from './routes/product/routes/order/order.module';
 import { ReviewModule } from './routes/product/routes/review/review.module';
 
 export function setupSwagger(app: INestApplication): void {
-  const baseUrl = process.env.NODE_ENV === "production" ? process.env.BASE_URL : 'http://localhost:8000';
+  const baseUrl =
+    process.env.NODE_ENV === 'production'
+      ? process.env.BASE_URL
+      : 'http://localhost:8000';
   const nav = `
   <a href="${baseUrl}/api-base-docs#/">기본 api</a>
   <br/>

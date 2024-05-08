@@ -82,6 +82,19 @@ export class AuthController {
     };
   }
 
+  @Get('/logout')
+  @ApiOperation({ summary: '로그아웃' })
+  async logout(
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<ResponesContainerDto<null>> {
+    await this.authService.logout(response);
+    return {
+      statusCode: 200,
+      message: '로그아웃 성공',
+      data: null,
+    };
+  }
+
   @Post('/accessToken')
   @ApiOperation({ summary: '엑세스 토큰 재발급' })
   async generateAccessToken(

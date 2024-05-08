@@ -103,6 +103,11 @@ export class AuthService {
     this.jwtService.generateRefreshToken(response, payload);
   }
 
+  async logout(response: Response): Promise<void> {
+    this.jwtService.clearCookie(response, 'accessToken');
+    this.jwtService.clearCookie(response, 'refreshToken');
+  }
+
   async generateAccessToken(
     request: Request,
     response: Response,
