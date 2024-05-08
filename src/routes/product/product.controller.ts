@@ -21,7 +21,6 @@ import { FindAllProductQueryDto } from './dto/findAllProduct.dto';
 import { CreateProductDto } from './dto/createProduct.dto';
 import { UpdateProductDto } from './dto/updateProduct.dto';
 import { CreateProduct } from './decorator/CreateProduct';
-import { ImageInfo } from './dto/ImageInfo';
 
 @Controller('product')
 @ApiTags('product')
@@ -30,7 +29,6 @@ export class ProductController {
 
   @Get()
   @ApiOperation({ summary: '상품 전체 조회' })
-  @ApiQuery({ name: 'userId', required: false, type: Number })
   @ApiQuery({ name: 'categoryId', required: false, type: Number })
   @ApiQuery({ name: 'productCode', required: false, type: String })
   @ApiQuery({ name: 'limit', required: false, type: Number })
@@ -39,7 +37,6 @@ export class ProductController {
     @Query() queryDto: FindAllProductQueryDto,
   ): Promise<ResponesContainerDto<Product[]>> {
     const data = await this.productService.findAll(
-      queryDto.userId,
       queryDto.categoryId,
       queryDto.productCode,
       queryDto.limit,
@@ -52,6 +49,21 @@ export class ProductController {
       total: data.total,
       limit: queryDto.limit,
       offset: queryDto.offset,
+    };
+  }
+
+  @Get('my')
+  @ApiOperation({ summary: '내 상품 조회' })
+  async findMyProduct(
+    @Req() request: Request,
+  ): Promise<ResponesContainerDto<Product[]>> {
+    console.log(request['user']);
+    const user = request['user'] as TokenPayload;
+    const data = await this.productService.findMyProduct(user.userId);
+    return {
+      statusCode: 200,
+      message: '내 상품 조회 성공',
+      data: data,
     };
   }
 
@@ -78,9 +90,8 @@ export class ProductController {
     @Body() createProductDto: CreateProductDto,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<null>> {
-    const images: ImageInfo[] = request.images || [];
     const user = request['user'] as TokenPayload;
-    await this.productService.create(createProductDto, user.userId, images);
+    await this.productService.create(createProductDto, user.userId);
     return {
       statusCode: 201,
       message: '상품 등록 성공',

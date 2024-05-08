@@ -46,5 +46,7 @@ export class AppModule implements NestModule {
         { path: 'auth/accessToken', method: RequestMethod.POST }, // 토큰재발급 경로 제외
       )
       .forRoutes('*');
+
+    consumer.apply(VerifyTokenMiddleware).forRoutes('product/my');
   }
 }

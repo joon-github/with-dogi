@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsString, Length } from 'class-validator';
 import { AddOptionForProductDto } from '../routes/options/dto/addOptionForProductDto.dto';
 import { Transform } from 'class-transformer';
-import { ImageInfo } from './ImageInfo';
+
 export class CreateProductDto {
   @ApiProperty({ example: 1, description: '기본값' })
   @IsNumber()
@@ -27,6 +27,10 @@ export class CreateProductDto {
   @IsString()
   readonly description: string;
 
+  @ApiProperty({ example: '테스트 상품 설명', description: '기본값' })
+  @IsString()
+  readonly mainImage: string;
+
   @ApiProperty({
     example: [
       {
@@ -44,8 +48,5 @@ export class CreateProductDto {
   readonly options?: AddOptionForProductDto[];
 
   @IsOptional()
-  // @Transform(({ value }) =>
-  //   typeof value === 'string' ? JSON.parse(value) : value,
-  // )
-  readonly images?: ImageInfo[];
+  readonly images?: string;
 }

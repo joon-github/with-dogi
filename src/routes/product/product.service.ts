@@ -13,7 +13,6 @@ import { CategoryService } from '../category/category.service';
 import { Option } from './routes/options/entities/option.entity';
 import { AwsService } from 'src/global/aws/aws.service';
 import { ProductImage } from './entities/productImage.entity';
-import { ImageInfo } from './dto/ImageInfo';
 
 @Injectable()
 export class ProductService {
@@ -71,6 +70,12 @@ export class ProductService {
     return product;
   }
 
+  public findMyProduct(userId: number) {
+    return this.getProduct()
+      .where(`Members.userId = :userId`, { userId })
+      .getMany();
+  }
+
   public async isProductOwner(productId: number, userId: number) {
     const findUser = await this.authService.findUserById(userId);
     const findProduct = await this.findProduct(productId);
@@ -101,7 +106,6 @@ export class ProductService {
   async create(
     createProductDto: CreateProductDto,
     userId: number,
-    images: ImageInfo[],
   ): Promise<Product> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -127,6 +131,13 @@ export class ProductService {
       product.brand = brand;
       product.category = category;
 
+      if (createProductDto.mainImage) {
+        const parsedData = JSON.parse(createProductDto.mainImage);
+        const file = await this.saveBase64ToFile(parsedData.file);
+        const url = await this.awsService.imageUpload(file);
+        product.mainImageUrl = url.imageUrl;
+      }
+
       const savedProduct = await queryRunner.manager.save(product);
 
       for (const option of createProductDto.options) {
@@ -141,9 +152,11 @@ export class ProductService {
 
         await queryRunner.manager.save(optionEntity);
       }
-      if (images) {
-        for (const image of images) {
-          const url = await this.awsService.imageUpload(image.file);
+      if (createProductDto.images) {
+        const parsedData = JSON.parse(createProductDto.images);
+        for (const image of parsedData) {
+          const file = await this.saveBase64ToFile(image.file);
+          const url = await this.awsService.imageUpload(file);
           const productImage = new ProductImage();
           productImage.product = product;
           productImage.imageName = image.imageName;
@@ -164,7 +177,6 @@ export class ProductService {
   }
 
   async findAll(
-    userId: number,
     categoryId: number,
     productCode: string,
     limit: number,
@@ -173,9 +185,7 @@ export class ProductService {
     const queryBuilder = this.getProduct(limit, offset);
     const where = {};
     const like = {};
-    if (userId) {
-      where['Members.userId'] = userId;
-    }
+
     if (categoryId) {
       where['Category.categoryId'] = categoryId;
     }
@@ -206,7 +216,7 @@ export class ProductService {
   async update(id: number, updateProductDto: UpdateProductDto, userId: number) {
     await this.checkProductOwner(id, userId);
     updateProductDto.updatedAt = new Date();
-    return await this.productRepository.update(id, updateProductDto);
+    // return await this.productRepository.update(id, updateProductDto);
   }
 
   async remove(id: number, userId: number) {
