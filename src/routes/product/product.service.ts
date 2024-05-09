@@ -70,12 +70,6 @@ export class ProductService {
     return product;
   }
 
-  public findMyProduct(userId: number) {
-    return this.getProduct()
-      .where(`Members.userId = :userId`, { userId })
-      .getMany();
-  }
-
   public async isProductOwner(productId: number, userId: number) {
     const findUser = await this.authService.findUserById(userId);
     const findProduct = await this.findProduct(productId);
@@ -176,6 +170,37 @@ export class ProductService {
     }
   }
 
+  async findMyProduct(
+    categoryId: number,
+    productCode: string,
+    limit: number,
+    offset: number,
+    userId: number,
+  ) {
+    const queryBuilder = this.getProduct(limit, offset).where(
+      `Members.userId = :userId`,
+      { userId },
+    );
+
+    if (categoryId) {
+      queryBuilder.andWhere(`Category.categoryId = :categoryId`, {
+        categoryId,
+      });
+    }
+
+    if (productCode) {
+      queryBuilder.andWhere(`Product.productCode LIKE :productCode`, {
+        productCode: `%${productCode}%`,
+      });
+    }
+
+    const [product, total] = await queryBuilder.getManyAndCount();
+
+    return {
+      total,
+      product,
+    };
+  }
   async findAll(
     categoryId: number,
     productCode: string,

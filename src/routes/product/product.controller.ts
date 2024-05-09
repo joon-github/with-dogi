@@ -54,16 +54,27 @@ export class ProductController {
 
   @Get('my')
   @ApiOperation({ summary: '내 상품 조회' })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'offset', required: false, type: Number })
   async findMyProduct(
+    @Query() queryDto: FindAllProductQueryDto,
     @Req() request: Request,
   ): Promise<ResponesContainerDto<Product[]>> {
-    console.log(request['user']);
     const user = request['user'] as TokenPayload;
-    const data = await this.productService.findMyProduct(user.userId);
+    const data = await this.productService.findMyProduct(
+      queryDto.categoryId,
+      queryDto.productCode,
+      queryDto.limit,
+      queryDto.offset,
+      user.userId,
+    );
     return {
       statusCode: 200,
       message: '내 상품 조회 성공',
-      data: data,
+      data: data.product,
+      total: data.total,
+      limit: queryDto.limit,
+      offset: queryDto.offset,
     };
   }
 
