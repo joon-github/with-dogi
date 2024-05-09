@@ -52,10 +52,10 @@ export class ProductService {
       ]);
 
     if (limit) {
-      queryBuilder.limit(limit);
+      queryBuilder.take(limit);
     }
     if (offset) {
-      queryBuilder.offset((offset - 1) * limit); // 올바른 오프셋 계산
+      queryBuilder.skip((offset - 1) * limit); // 올바른 오프셋 계산
     }
     return queryBuilder;
   }
