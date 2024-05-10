@@ -249,7 +249,7 @@ export class ProductService {
     return await this.productRepository.remove(product);
   }
 
-  async checkMyProduct(productId: number, userId: number) {
+  async checkOwner(productId: number, userId: number) {
     const product = await this.checkProductOwner(productId, userId);
     if (!product) return false;
     return true;
