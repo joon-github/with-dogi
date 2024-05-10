@@ -91,6 +91,25 @@ export class ProductController {
     };
   }
 
+  // 내 상품인지 체크
+  @Get('check_owner/:productId')
+  @ApiOperation({ summary: '내 상품인지 체크' })
+  async findOneMyProduct(
+    @Param('productId') productId: number,
+    @Req() request: Request,
+  ): Promise<ResponesContainerDto<boolean>> {
+    const user = request['user'] as TokenPayload;
+    const data = await this.productService.checkMyProduct(
+      productId,
+      user.userId,
+    );
+    return {
+      statusCode: 200,
+      message: `${productId}번 상품인지 체크 성공`,
+      data: data,
+    };
+  }
+
   @Post()
   @ApiOperation({
     summary:
