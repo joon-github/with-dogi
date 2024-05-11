@@ -92,17 +92,20 @@ export class ProductController {
   }
 
   // 내 상품인지 체크
-  @Get('check_owner/:productId')
-  @ApiOperation({ summary: '내 상품인지 체크' })
+  @Get('my/:productId')
+  @ApiOperation({ summary: '내 상품 개별 조회' })
   async checkOwner(
     @Param('productId') productId: number,
     @Req() request: Request,
-  ): Promise<ResponesContainerDto<boolean>> {
+  ): Promise<ResponesContainerDto<Product>> {
     const user = request['user'] as TokenPayload;
-    const data = await this.productService.checkOwner(productId, user.userId);
+    const data = await this.productService.checkProductOwner(
+      productId,
+      user.userId,
+    );
     return {
       statusCode: 200,
-      message: `${productId}번 상품 등록자 확인`,
+      message: `${productId}번 상품 조회`,
       data: data,
     };
   }

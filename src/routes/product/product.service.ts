@@ -248,10 +248,4 @@ export class ProductService {
     const product = await this.checkProductOwner(id, userId);
     return await this.productRepository.remove(product);
   }
-
-  async checkOwner(productId: number, userId: number) {
-    const product = await this.checkProductOwner(productId, userId);
-    if (!product) return false;
-    return true;
-  }
 }
