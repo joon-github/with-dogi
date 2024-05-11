@@ -1,6 +1,8 @@
-import { PartialType } from '@nestjs/swagger';
+import { PartialType, OmitType } from '@nestjs/swagger';
 import { CreateProductDto } from './createProduct.dto';
 
-export class UpdateProductDto extends PartialType(CreateProductDto) {
+export class UpdateProductDto extends PartialType(
+  OmitType(CreateProductDto, ['images'] as const),
+) {
   updatedAt: Date;
 }

@@ -241,7 +241,7 @@ export class ProductService {
   async update(id: number, updateProductDto: UpdateProductDto, userId: number) {
     await this.checkProductOwner(id, userId);
     updateProductDto.updatedAt = new Date();
-    // return await this.productRepository.update(id, updateProductDto);
+    return await this.productRepository.update(id, updateProductDto);
   }
 
   async remove(id: number, userId: number) {

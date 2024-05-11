@@ -26,7 +26,7 @@ export class ProductException extends HttpException {
   public static get NOT_PRODUCT_OWNER(): EXCEPTION {
     return {
       message: '상품 등록자가 아닙니다.',
-      status: HttpStatus.UNAUTHORIZED,
+      status: HttpStatus.BAD_REQUEST,
     };
   }
 
