@@ -115,7 +115,48 @@ export class ProductController {
     summary:
       '상품 등록 (스웨거 multipart/form-data 데이터 표현 한계로 테스트 불가능. 클라이언트에서 테스트 진행할것)',
   })
-  @CreateProduct()
+  @CreateProduct({
+    schema: {
+      type: 'object',
+      properties: {
+        images: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              file: {
+                type: 'string',
+                format: 'binary',
+              },
+              imageName: { type: 'string' },
+              seq: { type: 'number' },
+            },
+          },
+        },
+        brandId: { type: 'number' },
+        productName: { type: 'string' },
+        categoryId: { type: 'number' },
+        price: { type: 'number' },
+        description: { type: 'string' },
+        options: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              optionName: { type: 'string' },
+              addPrice: { type: 'number' },
+              stock: { type: 'number' },
+              file: {
+                type: 'string',
+                format: 'binary',
+              },
+            },
+          },
+        },
+      },
+      required: ['productName', 'brandId', 'categoryId', 'price', 'options'],
+    },
+  })
   async create(
     @Body() createProductDto: CreateProductDto,
     @Req() request: Request,
