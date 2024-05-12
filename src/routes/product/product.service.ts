@@ -240,13 +240,12 @@ export class ProductService {
 
   async update(id: number, updateProductDto: UpdateProductDto, userId: number) {
     await this.checkProductOwner(id, userId);
-    updateProductDto.updatedAt = new Date();
     const updateDta = {
-      updatedAt: updateProductDto.updatedAt,
       productName: updateProductDto.productName,
       price: updateProductDto.price,
       description: updateProductDto.description,
       mainImageUrl: updateProductDto.mainImage,
+      updatedAt: new Date(),
     };
     if (updateProductDto.brandId) {
       const brand = await this.brandService.checkBrandOwner(
