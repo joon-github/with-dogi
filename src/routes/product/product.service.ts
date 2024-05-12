@@ -241,7 +241,29 @@ export class ProductService {
   async update(id: number, updateProductDto: UpdateProductDto, userId: number) {
     await this.checkProductOwner(id, userId);
     updateProductDto.updatedAt = new Date();
-    return await this.productRepository.update(id, updateProductDto);
+    const updateDta = {
+      updatedAt: updateProductDto.updatedAt,
+      productName: updateProductDto.productName,
+      price: updateProductDto.price,
+      description: updateProductDto.description,
+      mainImageUrl: updateProductDto.mainImage,
+    };
+    if (updateProductDto.brandId) {
+      const brand = await this.brandService.checkBrandOwner(
+        updateProductDto.brandId,
+        userId,
+      );
+      updateDta['brand'] = brand;
+    }
+
+    if (updateProductDto.categoryId) {
+      const category = await this.categoryService.findCategoryByCategoryId(
+        updateProductDto.categoryId,
+      );
+      updateDta['category'] = category;
+    }
+
+    return await this.productRepository.update(id, updateDta);
   }
 
   async remove(id: number, userId: number) {

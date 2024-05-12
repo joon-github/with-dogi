@@ -27,7 +27,7 @@ export class CreateProductDto {
   @IsString()
   readonly description: string;
 
-  @ApiProperty({ example: '테스트 상품 설명', description: '기본값' })
+  @ApiProperty({ example: '메인 이미지', description: '기본값' })
   @IsString()
   readonly mainImage: string;
 
