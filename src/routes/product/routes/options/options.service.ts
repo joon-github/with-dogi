@@ -81,6 +81,8 @@ export class OptionsService {
           // optionId가 있으면 update
           const optionEntity = new Option();
           if (option.file) {
+            const findOption = await this.findOptionByOptionId(option.optionId);
+            await this.awsService.deleteImage(findOption.imageUrl);
             const file = await this.saveBase64ToFile(option.file);
             const url = await this.awsService.imageUpload(file);
             optionEntity.imageUrl = url.imageUrl;
