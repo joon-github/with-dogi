@@ -80,7 +80,8 @@ export class OptionsService {
         if (option.optionId) {
           // optionId가 있으면 update
           const optionEntity = new Option();
-          if (option.file) {
+          const urlPattern = /^(https?:\/\/)?[\w-]+(\.[\w-]+)+[/#?]?.*$/;
+          if (option.file && !urlPattern.test(option.file)) {
             const findOption = await this.findOptionByOptionId(option.optionId);
             await this.awsService.deleteImage(findOption.imageUrl);
             const file = await this.saveBase64ToFile(option.file);
@@ -102,13 +103,15 @@ export class OptionsService {
             userId,
           );
           const optionEntity = new Option();
-          const file = await this.saveBase64ToFile(option.file);
-          const url = await this.awsService.imageUpload(file);
+          if (option.file !== '') {
+            const file = await this.saveBase64ToFile(option.file);
+            const url = await this.awsService.imageUpload(file);
+            optionEntity.imageUrl = url.imageUrl;
+          }
           optionEntity.optionName = option.optionName;
           optionEntity.product = product;
           optionEntity.addPrice = option.addPrice;
           optionEntity.stock = option.stock;
-          optionEntity.imageUrl = url.imageUrl;
           await queryRunner.manager.save(optionEntity);
         }
       }

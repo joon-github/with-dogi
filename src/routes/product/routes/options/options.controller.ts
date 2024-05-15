@@ -107,7 +107,7 @@ export class OptionsController {
     );
     return {
       statusCode: 200,
-      message: '옵션 추가 or 수정 성공',
+      message: '옵션 수정 성공',
       data: null,
     };
   }

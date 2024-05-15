@@ -22,11 +22,11 @@ export class JwtTokenService {
   public generateRefreshToken = (response: Response, payload: TokenPayload) => {
     const refreshToken = this.jwtService.sign(payload, {
       secret: process.env.REFRESH_TOKEN_SECRET,
-      expiresIn: '60m', // 액세스 토큰 유효 시간
+      expiresIn: '7d', // 리프레쉬 토큰 유효 시간
     });
 
     response.cookie('refreshToken', refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
       httpOnly: true,
       path: '/auth/accessToken',
     });
